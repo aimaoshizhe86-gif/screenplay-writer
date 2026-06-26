@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>悬而未决 — 完整剧本 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-warm: oklch(0.95 0.006 85);
+    --surface: oklch(0.91 0.010 80);
+    --card: oklch(0.87 0.012 75);
+    --ink: oklch(0.28 0.012 75);
+    --ink-light: oklch(0.42 0.010 70);
+    --ink-dim: oklch(0.55 0.008 65);
+    --accent-primary: oklch(0.58 0.16 10);
+    --accent-secondary: oklch(0.68 0.12 55);
+    --accent-soft: oklch(0.72 0.08 15);
+    --highlight: oklch(0.82 0.14 85);
+    --teal-subtle: oklch(0.58 0.06 195);
+    --plum-muted: oklch(0.50 0.08 340);
+    --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 2rem);
+    --space-lg: clamp(2rem, 6vw, 5rem);
+    --space-xl: clamp(3rem, 10vw, 8rem);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--bg-warm);
+    color: var(--ink);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.82 0.06 15 / 0.18), transparent),
+                radial-gradient(ellipse 50% 50% at 85% 30%, oklch(0.75 0.10 25 / 0.10), transparent),
+                radial-gradient(ellipse 60% 40% at 15% 70%, oklch(0.68 0.12 55 / 0.08), transparent),
+                var(--bg-warm);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.012;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-sm) var(--space-md);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.93 0.006 85 / 0.92);
+    border-bottom: 1px solid oklch(0.7 0.008 80 / 0.15);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  nav.visible { transform: translateY(0); }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--accent-primary); z-index: 200;
+    width: 0; transition: width 0.1s linear;
+  }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--accent-primary); letter-spacing: 0.08em; text-shadow: 0 0 12px oklch(0.58 0.16 10 / 0.15); cursor: pointer; transition: color 0.25s; }
+  .nav-logo:hover { color: var(--accent-secondary); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid var(--ink-dim); color: var(--ink-light); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.25s; text-decoration: none;
+  }
+  .nav-back:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+  .nav-edit {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid var(--accent-primary); color: var(--accent-primary); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.25s;
+  }
+  .nav-edit:hover { background: var(--accent-primary); color: var(--bg-warm); }
+  .nav-edit.editing { background: var(--accent-primary); color: var(--bg-warm); }
+  .scene-block.editable { cursor: text; }
+  .scene-block.editable:hover { border-color: var(--accent-primary); }
+  .scene-block.editable:focus-within { border-color: var(--accent-primary); box-shadow: 0 0 0 2px oklch(0.58 0.16 10 / 0.15); }
+
+  /* === HERO === */
+  .script-hero {
+    min-height: 45vh;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
+    position: relative;
+    border-bottom: 1px solid oklch(0.7 0.008 80 / 0.15);
+  }
+  .script-hero::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(transparent, oklch(0.58 0.12 15 / 0.06));
+    pointer-events: none;
+  }
+  .script-hero-content { max-width: 900px; margin-left: clamp(0rem, 5vw, 6rem); position: relative; z-index: 1; }
+  .script-eyebrow { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--accent-secondary); text-transform: uppercase; margin-bottom: var(--space-sm); display: flex; align-items: center; gap: 0.8em; }
+  .script-eyebrow::before { content: ''; width: 2.5em; height: 1px; background: var(--accent-primary); display: block; }
+  .script-hero h1 {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    color: var(--accent-primary);
+    text-shadow: 2px 2px 0 var(--accent-soft);
+    margin-bottom: var(--space-sm);
+  }
+  .script-hero .subtitle {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: var(--teal-subtle);
+    letter-spacing: 0.08em;
+    text-shadow: -1px 1px 0 var(--plum-muted);
+  }
+  .script-meta {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .script-meta span { display: flex; align-items: center; gap: 0.5em; }
+  .script-meta span::before { content: ''; width: 6px; height: 6px; background: var(--accent-primary); display: block; }
+
+  /* === SCRIPT BODY === */
+  .script-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md) var(--space-xl);
+  }
+
+  .scene-block {
+    margin-bottom: var(--space-xl);
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .scene-block.visible { opacity: 1; transform: translateY(0); }
+
+  .scene-number {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--accent-secondary);
+    position: absolute;
+    left: -3em;
+    top: 0.2em;
+    text-align: right;
+    width: 2em;
+  }
+
+  .slug {
+    color: var(--neon-yellow);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.9rem;
+    margin-bottom: 0.4em;
+    padding: 0.3em 0;
+    border-bottom: 1px solid oklch(1 0 0 / 0.05);
+    margin-top: 1.2em;
+  }
+
+  .action {
+    color: oklch(0.78 0.02 90);
+    display: block;
+    margin: 0.4em 0;
+    line-height: 1.8;
+  }
+
+  .character {
+    color: var(--blood);
+    font-weight: 700;
+    display: block;
+    margin-top: 0.8em;
+    padding-left: 40%;
+    font-family: 'ZCOOL XiaoWei', serif;
+    letter-spacing: 0.06em;
+  }
+
+  .dialogue {
+    color: var(--ink);
+    display: block;
+    padding-left: 25%;
+    margin-bottom: 0.3em;
+    line-height: 1.7;
+  }
+
+  .paren {
+    color: oklch(0.55 0.01 100);
+    font-style: italic;
+    display: block;
+    padding-left: 30%;
+    font-size: 0.9em;
+    margin: 0.2em 0;
+  }
+
+  .transition {
+    color: var(--cyan-shock);
+    text-transform: uppercase;
+    text-align: right;
+    display: block;
+    margin: 1em 0;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-family: 'ZCOOL XiaoWei', serif;
+  }
+
+  .note {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    font-style: italic;
+    padding: var(--space-sm) var(--space-md);
+    border-left: 3px solid var(--blood);
+    margin: var(--space-md) 0;
+    background: oklch(0.15 0.01 260 / 0.6);
+  }
+
+  .act-break {
+    text-align: center;
+    padding: var(--space-lg) 0;
+    position: relative;
+  }
+  .act-break span {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2.5rem;
+    color: var(--blood);
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 var(--magenta);
+  }
+  .act-break::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--blood);
+    margin: 0 auto var(--space-sm);
+  }
+
+  /* === SCENE DIVIDER === */
+  .scene-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+    opacity: 0.3;
+  }
+  .scene-divider::before, .scene-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blood), transparent);
+  }
+  .scene-divider span {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--blood);
+  }
+
+  /* === FOOTER === */
+  .script-footer {
+    text-align: center;
+    padding: var(--space-xl) var(--space-md);
+    border-top: 1px solid oklch(1 0 0 / 0.06);
+    background: oklch(0.14 0.012 260 / 0.5);
+  }
+  .script-footer p {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--cyan-shock);
+    text-shadow: -2px 2px 0 var(--magenta);
+  }
+  .script-footer .btn-back {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.9rem;
+    padding: 0.7em 2em;
+    border: 1.5px solid var(--blood);
+    color: var(--blood);
+    background: transparent;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+  }
+  .script-footer .btn-back:hover {
+    background: var(--blood);
+    color: var(--bone);
+  }
+
+  /* === TOOLBAR (scroll progress) === */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blood), var(--neon-yellow));
+    z-index: 101;
+    transition: width 0.1s linear;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .script-hero-content { margin-left: 0; }
+    .script-hero h1 { font-size: clamp(2rem, 8vw, 3.5rem); }
+    .script-body { padding: var(--space-lg) var(--space-sm); }
+    .character { padding-left: 25%; }
+    .dialogue { padding-left: 15%; }
+    .paren { padding-left: 18%; }
+    .scene-number { left: 0; position: relative; text-align: left; margin-bottom: 0.3em; display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav id="navbar">
+  <span class="nav-logo" onclick="window.location.href='index.html'">灰烬手稿</span>
+  <a class="nav-back" href="index.html">← 返回写作器</a>
+</nav>
+
+<section class="script-hero">
+  <div class="script-hero-content">
+    <p class="script-eyebrow">原创剧本全本 · 暗黑情感主义</p>
+    <h1>悬而未决</h1>
+    <p class="subtitle">The Unresolved</p>
+    <div class="script-meta">
+      <span>编剧 灰烬手稿</span>
+      <span>类型 情感/心理</span>
+      <span>2026</span>
+      <span>中国</span>
+    </div>
+  </div>
+</section>
+
+<section class="script-body">
+
+<!-- ===== 序幕 ===== -->
+<div class="scene-block" id="scene-01">
+  <span class="scene-number">01</span>
+
+  <span class="slug">内景 · 苏悬的公寓 — 深夜</span>
+
+  <span class="action">一间三十平米的一居室。灯没有开。电视也没有开。唯一的光源是手机屏幕——微信对话框，最后一条消息发自三天前，两个绿色的勾。没有回复。</span>
+
+  <span class="action">苏悬蜷在沙发上，四十二岁，保养得宜但眼神疲倦。她的嘴唇在微微翕动。</span>
+
+  <span class="action">仔细听。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（几乎听不见）</span>
+  <span class="dialogue">两千七百三十四、两千七百三十五、两千七百三十六……</span>
+
+  <span class="action">她在数数。已经数了很久。没有人知道她从什么时候开始数的，也没有人知道她打算数到什么时候。</span>
+
+  <div class="note">这是一个关于"计数"的故事。一个女孩被教会在等待中数数。她数了一辈子。现在，她还在数。</div>
+
+  <span class="transition">> 待续。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-02">
+  <span class="scene-number">02</span>
+
+  <span class="slug">外景 · 城市上空（航拍） — 同一夜</span>
+
+  <span class="action">从高空俯瞰这座城市。千万盏灯亮着。其中一盏灯下面，苏悬一个人坐着。镜头缓慢升高，那扇窗越来越小，最后混入无数扇一模一样的窗子里。</span>
+
+  <span class="character">苏悬（画外音）</span>
+  <span class="dialogue">我叫苏悬。悬而未决的"悬"。我妈说，这名字是怀我的时候翻字典随手取的。我爸说，翻到哪页就是哪页。他们都不知道，这个名字就是我的一生。</span>
+
+  <span class="action">夜空中没有星星。只有一架飞机的尾灯一闪一闪，像在数什么。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第一幕 ===== -->
+<div class="act-break"><span>第一幕</span></div>
+
+<div class="scene-block" id="scene-03">
+  <span class="scene-number">03</span>
+
+  <span class="slug">内景 · 苏家老宅客厅 — 下午 · 一九八八年</span>
+
+  <span class="action">五岁的苏悬坐在客厅地板上，面前摆了一排塑料玩具。窗外在下雨。客厅另一头，一扇卧室门紧闭。刚才里面有过争吵声。现在安静了。</span>
+
+  <span class="action">门开了。母亲拖着一个行李箱走出来。她化了妆，头发湿漉漉的。父亲跟在后面，表情像一堵墙。</span>
+
+  <span class="action">苏悬抬起头。她不太明白发生了什么，但本能地站起来。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">妈妈，你去哪里？</span>
+
+  <span class="action">母亲蹲下来。她的手放在苏悬肩膀上，但眼睛没有看苏悬，而是看着她身后某个点。</span>
+
+  <span class="character">母亲</span>
+  <span class="dialogue">小悬乖。妈妈出去一下。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">什么时候回来？</span>
+
+  <span class="action">母亲沉默了几秒。然后她伸出一根手指。</span>
+
+  <span class="character">母亲</span>
+  <span class="dialogue">你数到一百。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">数到一百——</span>
+
+  <span class="character">母亲</span>
+  <span class="dialogue">数到一百，妈妈就回来了。</span>
+
+  <span class="action">母亲站起来，拉起行李箱，走出了门。门在身后关上时发出很轻的一声"咔嗒"。父亲站在原地，没有追。他慢慢蹲下来，蹲在苏悬面前。</span>
+
+  <span class="character">父亲</span>
+  <span class="paren">（很慢地）</span>
+  <span class="dialogue">数吧。</span>
+
+  <span class="action">苏悬看着父亲。然后她开始数。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">一、二、三、四……</span>
+
+  <span class="action">镜头缓慢后退，穿过门，穿过走廊，停在雨中的街道上。雨声淹没了数数的声音。但那声音还在——一直持续到画面全黑。</span>
+
+  <span class="action">母亲没有回来。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-04">
+  <span class="scene-number">04</span>
+
+  <span class="slug">内景 · 小学教室 — 上午 · 一九九三年</span>
+
+  <span class="action">十岁的苏悬坐在第一排。她是全班举手最快的学生。每次老师提问，她的手像弹簧一样弹起来。有时候问题还没问完。</span>
+
+  <span class="action">黑板上写着：今天值日生——苏悬。这已经是本周第四次了。是她自己主动申请的。</span>
+
+  <span class="character">老师</span>
+  <span class="dialogue">苏悬，这次又是你？你不用每次都——</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（笑着摇头）</span>
+  <span class="dialogue">我喜欢擦黑板。</span>
+
+  <span class="action">放学后，教室里只剩她一个人。她站在凳子上擦黑板的最上面。粉笔灰落下来，落在她头发上。</span>
+
+  <span class="action">黑板擦到一半，她的手停了。嘴唇又开始动了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（几乎听不见）</span>
+  <span class="dialogue">一万六千五百二十……一万六千五百二十一……</span>
+
+  <span class="action">教室空了。黑板擦干净了。她又拿起扫帚开始扫地。扫到一个座位时停了一下——那是她同桌的座位。同桌今天请假了，没有人告诉她为什么。她站在那里，对自己说了一句很小的话。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">如果我把他的位置也擦干净，他会回来吗。</span>
+
+  <span class="action">她擦干净了。第二天同桌回来了。和往常一样，没有多看她一眼。苏悬心里默默地把这个小事记作了"因果关系成立"的案例。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-05">
+  <span class="scene-number">05</span>
+
+  <span class="slug">外景 · 中学校园 · 樱花树下 — 下午 · 一九九八年</span>
+
+  <span class="action">十六岁的苏悬站在樱花树下。花瓣不停地落。她面前站着一个戴眼镜的男孩，穿着和她同一所高中的校服，耳朵红得像烫伤。</span>
+
+  <span class="action">苏悬手里攥着一张折了四折的信纸。信纸被她手心的汗浸得半透明。</span>
+
+  <span class="character">男孩</span>
+  <span class="paren">（不敢看她）</span>
+  <span class="dialogue">苏悬，你……挺好的。但是——但是我喜欢的不是你这样的。</span>
+
+  <span class="action">苏悬笑了一下。那个笑容非常标准，像练习过很多次。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">没关系的。我懂的。谢谢你告诉我。</span>
+
+  <span class="action">男孩如释重负地走了。苏悬站在樱花树下，手里还攥着那封信。她把信慢慢展开，看了一眼自己写的第一行——「你好。我想认识你很久了」——然后把信叠好，放回口袋。</span>
+
+  <span class="action">她的嘴唇又开始动了。</span>
+
+  <span class="action">一万八千——后面的数字被风吹散了。</span>
+
+  <span class="action">花瓣落在她肩膀上。她没有抖掉。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第二幕 ===== -->
+<div class="act-break"><span>第二幕</span></div>
+
+<div class="scene-block" id="scene-06">
+  <span class="scene-number">06</span>
+
+  <span class="slug">内景 · 大学宿舍 — 深夜 · 二零零三年</span>
+
+  <span class="action">二十一岁的苏悬坐在上铺，手机放在膝盖上，屏幕亮着。短信草稿箱里有一条编辑了半小时的消息：「今天食堂的糖醋排骨很好吃，你吃了吗？」</span>
+
+  <span class="action">收件人是一个叫"陈栩"的名字。下面是苏悬改过十七遍的措辞。她最后删掉了所有内容，只留下一个"嗯"字。发送。</span>
+
+  <span class="action">对面秒回：「。？」</span>
+
+  <span class="action">苏悬盯着那个问号看了很久。然后她开始打字——「没什么，发错了。」——发送。</span>
+
+  <span class="action">手机屏幕暗了。她又按亮。又暗了。又按亮。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（自言自语）</span>
+  <span class="dialogue">他没问错。我是发错了。我发错了。</span>
+
+  <span class="action">对面下铺的室友翻了个身。</span>
+
+  <span class="character">室友</span>
+  <span class="paren">（迷迷糊糊）</span>
+  <span class="dialogue">苏悬你怎么还不睡……</span>
+
+  <span class="action">苏悬没有回答。她把手机压在枕头下面，闭上眼。</span>
+
+  <span class="action">她的嘴唇在动。在黑暗中，像鱼在吐气泡。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-07">
+  <span class="scene-number">07</span>
+
+  <span class="slug">内景 · 广告公司办公室 — 深夜 · 二零一一年</span>
+
+  <span class="action">二十九岁。苏悬趴在工位上，面前是第三版被总监毙掉的方案。办公室里只剩她一个人。天花板上的日光灯管一明一暗地闪。她没有抬头去修。</span>
+
+  <span class="action">手机震动。她飞快地拿起来——是运营商发来的话费提醒。她放下手机，继续改方案。</span>
+
+  <span class="action">手机又震动。她又拿起来——是天气预报。她又放下。</span>
+
+  <span class="action">手机再次震动。她已经不看了。手指继续敲键盘，屏幕上打出来的字连成了一行没有标点的长句。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（一边打字一边念）</span>
+  <span class="dialogue">没关系我不累我今晚可以改完不需要别人帮忙我一个人可以的真的没关系——</span>
+
+  <span class="action">她停住。删掉了后半段。只留下"没关系"三个字。</span>
+
+  <span class="action">日光灯管终于彻底灭了。黑暗里只剩屏幕的光。她的嘴唇又在动。但这一次，她念出了声。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">三十二万一千四百一十六。</span>
+
+  <span class="action">她把灯关了。摸黑走出了办公室。</span>
+
+  <span class="transition">> 切至。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-08">
+  <span class="scene-number">08</span>
+
+  <span class="slug">内景 · 婚礼宴会厅 — 下午 · 二零一七年</span>
+
+  <span class="action">三十五岁。高中同学聚会加婚礼。苏悬坐在角落里，同桌的同学都在聊育儿经和学区房。她不时点头微笑，但一句话也插不上。</span>
+
+  <span class="action">新娘开始扔捧花。所有未婚女性被推到台前。苏悬站在最边上，半侧着身子，随时准备退回去。</span>
+
+  <span class="action">捧花飞过来。在空中划了一个很高的弧线。苏悬下意识举起手——</span>
+
+  <span class="action">捧花落到她身后一个穿粉色连衣裙的女孩手里。全场尖叫。苏悬的手还举在半空中。</span>
+
+  <span class="character">同学甲</span>
+  <span class="paren">（小声对同学乙）</span>
+  <span class="dialogue">苏悬还没结婚？</span>
+
+  <span class="character">同学乙</span>
+  <span class="paren">（更小声）</span>
+  <span class="dialogue">好像连恋爱都没怎么谈。挺奇怪的，长得也不差啊。</span>
+
+  <span class="action">苏悬听见了。她把手放下来，理了理头发，笑了。那个笑容和樱花树下十六岁时一模一样。</span>
+
+  <span class="action">她的嘴唇动了。没有人注意。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-09">
+  <span class="scene-number">09</span>
+
+  <span class="slug">内景 · 高级日料餐厅 — 晚上 · 二零一九年</span>
+
+  <span class="action">三十七岁。商务饭局。苏悬被安排坐在一位客户旁边——周远成，四十五岁，某地产集团副总裁，戴无框眼镜，说话声音很低但所有人都安静下来听。已婚，有两个孩子。这一点秘书提前告知过她。</span>
+
+  <span class="action">席间，周远成给她倒了一杯清酒。手指碰到了她的手腕。没有收回去。</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">苏小姐看起来不像做这行的。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">那我像做什么的？</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">像一直在等什么的人。</span>
+
+  <span class="action">苏悬没有接话。但她也没有把手抽走。清酒在杯子里微微晃动，因为她的手在发抖。</span>
+
+  <span class="action">饭局结束，周远成提出送她。在车上，他说了那句她后来反复回想过几十遍的话。</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">我结婚十几年了。和她没什么可说的。但她身体不好。孩子还在上初中。再给我一点时间。</span>
+
+  <span class="action">苏悬看着车窗外。雨刷一下一下。像在数数。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（没有回头）</span>
+  <span class="dialogue">多久？</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">不会太久。</span>
+
+  <span class="action">她开始数。从一数到六十。雨刷在六十下之后停了。雨也停了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">好。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-10">
+  <span class="scene-number">10</span>
+
+  <span class="slug">内景 · 酒店房间 — 凌晨 · 二零二零年</span>
+
+  <span class="action">三十八岁。凌晨三点。周远成的手机响了。他侧过身，背对苏悬，压低声音接电话。</span>
+
+  <span class="character">周远成</span>
+  <span class="paren">（小声）</span>
+  <span class="dialogue">嗯……加班。对。你先睡。别等我。</span>
+
+  <span class="action">挂了电话之后，他躺回来，手搭在苏悬腰上。她没有动。眼睛睁着。天花板上有一个很小的水渍，形状像一只鸟。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">你女儿多大了？</span>
+
+  <span class="action">沉默。周远成的手从她腰上移开了。</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">苏悬。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">我没别的意思。我就是想知道。</span>
+
+  <span class="character">周远成</span>
+  <span class="paren">（叹气）</span>
+  <span class="dialogue">十二。明年小升初。等她考完试——</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">等他考完试。然后中考。然后高考。然后大学毕业。然后结婚——</span>
+
+  <span class="character">周远成</span>
+  <span class="paren">（打断）</span>
+  <span class="dialogue">你能不能不要这样？我答应你了就一定会做到。</span>
+
+  <span class="action">苏悬没有再说。她闭上眼睛。心里默默地数。在数到某个数字的瞬间她突然意识到：她不是不知道答案。她只是不敢停下来。因为一停下来，就没有理由继续等了。</span>
+
+  <span class="transition">> 切至。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第三幕 ===== -->
+<div class="act-break"><span>第三幕</span></div>
+
+<div class="scene-block" id="scene-11">
+  <span class="scene-number">11</span>
+
+  <span class="slug">内景 · 苏悬公寓 — 傍晚 · 二零二一年</span>
+
+  <span class="action">三十九岁。周远成已经有三个月没来了。每次微信回复不超过五个字。最近一条是：「忙，回头说。」</span>
+
+  <span class="action">苏悬坐在窗边。手机屏幕亮着——是周远成和他太太在某个慈善晚宴上的合影，朋友圈里一个共同好友发的。他太太挽着他的手臂，他在笑。</span>
+
+  <span class="action">苏悬看了很久。然后把手机翻过去，屏幕朝下。</span>
+
+  <span class="action">有人敲门。她没有动。敲门声停了，钥匙转动的声音。门开了。是何知远。</span>
+
+  <span class="action">何知远——苏悬大学时期的学长，断联多年的老朋友。他手里提着一个塑料袋，里面是两盒药和一碗粥。他的脸上有一种很复杂的表情，一半是心疼，一半是距离。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">你发烧了朋友圈还发"没事"，你什么毛病。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（有点意外）</span>
+  <span class="dialogue">你怎么有我家钥匙……</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">上次帮你喂猫的时候多配了一把。</span>
+
+  <span class="action">苏悬看着他。何知远避开了她的视线，把粥放在桌上，开始找碗。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">何知远。</span>
+
+  <span class="character">何知远</span>
+  <span class="paren">（没有回头）</span>
+  <span class="dialogue">嗯。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">你每次出现，我都以为这次是真的。</span>
+
+  <span class="action">何知远的手停了。他站在厨房里，背对着她。很久。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">先把粥喝了。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-12">
+  <span class="scene-number">12</span>
+
+  <span class="slug">外景 · 城市天桥 — 深夜 · 二零二一年</span>
+
+  <span class="action">苏悬和何知远走在天桥上。远处是高架桥上车流的灯光，像一条缓慢移动的熔岩河。</span>
+
+  <span class="action">他们之间隔着大约半个人的距离。这个距离从大学起就没有变过。</span>
+
+  <span class="character">何知远</span>
+  <span class="paren">（忽然）</span>
+  <span class="dialogue">我有时候想，如果当年我先开口——</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（打断）</span>
+  <span class="dialogue">别说了。你每次说这种话，之后就会消失三个月。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">……</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">去年你说"等我处理好手头的事"。前年你说"我们需要好好谈一次"。大前年你说"给我一点时间整理自己"。何知远，你到底在整理什么？</span>
+
+  <span class="action">何知远靠着栏杆，看着桥下的车流。他的侧面被红色尾灯映得忽明忽暗。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">我不知道。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（轻声）</span>
+  <span class="dialogue">你知道吗。我一直在数。从五岁开始。我数了三十多年了。我数到过那么多次——每次以为快要数完了，结果只是翻了一页，继续数。你每次回来，我就重新开始数。你每次走，我就从你走的那一秒接着数。</span>
+
+  <span class="action">何知远转过头看她。但苏悬已经转过身，往下桥的方向走。她的嘴唇还在动。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-13">
+  <span class="scene-number">13</span>
+
+  <span class="slug">外景 · 郊区 · 废弃天文台 — 黄昏 · 二零二二年</span>
+
+  <span class="action">四十岁。一座废弃的天文台。生锈的穹顶半开着，像一只睁不开的眼睛。苏悬站在穹顶下面，旁边是一个男人——宋野。摄影师，四十出头，穿一件看不出原来颜色的冲锋衣，胡子三天没刮，笑起来的时候眼睛眯成两条缝。</span>
+
+  <span class="action">他们是三个月前在一场展览上认识的。宋野拍了一组"废墟"系列，苏悬在同一家画廊做策展助理。他说「后面还有更好的废墟，你要不要一起来拍」。她请了年假。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（调试三脚架）</span>
+  <span class="dialogue">你站在那个位置不要动。光快没了。再给我三十秒。</span>
+
+  <span class="action">苏悬站着不动。夕阳从穹顶的裂缝射进来，在她身上画了一道金色的线。</span>
+
+  <span class="action">宋野按下快门。咔嚓。然后又按了一下。咔嚓。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（看着相机屏幕）</span>
+  <span class="dialogue">操。好看。真的好看。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（笑）</span>
+  <span class="dialogue">你是说我好看还是光好看？</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（没抬头）</span>
+  <span class="dialogue">都有。但光是留不住的。你是真的。至少现在是。</span>
+
+  <span class="action">苏悬的笑容僵了半秒。她听出了"至少现在是"这个限定词。但她没有追问。她太擅长不追问了。</span>
+
+  <span class="action">宋野放下相机，走过来。他站在她面前，很近。近到她能闻到他身上混合着烟味、汗味和某种洗不掉的显影液味道。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（很认真）</span>
+  <span class="dialogue">苏悬。我先说清楚。我不结婚。我不是针对你。我对所有人都是这句话。如果这个你不能接受——</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">我能。</span>
+
+  <span class="action">她说得太快了。快到她自己都愣了一下。快到宋野正在说的话还没结束。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（顿了一下）</span>
+  <span class="dialogue">你听完了吗？</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">不用听完。我懂的。</span>
+
+  <span class="action">夕阳从穹顶彻底消失了。整个空间陷入一种很深的蓝。苏悬的嘴唇又开始动了。宋野没有发现。他在收三脚架。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-14">
+  <span class="scene-number">14</span>
+
+  <span class="slug">内景 · 苏悬公寓 — 清晨 · 二零二二年</span>
+
+  <span class="action">天刚亮。宋野在收拾行李——一个大号登山包。苏悬穿着他的衬衫坐在床边，看着他往包里塞镜头、充电器、几件卷成一团的T恤。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（头也不抬）</span>
+  <span class="dialogue">西藏那边有个拍摄项目，大概四个月。也可能半年。信号可能不好。我尽量给你发消息。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">"尽量"。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（拉上背包拉链）</span>
+  <span class="dialogue">对。"尽量"。我不喜欢承诺做不到的事情。</span>
+
+  <span class="action">苏悬走过去。她从他背后抱住他。手臂环着他的腰。她没有用力，好像怕把他勒碎了。</span>
+
+  <span class="character">宋野</span>
+  <span class="paren">（没有转身）</span>
+  <span class="dialogue">苏悬。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">我知道。你没承诺过任何事。是我自己选的。</span>
+
+  <span class="action">宋野转身。他看了她一会儿。然后他从背包侧袋里掏出一个信封。</span>
+
+  <span class="character">宋野</span>
+  <span class="dialogue">给你的。到了再看。</span>
+
+  <span class="action">苏悬接过信封。宋野背起包，走到门口。他回头看了她一眼。那个眼神不像告别。像存档——他知道她会在这里等他，不管他回不回来。</span>
+
+  <span class="action">门关上了。苏悬打开信封。里面是一张照片——在那座废弃天文台，她站在裂缝的光里。照片背面写了两行字：</span>
+
+  <span class="action">"你是真的。但我不配拥有真的东西。对不起。</span>
+
+  <span class="action">苏悬把照片翻过来。她看着照片里那个站在光里的自己。嘴唇又开始动了。</span>
+
+  <span class="transition">> 切至。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-15">
+  <span class="scene-number">15</span>
+
+  <span class="slug">内景 · 周远成办公室 — 下午 · 二零二三年</span>
+
+  <span class="action">四十一岁。三个男人的关系同时存在于苏悬的生活中，像三条纠缠在一起的电线。周远成偶尔发来"想你"。何知远每隔几周出现一次，带一碗粥。宋野在西藏发来一些没有文字的照片。</span>
+
+  <span class="action">今天她在周远成办公室。她是来签合同的——工作上无法切割的那条线。合同签完，周远成把笔放下，摘下眼镜，揉着眼角。</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">她查到了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">……什么？</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">我太太。她查到了我们的事。我不知道她怎么查到的。可能是酒店的消费记录。</span>
+
+  <span class="action">苏悬没有说话。她的手放在膝盖上，十指交叉，攥得很紧。</span>
+
+  <span class="character">周远成</span>
+  <span class="dialogue">苏悬。我知道这些年你等了很久。但我——</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">但你不会离婚。对吗。你从来没有打算离婚。</span>
+
+  <span class="action">办公室里非常安静。墙上有一个钟，秒针每走一格就发出很小的"咔"声。</span>
+
+  <span class="character">周远成</span>
+  <span class="paren">（很慢地）</span>
+  <span class="dialogue">我没说不会。我只是——</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">只是需要时间。你还需要多少时间？一年？五年？到你女儿结婚？到她生了孩子？到你退休？到——</span>
+
+  <span class="action">她停住了。因为她发现自己又在数。心里的那个数字已经很大了，大到她自己都有点害怕。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（站起来）</span>
+  <span class="dialogue">你当年在车上说"不会太久"。你知道当时我数了多少下吗。六十下。我数到六十的时候雨停了。我以为那是某种征兆。我以为——算了。</span>
+
+  <span class="action">她走到门口。回头。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">周远成。你太太查到的不是我。是你不想回家。</span>
+
+  <span class="transition">> 切至。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-16">
+  <span class="scene-number">16</span>
+
+  <span class="slug">外景 · 江边步道 — 深夜 · 二零二三年</span>
+
+  <span class="action">苏悬一个人坐在江边长椅上。何知远不知什么时候出现在她旁边。他没有坐下，只是站在长椅旁边。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（没有抬头）</span>
+  <span class="dialogue">你怎么知道我在这里。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">你每次心情不好就来这里。大学到现在，没变过。</span>
+
+  <span class="action">沉默。江面上有驳船驶过，汽笛声音很低。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">苏悬。我有个问题想问你很久了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">问。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">你爱过我吗。</span>
+
+  <span class="action">苏悬终于抬头看他。何知远的表情是她从未见过的——不是若无其事的距离，不是小心翼翼的内疚。是很纯粹的困惑。像一个解了很多年没解出来的数学题。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">我一直——</span>
+
+  <span class="action">她停了。</span>
+
+  <span class="action">因为她忽然发现，她不知道答案。她不知道自己是不是爱何知远，还是只是爱"有人在身边"这件事。她从五岁开始等妈妈回来。之后的一生，她都在等。等人的习惯已经长在了骨头里，和爱长在了一起，分不出来了。</span>
+
+  <span class="character">何知远</span>
+  <span class="paren">（等了很久）</span>
+  <span class="dialogue">你"一直"什么。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（轻声）</span>
+  <span class="dialogue">我一直——在数。何知远。我从妈妈走的那天开始数。数到现在。我自己都不知道那个数字是多少了。我只知道它一直在涨。从来没有停过。从来没有。</span>
+
+  <span class="action">何知远在她旁边坐下。他把手放在长椅的扶手上，离她的手很近。但没有碰。</span>
+
+  <span class="character">何知远</span>
+  <span class="dialogue">你知道吗。我每次走，不是因为你不够好。是因为你太好了。好到让我害怕。你这么好的人，等了我这么久的人——我不知道我能拿什么还你。</span>
+
+  <span class="action">苏悬把手从扶手上移开了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">你不用还。你走吧。下次来的时候带粥就行了。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-17">
+  <span class="scene-number">17</span>
+
+  <span class="slug">内景 · 苏悬公寓 — 凌晨 · 二零二四年</span>
+
+  <span class="action">四十二岁。苏悬一个人坐在客厅中央。手机放在茶几上。三个对话框。</span>
+
+  <span class="action">周远成：「最近家里事情比较多，我们暂时不要联系了。等风头过了我找你。」</span>
+
+  <span class="action">宋野：「纳木错的星空太他妈漂亮了。你要是在就好了。」——发信时间：三个月前。</span>
+
+  <span class="action">何知远：没有消息。最后一条是上一周他发来的：「我在看房子。一个人住的那种。突然觉得好像也不需要太大。」</span>
+
+  <span class="action">她三个对话框都打开着，但一个也没有回复。</span>
+
+  <span class="action">她开始数。不是在心里数。是念出声音来。像五岁的那个雨天。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（非常清晰地）</span>
+  <span class="dialogue">一、二、三、四、五、六、七——</span>
+
+  <span class="action">她的声音开始发抖。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">——八、九、十、十一、十二——</span>
+
+  <span class="action">眼泪开始往下掉。她没有擦。声音越来越响。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">——二十六、二十七、二十八——</span>
+
+  <span class="action">她数得越来越快。像要赶紧数完什么。像数完之后就会有人推门进来。像她只有五岁，妈妈刚关上门，雨还在下，她相信数到一百一切都会好的。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">——八十九、九十、九十一、九十二——</span>
+
+  <span class="action">她的声音已经不像自己的了。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">——九十七。九十八。九十九。</span>
+
+  <span class="action">她停住了。</span>
+
+  <span class="action">整整十几秒没有声音。整间公寓静得像一个屏住呼吸的肺。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（很轻地）</span>
+  <span class="dialogue">……一百。</span>
+
+  <span class="action">门没有开。没有人回来。电话没有响。什么都没有发生。</span>
+
+  <span class="action">苏悬坐在黑暗里。她的手慢慢松开了——从五岁起，她第一次没有攥着任何东西。她的手心是空的。</span>
+
+  <span class="transition">> 静默十秒。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第四幕 ===== -->
+<div class="act-break"><span>终幕</span></div>
+
+<div class="scene-block" id="scene-18">
+  <span class="scene-number">18</span>
+
+  <span class="slug">内景 · 心理咨询室 — 上午 · 二零二四年</span>
+
+  <span class="action">一间简洁的咨询室。窗台上放着一盆绿萝。阳光很好，绿萝的影子投在白墙上。</span>
+
+  <span class="action">苏悬坐在一张米色沙发上，对面是一位五十多岁的女性心理咨询师。这是她第六次来。</span>
+
+  <span class="character">咨询师</span>
+  <span class="dialogue">苏悬，上次我们聊到你五岁那年，母亲离开的那个下午。你说你一直在数数。现在还在数吗。</span>
+
+  <span class="action">苏悬看着窗台上的绿萝。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">前两天我数到了一百。</span>
+
+  <span class="character">咨询师</span>
+  <span class="dialogue">然后呢？</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（很轻地）</span>
+  <span class="dialogue">然后我就不数了。</span>
+
+  <span class="character">咨询师</span>
+  <span class="dialogue">什么感觉？</span>
+
+  <span class="action">苏悬想了很久。她低头看着自己的手。手心朝上，手指微微弯曲，像在接什么从天而降的东西。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">空的。</span>
+
+  <span class="character">咨询师</span>
+  <span class="dialogue">空的是什么感觉。</span>
+
+  <span class="character">苏悬</span>
+  <span class="dialogue">不坏。</span>
+
+  <span class="action">她抬起头，笑了一下。这个笑和她之前所有的笑都不一样。它不标准。不讨好。不试图让任何人感到舒服。只是一个笑而已。</span>
+
+  <span class="transition">> 切至。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-19">
+  <span class="scene-number">19</span>
+
+  <span class="slug">外景 · 苏悬公寓楼下 · 邮局 — 上午 · 二零二四年</span>
+
+  <span class="action">街角的邮局。苏悬填了三张单子。她把三样东西分别放进了三个信封。</span>
+
+  <span class="action">第一个信封——给周远成的。里面是空的。什么都没有。只在信封背面写了一行字：不用等风头过了。风不会过的。因为根本没有风。</span>
+
+  <span class="action">第二个信封——给宋野的。里面是那张废弃天文台的照片——她站在裂缝的光里。她把照片翻过来，在自己脸上画了一只鸟。鸟从她的肩膀飞出去，飞出了照片边缘。</span>
+
+  <span class="action">第三个信封——给何知远的。里面是一把钥匙。她家门的钥匙。背面写了两个字：留着。然后在"留着"下面又加了三个字：或者扔了。</span>
+
+  <span class="action">她把三个信封依次投进邮筒。投完之后，她站在邮筒前面停了一会儿。</span>
+
+  <span class="action">然后她往家的方向走。走了几步，又停下来。</span>
+
+  <span class="action">因为她发现自己的嘴唇没有在动。</span>
+
+  <span class="character">苏悬</span>
+  <span class="paren">（对自己说）</span>
+  <span class="dialogue">哦。停了。</span>
+
+  <span class="transition">> 淡出至白。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-20">
+  <span class="scene-number">20</span>
+
+  <span class="slug">外景 · 苏悬公寓天台 — 清晨 · 二零二四年</span>
+
+  <span class="action">天台上。苏悬站在护栏边。这里是整栋楼最高的地方。视野开阔。远处可以看见江，江上有桥，桥上有车，车里面的人不知道要去哪里。</span>
+
+  <span class="action">太阳慢慢升起来。城市从深蓝变成灰蓝，然后变成一种有点脏的金色。</span>
+
+  <span class="action">苏悬摊开双手。手心朝上。清晨的风从她指缝穿过去。她慢慢地把手指一根一根合拢——然后停下来。重新打开。这一次，她就这样开着，没有再合拢。</span>
+
+  <span class="character">苏悬（画外音）</span>
+  <span class="dialogue">小时候，我以为数到一百妈妈就会回来。后来我以为等到一个人就不会再数了。再后来我以为，三个里面总会有一个是真的。但其实，我不是在等他们。</span>
+
+  <span class="action">风把她的头发吹起来。</span>
+
+  <span class="character">苏悬（画外音）</span>
+  <span class="dialogue">我只是害怕停下来。因为停下来，就要面对一个事实——没有什么好等的。从来没有什么好等的。</span>
+
+  <span class="action">她张开的手在风里微微颤抖。不是因为冷。是因为第一次什么也没有攥着。</span>
+
+  <span class="character">苏悬（画外音）</span>
+  <span class="dialogue">但空着也挺好的。空着——就可以接别的东西。</span>
+
+  <span class="action">太阳完全升起来了。光打在她脸上。她的脸很老了，但眼睛是年轻的。和五岁那年第一次开始数的时候一模一样。</span>
+
+  <span class="action">远处传来教堂的钟声。一声。两声。三声——</span>
+
+  <span class="action">苏悬闭上眼睛，但没有数。</span>
+
+  <span class="transition">> 淡出。</span>
+
+  <div class="note">
+    悬而未决的意思是：悬着，但不再等它落下来。<br>
+    从五岁到四十二岁的计数终于归零。不是数完了——是不需要再数了。<br>
+    手掌最后是空着的。不是因为没有人放东西进去。<br>
+    是因为她终于可以什么也不攥了。<br><br>
+    全剧终。
+  </div>
+</div>
+
+</section>
+
+<section class="script-footer">
+  <p>悬而未决的，终会落地。</p>
+  <button class="btn-back" onclick="window.location.href='index.html'">返回写作器</button>
+</section>
+
+<script>
+/* === PAGE LOAD === */
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+});
+
+/* === NAV SCROLL === */
+let navShown = false;
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 300 && !navShown) { nav.classList.add('visible'); navShown = true; }
+  if (window.scrollY <= 300 && navShown) { nav.classList.remove('visible'); navShown = false; }
+
+  // Progress bar
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+}, { passive: true });
+
+/* === SCENE REVEAL === */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.scene-block').forEach(el => observer.observe(el));
+document.querySelectorAll('.act-break').forEach(el => observer.observe(el));
+</script>
+
+<script>
+let isEditing = false;
+const STORAGE_KEY = 'suspense_script_content';
+
+function toggleEdit() {
+  isEditing = !isEditing;
+  const btn = document.getElementById('editToggle');
+  const blocks = document.querySelectorAll('.scene-block');
+  
+  if (isEditing) {
+    btn.textContent = '保存';
+    btn.classList.add('editing');
+    loadSavedContent();
+    blocks.forEach(b => { b.contentEditable = 'true'; b.classList.add('editable'); });
+  } else {
+    saveContent();
+    btn.textContent = '编辑';
+    btn.classList.remove('editing');
+    blocks.forEach(b => { b.contentEditable = 'false'; b.classList.remove('editable'); });
+  }
+}
+
+function saveContent() {
+  const blocks = document.querySelectorAll('.scene-block');
+  const data = [];
+  blocks.forEach((b, i) => {
+    data.push({ id: b.id || 'scene-' + i, html: b.innerHTML });
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadSavedContent() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    const blocks = document.querySelectorAll('.scene-block');
+    data.forEach((item, i) => {
+      if (blocks[i]) blocks[i].innerHTML = item.html;
+    });
+  } catch(e) {}
+}
+
+// Auto-save on input (debounced)
+let saveTimer;
+document.addEventListener('input', function(e) {
+  if (!isEditing) return;
+  if (!e.target.closest('.scene-block')) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveContent, 800);
+});
+
+// Nav visibility on scroll
+let lastScrollY = 0;
+window.addEventListener('scroll', function() {
+  const nav = document.querySelector('nav');
+  const currentScrollY = window.scrollY;
+  if (currentScrollY > 200) {
+    nav.classList.add('visible');
+  } else {
+    nav.classList.remove('visible');
+  }
+  lastScrollY = currentScrollY;
+});
+
+// Progress bar
+window.addEventListener('scroll', function() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  const bar = document.getElementById('progressBar');
+  if (bar) bar.style.width = progress + '%';
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.body.classList.add('loaded');
+});
+</script>
+</body>
+</html>
