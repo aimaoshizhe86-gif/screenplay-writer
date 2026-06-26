@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>气氛渲染词典 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.12 0.014 260);
+    --ash: oklch(0.18 0.01 250);
+    --concrete: oklch(0.28 0.008 245);
+    --blood: oklch(0.38 0.22 25);
+    --neon-yellow: oklch(0.92 0.19 106);
+    --rust: oklch(0.52 0.17 55);
+    --bone: oklch(0.88 0.02 90);
+    --cyan-shock: oklch(0.75 0.16 195);
+    --magenta: oklch(0.58 0.25 350);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--ink);
+    color: var(--bone);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                var(--ink);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 3vw, 2rem);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.12 0.014 260 / 0.8);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.4rem, 2.5vw, 2rem); color: var(--neon-yellow); letter-spacing: 0.08em; text-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.3); cursor: pointer; }
+  .nav-logo:hover { color: var(--blood); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; padding: 0.5em 1.4em;
+    border: 1.5px solid var(--blood); color: var(--blood); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; transition: all 0.25s;
+  }
+  .nav-back:hover { background: var(--blood); color: var(--bone); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 100px clamp(1rem, 3vw, 2rem) 4rem; }
+
+  .page-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--neon-yellow);
+    text-shadow: 2px 2px 0 var(--blood);
+    margin-bottom: 0.3em;
+    text-align: center;
+  }
+  .page-subtitle {
+    text-align: center;
+    color: oklch(0.55 0.01 100);
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 3rem;
+    font-family: 'ZCOOL XiaoWei', serif;
+  }
+
+  /* Filter tabs */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .filter-btn {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    background: var(--ash); color: var(--bone); border: 1px solid oklch(1 0 0 / 0.12);
+    cursor: pointer; letter-spacing: 0.1em; transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+  .filter-btn.active { background: var(--blood); border-color: var(--blood); color: var(--bone); }
+
+  .category-section { margin-bottom: 3rem; }
+  .category-header {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid oklch(1 0 0 / 0.08);
+  }
+  .category-icon { font-size: 2rem; }
+  .category-name {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.4rem; letter-spacing: 0.08em;
+    color: var(--blood);
+  }
+  .category-desc {
+    font-size: 0.8rem; color: oklch(0.5 0.01 100); margin-left: auto;
+    font-family: 'ZCOOL XiaoWei', serif; letter-spacing: 0.05em;
+  }
+
+  .vocab-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px; background: oklch(1 0 0 / 0.04);
+  }
+  .vocab-card {
+    background: var(--ash); padding: 1.5rem;
+    transition: background 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .vocab-card:hover { background: oklch(0.2 0.01 250); transform: translateY(-2px); }
+  .vocab-word {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.2rem; color: var(--neon-yellow);
+    margin-bottom: 0.3em; letter-spacing: 0.05em;
+  }
+  .vocab-phrases { font-size: 0.82rem; color: oklch(0.65 0.01 100); line-height: 1.7; }
+  .vocab-phrases span {
+    display: inline-block; background: oklch(1 0 0 / 0.05);
+    padding: 0.15em 0.5em; margin: 0.15em 0.2em; border-radius: 2px;
+    color: oklch(0.7 0.01 100); font-size: 0.78rem;
+  }
+  .vocab-usage {
+    margin-top: 0.8em; font-size: 0.75rem; color: var(--rust);
+    font-style: italic; padding-left: 0.8em; border-left: 2px solid var(--blood);
+  }
+
+  .random-btn-wrap { text-align: center; margin: 3rem 0 2rem; }
+  .random-btn {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1rem; padding: 0.9em 2.4em;
+    background: var(--neon-yellow); color: var(--ink); border: none; cursor: pointer;
+    letter-spacing: 0.15em; font-weight: 700;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    transition: all 0.2s;
+  }
+  .random-btn:hover { background: var(--blood); color: var(--bone); clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
+
+  .random-output {
+    max-width: 600px; margin: 0 auto 3rem; padding: 2rem;
+    background: var(--ash); border-left: 4px solid var(--blood);
+    display: none; text-align: center;
+  }
+  .random-output.visible { display: block; }
+  .random-output .rw { font-size: 1.5rem; color: var(--neon-yellow); font-family: 'ZCOOL XiaoWei', serif; margin-bottom: 0.5em; }
+  .random-output .rp { color: oklch(0.7 0.01 100); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.5em; }
+  .random-output .ru { color: var(--rust); font-size: 0.8rem; font-style: italic; }
+
+  .footer-note {
+    text-align: center; color: oklch(0.35 0.01 100); font-size: 0.7rem;
+    padding: 3rem 0 2rem; letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 768px) {
+    .vocab-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo" onclick="window.location.href='index.html'">灰烬手稿</span>
+  <button class="nav-back" onclick="window.location.href='index.html'">← 返回主页</button>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">气氛渲染词典</h1>
+  <p class="page-subtitle">纪实忧郁主义 · 感官词汇库 · 场景气氛建设手册</p>
+
+  <div class="filter-bar" id="filterBar"></div>
+
+  <div id="categories"></div>
+
+  <div class="random-btn-wrap">
+    <button class="random-btn" onclick="rollRandom()">🎲 随机抽取一条</button>
+  </div>
+  <div class="random-output" id="randomOutput">
+    <div class="rw" id="rw"></div>
+    <div class="rp" id="rp"></div>
+    <div class="ru" id="ru"></div>
+  </div>
+</div>
+
+<div class="footer-note">灰烬手稿 · 气氛渲染词典 · 持续扩充中</div>
+
+<script>
+const VOCAB = [
+  // ─── 压抑 / 窒息 ───
+  {cat:"压抑 / 窒息",icon:"🫁",desc:"气流凝固，胸腔被无形的力压扁",
+   entries:[
+    {word:"闷",phrases:["空气像凝固的琥珀","呼吸声清晰得刺耳","窗帘纹丝不动","吊扇吱嘎作响却不带来风","汗珠黏在皮肤上不滚落","每句话都被热气闷回喉咙"],usage:"'屋里闷得像被扣在玻璃罩下。'"},{word:"沉",phrases:["脚步像灌了铅","沉默有重量","天空低垂压住屋檐","雾霭如灰浆灌满街巷","空气里有水银的质感","光线堕入一口深井"],usage:"'那种沉默比任何怒吼都沉。'"},{word:"灰",phrases:["所有颜色被榨干只剩灰度","阳光穿不透的铅灰色","钢筋混凝土色天空","排泄物般的云层","霉斑爬满墙壁","灰尘在惨白的光里浮动"],usage:"'整个城市浸泡在灰泥浆里。'"},{word:"堵",phrases:["话堵在嗓子眼变成痰","烟囱不出烟","下水道反溅","喉咙里有团棉絮","鼻窦被不知名的黏液塞满","门框变形门关不上"],usage:"'她的话像碎砖块堵在排水管里。'"},
+   ]},
+  // ─── 恐惧 / 不安 ───
+  {cat:"恐惧 / 不安",icon:"🕯️",desc:"肾上腺素在血管里摩擦出静电",
+   entries:[
+    {word:"冷",phrases:["脊椎窜过一道冰流","后颈的汗毛根根立起","指尖发麻失去触觉","冷从脚底爬上来","后背贴着一块冰","打个寒噤牙齿咯咯作响"],usage:"'那股冷不是温度，是她脊梁里渗出来的。'"},{word:"缩",phrases:["瞳孔缩成针尖","肩膀本能地蜷","整个人往墙里退","声音压到只剩气声","脚步自动放轻","膝盖发软随时要软塌下去"],usage:"'他缩在门后，像一只被踩住尾巴的鼠。'"},{word:"颤",phrases:["牙关不受控制地磕碰","手指在发抖却停不下来","声音打着波浪线","膝盖互相撞击","眼前的画面在抖动","笔尖在纸上画出一道道锯齿"],usage:"'他的声带在抖，字是一个一个蹦出来的。'"},{word:"静",phrases:["静得能听见血液撞击耳膜","静得地下室水管里的气泡炸开都像枪响","心跳声在静中放大成鼓声","静到耳鸣","连呼吸都显得吵","空气里只有自己的脉搏"],usage:"'这屋子静得不像空的，像在等你出声才证明它有人。'"},
+   ]},
+  // ─── 孤独 / 疏离 ───
+  {cat:"孤独 / 疏离",icon:"🌫️",desc:"人群中的孤岛，世界在玻璃的另一面",
+   entries:[
+    {word:"空",phrases:["双人床上只有一个人形凹陷","饭桌上的另一只碗倒扣着","衣橱里空出半边","手机屏幕亮了又暗没有新消息","回音回答自己","房间里唯一在动的是尘埃"],usage:"'他的生活空到连回声都懒得回来。'"},{word:"隔",phrases:["像隔着脏玻璃看世界","对话变成字幕没人配声音","所有人都在笑但你不懂他们为什","电梯里肩并肩但眼神不交叉","朋友圈点赞是唯一的握手","嘴唇在动但声音到不了耳朵"],usage:"'他站在人群中，像一颗被拔掉天线的卫星。'"},{word:"锈",phrases:["水管里的铁腥味弥漫整个厨房","记忆像生锈的齿轮卡住转不动","爱情开始发出铜绿","书页发黄没人再翻","门锁生锈钥匙捅不进去","时间在慢慢腐蚀一切"],usage:"'那些话没说出来，就锈在了喉咙里。'"},{word:"困",phrases:["习惯性失眠盯着天花板数裂缝","凌晨三点醒着刷重复的短视频","闹钟响了第六遍","窗外天光从黑变灰你还没睡着","冰箱里的灯比街灯更熟悉","闭上眼电影开始重放"],usage:"'她困在自己的身体里，像困兽反复丈量笼子。'"},
+   ]},
+  // ─── 温暖 / 治愈 ───
+  {cat:"温暖 / 治愈",icon:"🍞",desc:"在废墟里捡到的火柴，点亮的一瞬间",
+   entries:[
+    {word:"烫",phrases:["刚烤好的面包掰开冒热气","掌心被一杯热茶捂暖","眼泪滚烫流过冰冷的脸","额头靠在一起温度融掉距离","火锅的蒸汽蒙住彼此的眼镜","热水冲在冻僵的脚趾上"],usage:"'那碗关东煮的汤汁烫到了舌根，也烫到了她很久没动过的柔软。'"},{word:"光",phrases:["晨光切过窗帘的薄纱","傍晚六点钟橘色的斜阳","一只萤火虫在废弃的储物间里找到出口","手电筒的光在废墟里慢慢抬高","焚烧后余烬里的火星","远方地平线上一条金线"],usage:"'窗外那缕光是灰的，但他盯着它，觉得它随时会变成金色。'"},{word:"软",phrases:["猫咪的肚皮贴在手臂上","旧毛衣领口磨得起毛但最舒服","下雨天窝进沙发的凹陷处","毛毯裹住刚哭完的人","枕头吸走最后一滴眼泪","阳光晒过的棉被味道"],usage:"'她把脸埋进他的旧卫衣里，像回到某种还没出生前的安全。'"},{word:"回",phrases:["熟悉的味道像一把钥匙打开记忆的锁","冰箱里永远会有的那瓶牛奶","脚步声在回家的石板路上响起","钥匙转动门锁的声音","窗台上那盆一直没枯的绿萝","妈妈说'回来了啊'"],usage:"'他回到这间破公寓，第一次觉得空气里少了点什么，后来发现是少了恐惧。'"},
+   ]},
+  // ─── 诡异 / 悬疑 ───
+  {cat:"诡异 / 悬疑",icon:"👁️",desc:"日常褶皱里的违和感，像图钉扎进脚底",
+   entries:[
+    {word:"歪",phrases:["门框轻微变形恰好在眼前晃","镜子里的人像慢了半拍","墙上的钟在逆时针走","照片里那个人没有看镜头而是看着你","楼梯多了有少了台阶的错觉","水龙头自己滴水滴出节奏"],usage:"'墙上那张人像画，他觉得它今天的位置比昨天偏了半度。'"},{word:"痕",phrases:["茶几上的水印怎么也擦不掉","地毯有一块颜色比周围深","天花板上的裂缝像地图上的国境线","墙里传来指甲刮过的声音","明明没人进来但椅子位置变了","镜面上的裂隙从中间蔓延开来"],usage:"'那条裂缝一直在，只是他今天才发现它比他来的时候长了三厘米。'"},{word:"似",phrases:["声音从管道里传上来像有人在唱歌但旋律不对","这间便利店似乎从昨晚开始就没有旅客进出过","反复看见同一辆空车停在同一个红灯前","手机收到一条备忘录里被删掉的提醒","天花板上的脚步声和心跳同步","电梯总在你到达之前就开好门"],usage:"'他说不清哪里不对，只觉得这座城市的复制粘贴里出现了叠影。'"},{word:"等",phrases:["楼道里的声控灯亮起以前没有人经过","厨房水槽里的倒影在你转头时保持静止","自动门为你开了但没有人从另一边出来","洗衣机的指示灯在深夜闪烁摩斯电码","电视关掉以后屏幕里还有一个缩小的映照","狗对着空楼梯咆哮"],usage:"'他意识到每次经过这盏灯它总是亮着的——在他来之前。'"},
+   ]},
+  // ─── 荒诞 / 异化 ───
+  {cat:"荒诞 / 异化",icon:"🎭",desc:"卡夫卡时刻——人变成了虫，而虫还在上班",
+   entries:[
+    {word:"虫",phrases:["在格子间里蠕动的人形","每个人脸上都有相同的微笑面膜","咖啡机出咖啡的速度决定了今天的人权","打电话时嘴巴机械化地开合","凌晨的写字楼像竖起来的蚂蚁巢","地铁口把人类吸进又排出的伤口"],usage:"'他变成了一只甲虫，但没有人发现，因为他还在准时打卡。'"},{word:"纸",phrases:["表格上每一格都在等人跳进去","合同里的小字比正文更密集","毕业证是入场券也是终身监禁判决书","病历本里的字谁都看不懂但都很权威","罚单贴在车窗上像荣誉勋章","便签纸上写满了被自己忽略的提醒"],usage:"'他的一生就是填表——填幼儿园入园表、高考志愿表、入职审批表、手术同意书。'"},{word:"演",phrases:["面试时你演一个完美职员","朋友圈里你演一个幸福的人","年会上你演一个很爱公司的人","分手时你演一个不在乎的人","葬礼上你演一个悲伤的人","镜子前你演一个忘了自己是谁的人"],usage:"'每天醒来第一件事是把表情调到'全勤微笑'，睡前才允许自己练习苦脸。'"},{word:"值",phrases:["你的通勤时间被折算成房租折损","加班费除以时薪发现比麦当劳实习生还低","体检报告上的红字比任何表扬都来得及时","健康被量化成积分但积分换不了健康","年终奖是给未来的医药费打的借条","每一次升职都离父母更远"],usage:"'他算了一笔账：房租+通勤+盒饭+医疗保险≈他清醒时间的百分之六十。'"},
+   ]},
+  // ─── 暴烈 / 冲突 ───
+  {cat:"暴烈 / 冲突",icon:"💥",desc:"火药味弥漫，每个词都可能擦出火花",
+   entries:[
+    {word:"炸",phrases:["嗓音突然撕裂天花板上的最后一丝安静","玻璃杯摔在地上碎成星图","门被踹开撞在墙上弹回来","神经崩断时你能听见'嘣'的一声","盘子飞过餐桌划出抛物线","电话里突然挂断的忙音比任何话都响"],usage:"'他这个碗砸下去的不是瓷器，是五年。'"},{word:"烧",phrases:["怒火从胃里往上窜烧到喉咙","眼神灼人，皮肤会被目光烫伤","争吵时呼出的气像蒸汽","拳头攥着把指甲掐进掌心","烟一根接一根地抽，像是在给肺上刑","火苗舔舐窗帘，火光照亮对峙的两张脸"],usage:"'她看他的眼神像在烧一本读不下去的书。'"},{word:"刃",phrases:["沉默比刀更锋利","话到舌尖淬了毒","每个字都是冰块砸在脸上","眼神交锋时有金属摩擦的声音","表情管理像陶瓷面具裂开第一道缝","沉默里埋着随时起爆的雷管"],usage:"'她最后的语气是手术刀——不带感情，精确地切断。'"},{word:"涌",phrases:["人群像决堤的河冲开警戒线","愤怒在血液里沸腾冲到太阳穴","眼泪蓄在眼眶里最后一刻破堤","声音层层叠高像要掀翻屋顶","恐慌在密闭空间里像墨汁一样扩散","记忆的洪流冲垮了所有防御"],usage:"'他嘴里的词句像高压水枪里的水，一开口就喷出来，收都收不住。'"},
+   ]},
+  // ─── 空灵 / 超脱 ───
+  {cat:"空灵 / 超脱",icon:"🕊️",desc:"出窍的时刻，灵魂在头顶三寸俯瞰",
+   entries:[
+    {word:"浮",phrases:["意识从颅顶飘出来","身体轻得像一件空衣服","声音从很远处传来","时间变稠变慢","影子脱离脚底独立行走","空气变得像暖流把人托起"],usage:"'她感觉自己变成一团热气，从床上蒸腾到天花板的角落。'"},{word:"逝",phrases:["夕阳像打翻的血浆在天边慢慢变黑","秋风把最后一片叶子从枝头撕下来","雪落下来像世界慢慢静音","蝉鸣戛然而止夏天突然就死了","日期的数字跳过去的时候你想不起昨天","童年照片在眼前褪色"],usage:"'他不记得这条狗是从哪一天不再趴在门口等他了。'"},{word:"融",phrases:["雾融化进湖面上分不清哪是水哪是天","人融进夜色变成一个模糊的轮廓","意识融进意识之海","句子融化在嘴边变成叹息","脸融进人群变成统计数字","墓碑在苔藓里慢慢模糊"],usage:"'雨落在江面上，每一滴都消失得不留痕迹，就像他在城市里。'"},{word:"清",phrases:["大雨过后空气清了，把所有的谎话也冲掉了","病床上醒来第一瞬间的澄明","站在顶楼风灌满衣服的透彻","烧到第四十度意识突然变得异常清晰","深夜关掉屏幕的一刻世界变静","在深山里呼吸到第一口没有尾气的空气"],usage:"'那一刻他想通了，像刚擦过的镜子——所有的痛苦都是自己的脸。'"},
+   ]}
+];
+
+function renderCategories(filter = '') {
+  const container = document.getElementById('categories');
+  let html = '';
+  VOCAB.forEach(cat => {
+    if (filter && cat.cat !== filter) return;
+    html += `<div class="category-section">
+      <div class="category-header">
+        <span class="category-icon">${cat.icon}</span>
+        <span class="category-name">${cat.cat}</span>
+        <span class="category-desc">${cat.desc}</span>
+      </div>
+      <div class="vocab-grid">`;
+    cat.entries.forEach(e => {
+      html += `<div class="vocab-card">
+        <div class="vocab-word">${e.word}</div>
+        <div class="vocab-phrases">${e.phrases.map(p=>`<span>${p}</span>`).join('')}</div>
+        <div class="vocab-usage">${e.usage}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  container.innerHTML = html;
+}
+
+function renderFilters() {
+  const bar = document.getElementById('filterBar');
+  const categories = ['全部', ...VOCAB.map(c => c.cat)];
+  bar.innerHTML = categories.map((c,i) =>
+    `<button class="filter-btn${i===0?' active':''}" onclick="filterCategory('${i===0?'':c}')">${c}</button>`
+  ).join('');
+}
+
+function filterCategory(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderCategories(cat);
+}
+
+function rollRandom() {
+  const allEntries = VOCAB.flatMap(c => c.entries.map(e => ({...e, catName: c.cat})));
+  const pick = allEntries[Math.floor(Math.random() * allEntries.length)];
+  document.getElementById('rw').textContent = `${pick.word}（${pick.catName}）`;
+  document.getElementById('rp').textContent = pick.phrases.join(' ; ');
+  document.getElementById('ru').textContent = pick.usage;
+  document.getElementById('randomOutput').classList.add('visible');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderFilters();
+  renderCategories();
+  document.body.classList.add('loaded');
+});
+</script>
+</body>
+</html>

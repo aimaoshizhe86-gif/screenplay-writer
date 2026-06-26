@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>反转生成器 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.12 0.014 260);
+    --ash: oklch(0.18 0.01 250);
+    --concrete: oklch(0.28 0.008 245);
+    --blood: oklch(0.38 0.22 25);
+    --neon-yellow: oklch(0.92 0.19 106);
+    --rust: oklch(0.52 0.17 55);
+    --bone: oklch(0.88 0.02 90);
+    --cyan-shock: oklch(0.75 0.16 195);
+    --magenta: oklch(0.58 0.25 350);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--ink); color: var(--bone);
+    scroll-behavior: smooth; font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif; line-height: 1.7;
+    overflow-x: hidden; min-height: 100vh;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                var(--ink);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 3vw, 2rem);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px); background: oklch(0.12 0.014 260 / 0.8);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.4rem, 2.5vw, 2rem); color: var(--neon-yellow); letter-spacing: 0.08em; text-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.3); cursor: pointer; }
+  .nav-logo:hover { color: var(--blood); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; padding: 0.5em 1.4em;
+    border: 1.5px solid var(--blood); color: var(--blood); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; transition: all 0.25s;
+  }
+  .nav-back:hover { background: var(--blood); color: var(--bone); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 100px clamp(1rem, 3vw, 2rem) 4rem; }
+
+  .page-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--neon-yellow);
+    text-shadow: 2px 2px 0 var(--blood);
+    text-align: center; margin-bottom: 0.2em;
+  }
+  .page-subtitle {
+    text-align: center; color: oklch(0.55 0.01 100); font-size: 0.9rem;
+    letter-spacing: 0.15em; margin-bottom: 3rem; font-family: 'ZCOOL XiaoWei', serif;
+  }
+
+  /* Gen modes */
+  .mode-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem;
+  }
+  .mode-tab {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    background: var(--ash); color: var(--bone); border: 1px solid oklch(1 0 0 / 0.12);
+    cursor: pointer; letter-spacing: 0.1em; transition: all 0.2s;
+  }
+  .mode-tab:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+  .mode-tab.active { background: var(--blood); border-color: var(--blood); color: var(--bone); }
+
+  .gen-area { text-align: center; margin: 2rem 0; }
+  .gen-btn {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.1rem; padding: 1em 3em;
+    background: var(--neon-yellow); color: var(--ink); border: none; cursor: pointer;
+    letter-spacing: 0.15em; font-weight: 700;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    transition: all 0.2s;
+  }
+  .gen-btn:hover { background: var(--blood); color: var(--bone); clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
+  .gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Result card */
+  .result-card {
+    max-width: 800px; margin: 2rem auto; padding: 2.5rem 2rem;
+    background: var(--ash); border-left: 4px solid var(--blood);
+    display: none; animation: fadeUp 0.5s ease-out;
+  }
+  .result-card.visible { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .result-type {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.7rem; letter-spacing: 0.2em;
+    color: var(--rust); text-transform: uppercase; margin-bottom: 1em;
+  }
+  .result-title {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.4rem; color: var(--neon-yellow);
+    margin-bottom: 0.6em; letter-spacing: 0.05em;
+  }
+  .result-setup {
+    color: oklch(0.7 0.01 100); font-size: 0.9rem; line-height: 1.8;
+    margin-bottom: 1em; padding: 0.8em; background: oklch(0.14 0.012 260);
+  }
+  .result-pivot {
+    font-size: 1.1rem; color: var(--blood); font-weight: 700;
+    margin: 1em 0; padding: 0.8em 1em;
+    border: 1px solid oklch(0.38 0.22 25 / 0.3);
+    background: oklch(0.14 0.012 260);
+    text-align: center;
+  }
+  .result-after {
+    color: oklch(0.7 0.01 100); font-size: 0.9rem; line-height: 1.8;
+    padding: 0.8em; background: oklch(0.14 0.012 260);
+  }
+  .result-tags {
+    margin-top: 1em; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .result-tag {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.65rem;
+    padding: 0.25em 0.7em; border: 1px solid oklch(1 0 0 / 0.12);
+    color: oklch(0.5 0.01 100); letter-spacing: 0.05em;
+  }
+  .result-tag.hl { border-color: var(--blood); color: var(--blood); }
+
+  .history-label {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.15em;
+    color: oklch(0.4 0.01 100); text-align: center; margin: 3rem 0 1rem;
+  }
+  .history-list {
+    max-width: 800px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .history-item {
+    font-size: 0.8rem; color: oklch(0.55 0.01 100);
+    padding: 0.5em 1em; background: oklch(0.14 0.012 260);
+    border-left: 2px solid oklch(1 0 0 / 0.08); cursor: pointer;
+    transition: border-color 0.2s;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .history-item:hover { border-left-color: var(--blood); color: var(--bone); }
+
+  .footer-note {
+    text-align: center; color: oklch(0.35 0.01 100); font-size: 0.7rem;
+    padding: 3rem 0 2rem; letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 768px) {
+    .result-card { padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo" onclick="window.location.href='index.html'">灰烬手稿</span>
+  <button class="nav-back" onclick="window.location.href='index.html'">← 返回主页</button>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">反转生成器</h1>
+  <p class="page-subtitle">一人一城一念头 · 凡人的毁灭与沉默 · 即兴反转引擎</p>
+
+  <div class="mode-tabs" id="modeTabs"></div>
+
+  <div class="gen-area">
+    <button class="gen-btn" id="genBtn" onclick="generate()">⚡ 生成反转</button>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-type" id="resultType"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-setup" id="resultSetup"></div>
+    <div class="result-pivot" id="resultPivot"></div>
+    <div class="result-after" id="resultAfter"></div>
+    <div class="result-tags" id="resultTags"></div>
+  </div>
+
+  <div class="history-label">生成记录</div>
+  <div class="history-list" id="historyList"></div>
+</div>
+
+<div class="footer-note">灰烬手稿 · 反转生成器 · 每一次旋转都可能是故事的起点</div>
+
+<script>
+// ─── REVERSAL DATABASE ───
+const REVERSALS = {
+  identity: {
+    label: "身份反转",
+    desc: "人物身份的颠覆与揭露",
+    templates: [
+      {setup:"他是一个在菜市场卖了二十年豆腐的瘸腿老头，每天被人欺负，从不反抗。",pivot:"那天晚上，四个持刀抢劫犯冲进他的摊位。他单手捏碎了为首那把刀，用剩下的三根手指拧断了对方的手腕。警方调查发现，他的指纹与二十六年前一桩悬案重合。",after:"特警踹开他家门时，他正在磨豆浆。他头也没抬：'我给你们磨最后一锅。'他磨得比以往任何一锅都细。",tags:["身份揭露","平凡即锋利","赎罪"]},
+      {setup:"她在城中村出租屋里做英语家教，家长都叫她'小刘老师'，骑一辆掉了漆的电动车，永远点最便宜的外卖。",pivot:"直到某天一条银行催收短信被学生看到——余额后面有九个零。她不是没钱，她是在躲债主——政府追查的非法集资案的唯一污点证人。",after:"特警上门那天，她正在给最后一个学生改作文。她把红笔拧好，放在桌角。'再给我五分钟。'",tags:["证人保护","贫穷是伪装","身份揭示"]},
+      {setup:"小区里的保安老赵，每天笑眯眯地帮人提菜、开门，连一只猫都舍不得赶走。",pivot:"小区发生连环盗窃，警方查到监控死角。老赵在交代笔录时忽然说：'你们不用找了，作案人是我。'他递出一本日记，记录了三十年来每一次盗窃的详细路线，像是写给谁看的。",after:"开庭那天，旁听席上坐着一排白发苍苍的老人。老赵偷的钱全打给了他们——他是三十年前被拐卖的孩子，那些老人都是他找到的亲生父母的远亲。",tags:["道德反转","盗窃者即施舍者","救赎"]},
+    ]
+  },
+  situation: {
+    label: "处境反转",
+    desc: "猎人变猎物，权力关系的倒置",
+    templates: [
+      {setup:"他在公司干了十五年，每天早上七点半到、晚上十一点走，陪老板喝吐了四次，垫出去的钱够付一套首付。裁员名单出来，第一个就是他。",pivot:"第二天早上，全公司收到一封群发邮件，是他整理的：十五年来每一笔违规报销、每一次虚假合同、每一个偷税节点，附上原始证据扫描件。署名只有一行：'别找我，我请了十五年没请过的年假。'",after:"警方带走老板那天，他正在洱海边钓鱼。电话响了一次又一次，他把手机调成静音，扔进了湖里。",tags:["加班=证据积累","底层反杀","职场"]},
+      {setup:"她嫁进一个体制内家庭，婆婆看不起她的出身，每次来都要检查碗有没有洗干净。她忍了八年。",pivot:"第八年除夕，婆婆在饭桌上当众羞辱她。她放下筷子，从包里抽出一份文件推过去：'这是你儿子三年来的开房记录、转账流水，以及他离任审计时被你动用关系压下去的那笔烂账。'空气静止了十五秒。",after:"她在民政局门口撑伞等了他二十分钟。'你迟到了。'她看了看表，嘴角浮起一丝他从没见过的笑容。",tags:["婚姻反转","隐忍即武器","证据链"]},
+      {setup:"一个刚拿到教师资格证的年轻人被分配到山区小学。学校只有一个班、十三个学生、没有窗户、黑板是用锅底灰糊的。他咬着牙留了下来。",pivot:"三年后，他被调回城市。临走前夜，十三个学生在操场上用手电筒拼出了三个字：'不要走'。他跪在泥地里哭。但第二天还是上了长途汽车。到达县城那一刻，他收到通知：新的调令取消了——是十三个学生家长联名举报：该教师长期克扣营养餐经费。",after:"他没有辩解，因为他知道调查会证明他清白。但他也没有回去。直到半年后他在城市里收到一封信，里面是一张手绘的教室窗户——画着玻璃。",tags:["善意被反噬","制度荒诞","告别即反转"]},
+    ]
+  },
+  moral: {
+    label: "道德反转",
+    desc: "善恶翻转，观众被迫重新审判角色",
+    templates: [
+      {setup:"社区里人见人夸的好邻居老陈，疫情期间免费给老人送菜，平时帮邻里修水管、接小孩。所有人都说他是活雷锋。",pivot:"一条被虐待致死的流浪狗，监控拍到最后一帧画面：狗脖子上挂着他家的钥匙。警察进他家时发现地下室里堆满了动物尸骨，每一只都被编号、拍照、做成标本陈列。而他电脑里的文件夹名是：'善行录'。",after:"庭审时，二十多个邻居联名求情。法官问他们看过那些照片吗，没有人回答。",tags:["双面人","伪善","社区共谋"]},
+      {setup:"一个老太太每天在菜市场捡烂菜叶子，穿得破破烂烂，所有人都觉得她是个可怜的孤寡老人。",pivot:"市里清理违章建筑，要拆菜市场。老太太从怀里掏出一份房产证明——整个菜市场所在的那条街，她占了一大半。她骂拆迁队：'你们敢拆，我找人打断谁的腿。'",after:"拆迁暂停了。摊贩们第二天来，发现老太太还是蹲在原来的位置捡菜叶子。有人给她塞了根完好的黄瓜，她接过去，掰了一半还回去。",tags:["穷人即地主","贪婪与施舍的矛盾","城市变迁"]},
+    ]
+  },
+  reality: {
+    label: "现实反转",
+    desc: "日常生活底下埋着的另一层现实",
+    templates: [
+      {setup:"他每天通勤两小时，在地铁上睡着、坐过站、再坐回来。手机里只有工作群和天气。他觉得自己的人生是一张复写纸。",pivot:"有一天地铁故障停在隧道里，灯光全灭，二十五分钟。黑暗中有人开始说话——一个孩子背完了整篇《出师表》，一个女人唱了一首没听过的民歌，一个老人讲了自己的逃港经历。灯亮了，所有人互相对视，像刚从同一场梦里醒来。然后继续低头看手机。但那天晚上，他打开备忘录，写下了第一篇日记。",after:"他没辞职，也没去环游世界。但他开始在地铁上观察每一个人的鞋，想象他们昨晚去了哪里。",tags:["现代寓言","瞬间觉醒","日常奇迹"]},
+      {setup:"疫情封控期间，她发现老公每晚都在阳台上多待二十分钟。她以为是抽烟。",pivot:"某天她给他洗外套时掏出一张折叠得极小的纸条，上面是一行地址——相邻小区的某一户。她没问。次日晚上，她跟在他后面翻过围墙，看着他在另一幢楼下，用晾衣杆递给三楼一个女孩两盒牛奶和半袋苹果。女孩说：'叔叔，妈妈说你是我们家唯一的朋友。'",after:"她回家把纸条放回口袋。第二天起，冰箱里多了两瓶牛奶。",tags:["婚外情误读","隔离中的联结","沉默理解"]},
+    ]
+  },
+  structure: {
+    label: "结构反转",
+    desc: "叙事视角或时间线的骤然变换",
+    templates: [
+      {setup:"全片以刑警老张的视角追查一桩碎尸案，他花了一年时间，走访了七省十一市，锁定嫌疑人。",pivot:"结尾镜头从审讯室缓慢后拉，穿过墙，穿过走廊，穿过警局大门，停在对面楼的天台上——一个拿着望远镜的十二岁男孩。他放下望远镜，对身边的无腿流浪汉说：'爸爸，他们抓错人了。'",after:"黑屏。字幕：'警察老张于三年后退休，此案后来重启，但主犯一直未被抓获。男孩长大后再也没有对任何人提起他看见的东西。'",tags:["视角错位","真相被沉默","童年目击"]},
+      {setup:"一对夫妻在办理离婚，每一场戏都是他们在客厅里争吵、翻旧账、争夺财产。",pivot:"第四幕，门铃响了。一个快递员送来一份亲子鉴定报告——是妻子偷偷做的。结果只有她知道。她看了五秒，然后把报告塞进口袋，回来继续吵。争吵的内容突然变成了另外一件事——她主动放弃了所有财产。",after:"据说是当她确定儿子不是他亲生的那一刻，她才想起自己十七岁时为什么爱上他。",tags:["婚姻反转","秘密改变一切","倒叙重看"]},
+    ]
+  }
+};
+
+let currentMode = 'identity';
+let history = JSON.parse(localStorage.getItem('twist_history') || '[]');
+
+function renderModes() {
+  const tabs = document.getElementById('modeTabs');
+  tabs.innerHTML = Object.entries(REVERSALS).map(([k,v]) =>
+    `<button class="mode-tab${k===currentMode?' active':''}" onclick="switchMode('${k}')">${v.label}（${v.templates.length}）</button>`
+  ).join('');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('resultCard').classList.remove('visible');
+}
+
+function generate() {
+  const pool = REVERSALS[currentMode].templates;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+
+  document.getElementById('resultType').textContent = REVERSALS[currentMode].label;
+  document.getElementById('resultTitle').textContent = '「例」' + pick.setup.slice(0, 20) + '…';
+  document.getElementById('resultSetup').textContent = pick.setup;
+  document.getElementById('resultPivot').textContent = '↯ ' + pick.pivot;
+  document.getElementById('resultAfter').textContent = pick.after;
+  document.getElementById('resultTags').innerHTML = pick.tags.map((t,i) =>
+    `<span class="result-tag${i===0?' hl':''}">${t}</span>`
+  ).join('');
+  document.getElementById('resultCard').classList.add('visible');
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth',block:'center'});
+
+  // Add to history
+  history.unshift({mode: currentMode, text: pick.setup.slice(0,50), time: Date.now()});
+  if (history.length > 20) history.pop();
+  localStorage.setItem('twist_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (history.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:oklch(0.35 0.01 100);padding:1rem;">暂无记录</div>';
+    return;
+  }
+  list.innerHTML = history.map((h,i) => {
+    const d = new Date(h.time);
+    const ts = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    return `<div class="history-item" title="${h.text}">[${ts}] ${REVERSALS[h.mode]?.label || h.mode} — ${h.text}</div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderModes();
+  renderHistory();
+  document.body.classList.add('loaded');
+});
+</script>
+</body>
+</html>
