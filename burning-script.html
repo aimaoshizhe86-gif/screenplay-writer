@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>燃烧 — 完整剧本 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.12 0.014 260);
+    --ash: oklch(0.18 0.01 250);
+    --concrete: oklch(0.28 0.008 245);
+    --blood: oklch(0.38 0.22 25);
+    --neon-yellow: oklch(0.92 0.19 106);
+    --rust: oklch(0.52 0.17 55);
+    --bone: oklch(0.88 0.02 90);
+    --cyan-shock: oklch(0.75 0.16 195);
+    --magenta: oklch(0.58 0.25 350);
+    --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 2rem);
+    --space-lg: clamp(2rem, 6vw, 5rem);
+    --space-xl: clamp(3rem, 10vw, 8rem);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--ink);
+    color: var(--bone);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                radial-gradient(ellipse 50% 50% at 15% 80%, oklch(0.3 0.04 20 / 0.15), transparent),
+                var(--ink);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-sm) var(--space-md);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.12 0.014 260 / 0.85);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  nav.visible { transform: translateY(0); }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--neon-yellow); letter-spacing: 0.08em; text-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.3); cursor: pointer; transition: color 0.25s; }
+  .nav-logo:hover { color: var(--blood); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid oklch(1 0 0 / 0.15); color: oklch(0.6 0.01 100); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.25s; text-decoration: none;
+  }
+  .nav-back:hover { border-color: var(--bone); color: var(--bone); }
+  .script-hero {
+    min-height: 45vh;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
+    position: relative;
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  }
+  .script-hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 100%;
+    background: linear-gradient(to top, oklch(0.12 0.014 260 / 0.95) 0%, oklch(0.12 0.014 260 / 0.4) 40%, transparent 100%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+  .hero-title-main {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1;
+    color: var(--bone);
+    text-shadow: 0 0 60px oklch(0.75 0.16 195 / 0.5), 0 0 120px oklch(0.38 0.22 25 / 0.4);
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-sm);
+  }
+  .hero-sub {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: var(--space-xs);
+  }
+  .hero-meta {
+    display: flex; gap: var(--space-md); flex-wrap: wrap;
+    font-size: 0.72rem; letter-spacing: 0.1em; color: oklch(0.5 0.01 100);
+    font-family: 'ZCOOL XiaoWei', serif;
+  }
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--neon-yellow), var(--blood));
+    z-index: 200; width: 0%; transition: width 0.1s linear;
+  }
+  .script-body {
+    max-width: 720px; margin: 0 auto;
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+  .scene-block {
+    margin-bottom: var(--space-lg); padding-bottom: var(--space-md);
+    border-bottom: 1px dashed oklch(1 0 0 / 0.05);
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  .scene-block.visible { opacity: 1; transform: translateY(0); }
+  .scene-number {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.5rem; color: var(--neon-yellow);
+    letter-spacing: 0.1em; margin-bottom: var(--space-xs);
+    text-shadow: 0 0 12px oklch(0.92 0.19 106 / 0.25);
+  }
+  .slug {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.85rem; letter-spacing: 0.08em;
+    color: oklch(0.65 0.01 100);
+    text-transform: uppercase;
+    margin-bottom: var(--space-xs);
+    display: block;
+  }
+  .action {
+    display: block; margin-bottom: 0.8em;
+    color: oklch(0.75 0.01 90);
+    line-height: 1.8;
+    font-size: 0.95rem;
+  }
+  .character {
+    display: block; text-align: center;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.1rem; letter-spacing: 0.15em;
+    color: var(--bone); margin-top: 0.8em;
+    padding-top: 0.5em; text-transform: uppercase;
+    text-shadow: 0 0 8px oklch(1 0 0 / 0.15);
+  }
+  .dialogue {
+    display: block; max-width: 420px; margin: 0.2em auto 0.8em;
+    text-align: left; padding-left: 1em;
+    border-left: 2px solid oklch(1 0 0 / 0.08);
+    color: oklch(0.8 0.01 95);
+    font-size: 0.92rem; line-height: 1.7;
+  }
+  .paren {
+    display: block; text-align: center;
+    font-size: 0.8rem; color: oklch(0.55 0.01 100);
+    font-style: italic; margin-bottom: 0.3em;
+  }
+  .transition {
+    display: block; text-align: right;
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.75rem; letter-spacing: 0.15em;
+    color: var(--rust); margin-top: var(--space-sm);
+    text-transform: uppercase;
+  }
+  .act-break {
+    text-align: center; padding: var(--space-lg) 0;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  .act-break.visible { opacity: 1; transform: translateY(0); }
+  .act-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--neon-yellow);
+    text-shadow: 0 0 40px oklch(0.92 0.19 106 / 0.4);
+    letter-spacing: 0.15em;
+  }
+  .act-divider {
+    width: 60px; height: 4px; background: var(--rust);
+    margin: var(--space-sm) auto;
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+  }
+  .script-footer {
+    text-align: center; padding: var(--space-xl) var(--space-md);
+    border-top: 1px solid oklch(1 0 0 / 0.06);
+    font-family: 'ZCOOL XiaoWei', serif;
+  }
+  .script-footer p {
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    color: oklch(0.5 0.01 100); letter-spacing: 0.15em;
+    margin-bottom: var(--space-md);
+  }
+  .script-footer .btn-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem;
+    padding: 0.7em 2em; border: 1.5px solid oklch(1 0 0 / 0.2);
+    color: var(--bone); background: transparent; cursor: pointer;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .script-footer .btn-back:hover {
+    border-color: var(--neon-yellow); color: var(--neon-yellow);
+    box-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.2);
+  }
+  @media (max-width: 768px) {
+    .script-body { padding: var(--space-md) var(--space-sm); }
+    .dialogue { max-width: 100%; padding-left: 0.5em; }
+    .hero-title-main { font-size: 2.5rem; }
+    nav { padding: 0.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+<div class="progress-bar" id="progressBar"></div>
+<nav id="navbar">
+  <span class="nav-logo" onclick="window.location.href='index.html'">灰烬手稿</span>
+  <a class="nav-back" href="index.html">← 返回写作器</a>
+</nav>
+<section class="script-hero">
+  <div class="hero-content">
+    <div class="hero-sub">编剧 · 李沧东 / 吴政美 原著 · 村上春树《烧仓房》</div>
+    <h1 class="hero-title-main">燃 烧</h1>
+    <div class="hero-meta">
+      <span>2018 · 韩国</span>
+      <span>悬疑 / 剧情</span>
+      <span>片长 148 分钟</span>
+      <span>戛纳电影节主竞赛单元</span>
+    </div>
+  </div>
+</section>
+<section class="script-body">
+<div class="scene-block">
+<div class="scene-number">01</div>
+<span class="slug">外景 · 首尔街头 — 白天</span>
+<span class="action">
+盛夏。阳光像碾碎的金箔洒在沥青路面上。空气中有一股烧焦的橡胶味和泡菜汤的气味。李钟秀推着一辆装满纸箱的手推车穿过市场。他二十三岁，穿着一件洗得发白的 T 恤，额头上贴着汗湿的碎发。他看起来像一个被揉皱的信封——里面装了一些东西，但没人想打开看。
+</span>
+<span class="action">
+手推车的轮子卡在路缝里。他停下来，弯腰去抬。就在这时，一只手拍了拍他的肩膀。
+</span>
+<span class="character">申惠美</span>
+<span class="paren">（笑着）</span>
+<span class="dialogue">李钟秀。你一点都没变。</span>
+<span class="action">
+钟秀抬起头。逆光里站着一个女孩，穿着亮粉色的露脐短袖，戴着巨大的塑料耳环。她在嚼口香糖，嘴型很大。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（眯起眼睛）</span>
+<span class="dialogue">……你是？</span>
+<span class="character">惠美</span>
+<span class="dialogue">申惠美。坡州。小学四年级坐你前面的。你说我长得像一块橡皮。</span>
+<span class="action">
+钟秀愣住了。他想起来了。一个胖乎乎的小姑娘。但不是面前这个——这个女孩瘦得像一根被火柴。眼妆很重，像用记号笔画的。但她在笑，笑得整个脸都在发光。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你整容了？</span>
+<span class="character">惠美</span>
+<span class="paren">（毫不介意）</span>
+<span class="dialogue">嗯。割了双眼皮，垫了下巴，做了鼻子。好看吗？</span>
+<span class="action">
+她故意把脸凑近。钟秀本能地往后退了半步。惠美哈哈大笑。笑声像一把碎玻璃被撒进水沟里。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">02</div>
+<span class="slug">内景 · 小酒馆 — 黄昏</span>
+<span class="action">
+一家地下室酒馆。墙上贴着褪色的烧酒海报。空气里是烤肉和米酒的气味。电视机在播棒球比赛，没有人在看。
+</span>
+<span class="action">
+惠美已经喝了三杯烧酒。她的脸开始泛红，眼妆有点花。钟秀端着啤酒杯，几乎没有喝。他只是看着她，像一个在博物馆里看画却看不懂的人。
+</span>
+<span class="character">惠美</span>
+<span class="dialogue">我在做一个促销活动——你知道那种穿着玩偶服在街上发传单的吗？我就是那个。一只粉色的兔子。我跳了三个小时的舞，拿了四万韩元。</span>
+<span class="action">
+她比划了一下。动作很大。差点打到路过的大叔。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（继续说）</span>
+<span class="dialogue">小时候在坡州，有一次你把我从水沟里拉出来。还记得吗？我掉进去了。所有人都在笑。只有你拉了我一把。</span>
+<span class="character">钟秀</span>
+<span class="paren">（想了想）</span>
+<span class="dialogue">不记得。</span>
+<span class="character">惠美</span>
+<span class="dialogue">没关系。我记得就行。人就是靠别人记得才活着的。</span>
+<span class="action">
+她举起酒杯。杯子上有她的口红印，像一道小小的伤口。
+</span>
+<span class="character">惠美</span>
+<span class="dialogue">我下个月去非洲。肯尼亚。马赛马拉。大草原。我要去看小饥饿和大饥饿的舞蹈。</span>
+<span class="character">钟秀</span>
+<span class="paren">（皱眉）</span>
+<span class="dialogue">什么饥饿？</span>
+<span class="character">惠美</span>
+<span class="paren">（眼睛发亮）</span>
+<span class="dialogue">
+非洲的布须曼人。他们把饥饿分成两种。小饥饿，就是肚子饿。大饥饿——是灵魂饿。是对生存意义的饥渴。我们所有人都是小饥饿的奴隶，但只有少数人能感受到大饥饿。我感受到了。每一天。每一秒。大饥饿在吃我的内脏。
+</span>
+<span class="action">
+钟秀沉默。他喝完了一整杯啤酒。酒馆外面天黑了。霓虹灯亮起来，把惠美的脸染成红色和蓝色。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">03</div>
+<span class="slug">内景 · 钟秀的公寓 — 夜晚</span>
+<span class="action">
+一间逼仄的半地下室单间。窗户只有巴掌大，能看到地面上行人的脚踝和流浪猫的尾巴。墙上贴着钟秀的手写便签：一些未完成的句子。
+</span>
+<span class="action">
+钟秀和惠美站在屋里。空气很闷。惠美脱掉高跟鞋，赤脚踩在水磨石地面上。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（环顾四周）</span>
+<span class="dialogue">你一个人住？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">嗯。</span>
+<span class="character">惠美</span>
+<span class="dialogue">你爸爸呢？还在坡州？</span>
+<span class="action">
+钟秀没有回答。他走到小冰箱前，拿出两瓶水。冰箱的噪音很大，像一只蜜蜂困在里面。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你为什么要去非洲？</span>
+<span class="character">惠美</span>
+<span class="dialogue">因为那里什么都没有。没有便利店，没有 KTV，没有炸鸡外卖。只有草原和天空。我说服自己——如果能在一个什么都没有的地方活下来，那在这个什么都有地方，我应该就也能活下来。</span>
+<span class="action">
+她走到窗边，踮起脚尖，试图看到窗外的地面。窗框上积了一层灰。她用食指在上面写了一个字："生"。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（突然想起什么）</span>
+<span class="dialogue">对了。帮我一个忙——帮我喂猫。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">猫？</span>
+<span class="character">惠美</span>
+<span class="dialogue">它叫 Boil。意思是沸腾。我捡的。在你家附近——坡州旧农场那边的车库里。你帮我喂它。就几周。干粮在厨房柜子里。</span>
+<span class="action">
+她掏出一把钥匙递给钟秀。钥匙上拴着一只塑料小猫吊坠，已经磨得发亮。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="act-break">
+<div class="act-title">第一幕</div>
+<div class="act-divider"></div>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">04</div>
+<span class="slug">内景 · 惠美的公寓 — 白天</span>
+<span class="action">
+惠美走了。钟秀用钥匙打开她的公寓门。房间很小但干净。墙上贴满了世界地图和从杂志上剪下来的非洲草原照片。床头堆着几本旅行指南：《孤独星球·东非》《斯瓦希里语入门》。
+</span>
+<span class="action">
+钟秀在厨房柜子里找到猫粮。他倒了一些在碗里。然后他开始等。
+</span>
+<span class="action">
+一分钟。五分钟。十分钟。猫没有出现。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（对着空房间）</span>
+<span class="dialogue">Boil？</span>
+<span class="action">
+没有回应。他蹲下来，往沙发底下看。只有一团灰。他注意到——衣柜旁边放着一个行李箱大小的收纳盒，盖子半开着。里面是一些女人的衣物，叠得很整齐。最上面是一件粉色露脐短袖——就是第一次见面时她穿的那件。
+</span>
+<span class="action">
+他盯着那件衣服看了很久。然后他站起来，走到窗边。窗外是首尔灰蒙蒙的天际线。一架飞机拖着白色的尾迹云缓缓穿过。
+</span>
+<span class="action">
+他在惠美的床上躺下来。床单有洗衣液的气味。他闭上眼。天花板有一块水渍，形状像非洲。
+</span>
+<span class="action">
+过了一会。他睁开眼。开始手淫。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">05</div>
+<span class="slug">内景 · 钟秀的公寓 — 夜晚</span>
+<span class="action">
+钟秀躺在床上。手机屏幕亮着——惠美发来了一张照片。她站在一片金黄色的草原上，背后是落日。落日大得不像真的。她穿着一件红色的马赛布，头发编成了无数根细辫子，脸上涂着白色的泥土花纹。她在笑。笑得嘴巴大到能吞下整个太阳。
+</span>
+<span class="action">
+钟秀把照片放大。放大到只能看到她的眼睛。像素点开始模糊。
+</span>
+<span class="action">
+他把手机关掉。屏幕变黑。他的脸映在黑色屏幕上——像另一张照片。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">06</div>
+<span class="slug">内景 · 钟秀家的农场 — 白天</span>
+<span class="action">
+坡州。一片正在退化的农田。远处是群山，近处是三座废弃的塑料大棚，塑料布被风吹得哗哗响，像垂死的鸟在扑腾翅膀。
+</span>
+<span class="action">
+钟秀开着一辆破旧的卡车停在院子里。他从车上搬下饲料袋。一头牛在栅栏里看着他——那是他父亲留下的最后一头牛，瘦得肋骨一根根能数出来。
+</span>
+<span class="action">
+院子角落停着一辆现代索纳塔。那是他父亲的车。前保险杠歪了，车窗上贴着法院的封条。上面写着：禁止移动——涉案财产。
+</span>
+<span class="action">
+钟秀绕开车子。走进屋里。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">07</div>
+<span class="slug">内景 · 农场老屋 — 白天</span>
+<span class="action">
+屋子很暗。窗帘全部拉上。空气中弥漫着陈年烟味和霉味。墙上挂着相框——母亲的照片。但脸被剪掉了，留下一个黑洞。
+</span>
+<span class="action">
+钟秀走到厨房。打开冰箱。空的。只有一瓶过期的辣椒酱和一盒长了毛的泡菜。
+</span>
+<span class="action">
+电话响了。老式座机。铃声很刺耳。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（接电话）</span>
+<span class="dialogue">喂。</span>
+<span class="character">惠美（电话中）</span>
+<span class="paren">（信号很差，断断续续）</span>
+<span class="dialogue">钟秀！我在内罗毕机场！马上登机了！我跟你说——我遇到了一个人！韩国人！特别有意思！我把他带回来！你来机场接我们！</span>
+<span class="character">钟秀</span>
+<span class="dialogue">接你们？</span>
+<span class="character">惠美（电话中）</span>
+<span class="dialogue">对！我跟他提了你！我说你是我在韩国唯一的朋友！他说很想认识你！明天下午三点！仁川机场！</span>
+<span class="character">钟秀</span>
+<span class="dialogue">——惠美。</span>
+<span class="action">
+电话断了。忙音。钟秀拿着听筒站了很久。然后他挂上电话。走出屋外。牛在叫。声音沉闷，像从地底下传来的。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">08</div>
+<span class="slug">外景 · 仁川国际机场 — 下午</span>
+<span class="action">
+到达大厅。钟秀靠在栏杆上。他换了一件干净的白衬衫，但衬衫领子没有熨平，翘着，像一只竖起来的耳朵。他手里拿着一张白纸，上面用黑笔写了"惠美"两个字。字写得很大，很认真。
+</span>
+<span class="action">
+人群从海关涌出。推着行李车的老人。抱着免税店袋子的情侣。一群穿着统一运动服的旅行团。
+</span>
+<span class="action">
+然后他看到了她。
+</span>
+<span class="action">
+惠美出来了。晒黑了一点点。穿着一件非洲风格的印花长裙。她看起来不一样了——像是在什么地方被重新组装过，和出厂设置略有偏移。她推着行李车，上面堆着两个巨大的编织袋和一把非洲鼓。
+</span>
+<span class="action">
+她旁边走着一个人。
+</span>
+<span class="action">
+那人很高。穿着一身看不出牌子的休闲西装——但这种"看不出"本身就是最贵的那个牌子。年纪大概二十七八岁，脸上有一种"从来不知道缺钱是什么感觉"的微笑。他推着自己的 Rimowa 行李箱，步伐不紧不慢，像走在自己家的客厅里。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（远远地挥手）</span>
+<span class="dialogue">钟秀！这边！</span>
+<span class="action">
+她跑过来，给了钟秀一个结实的拥抱。很用力。钟秀手里的纸被捏皱了。她身上有飞机上的气味，还有一种他也说不清的别的味道——像是远方。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（松开，转向那个男人）</span>
+<span class="dialogue">这是 Ben。我们在内罗毕认识的。Ben，这是钟秀，我跟你说的那个朋友。</span>
+<span class="character">Ben</span>
+<span class="paren">（伸出手）</span>
+<span class="dialogue">你好。惠美说了很多关于你的事。说你救过她的命。</span>
+<span class="character">钟秀</span>
+<span class="paren">（握手，手劲很轻）</span>
+<span class="dialogue">我没有。</span>
+<span class="character">Ben</span>
+<span class="paren">（笑）</span>
+<span class="dialogue">她说了才算。</span>
+<span class="action">
+Ben 的笑容很自然。太自然了。让钟秀想起超市里那些排列整齐的水果——每一个角度都似乎被精心设计过。
+</span>
+<span class="action">
+三人走出机场。停车场上，Ben 的车不是从租车公司租的——是一辆保时捷卡宴，首尔牌照。一个司机等在车旁，见 Ben 出来，立刻拉开后车门。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（回头）</span>
+<span class="dialogue">一起吃晚饭吧。我知道一家好地方。我请客。</span>
+<span class="character">钟秀</span>
+<span class="paren">（看惠美）</span>
+<span class="dialogue">我开了卡车。</span>
+<span class="character">Ben</span>
+<span class="dialogue">没关系。跟着我们。不远。</span>
+<span class="action">
+钟秀走向自己的旧卡车。他发动引擎。引擎咳了两下才喘过气来，像一个被烟呛到的老人。透过挡风玻璃，他看到保时捷无声地滑出车位。惠美坐在副驾驶。她在笑。隔着玻璃，她的嘴型很大，像第一次见面时一样。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="act-break">
+<div class="act-title">第二幕</div>
+<div class="act-divider"></div>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">09</div>
+<span class="slug">内景 · 高级日料餐厅 — 夜晚</span>
+<span class="action">
+一家隐藏在江南小巷里的日料店。木制吧台，灯光调成琥珀色。每一道光都像被仔细称量过的黄金粉末。厨师在吧台后面切生鱼片，刀工精准得像外科医生在动手术。
+</span>
+<span class="action">
+Ben、惠美和钟秀坐在角落的包间里。桌上摆满了精致的刺身拼盘和清酒。钟秀吃得很慢。筷子总是犹豫。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（给钟秀倒酒）</span>
+<span class="dialogue">惠美说你是作家。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">……还不是。在写。没写完。</span>
+<span class="character">Ben</span>
+<span class="dialogue">写什么？</span>
+<span class="character">钟秀</span>
+<span class="paren">（沉默了片刻）</span>
+<span class="dialogue">说不清楚。</span>
+<span class="character">Ben</span>
+<span class="dialogue">说不清楚最好。说得清楚的东西，不是小说，是说明书。</span>
+<span class="action">
+惠美在旁边大笑。她已经喝了三壶清酒。用筷子敲着碗边。
+</span>
+<span class="character">惠美</span>
+<span class="dialogue">Ben 可好玩了。他什么都懂。但什么都只懂一点点。恰到好处的一点点。你问他什么他都能接住。不像我们——我们活着就已经耗尽全力了。</span>
+<span class="character">Ben</span>
+<span class="paren">（微笑）</span>
+<span class="dialogue">惠美很会说话。</span>
+<span class="character">惠美</span>
+<span class="dialogue">我只是说实话。</span>
+<span class="action">
+钟秀看着 Ben 切生鱼片。Ben 用筷子的方式很优雅——不是韩国人那种豪放的扒拉，而是像日本茶道一样，每一下都有仪式感。钟秀注意到 Ben 的手腕上戴着一块表。他不认识那个牌子，但知道很贵。因为那块表不反光——真正贵的东西都不反光。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">10</div>
+<span class="slug">内景 · Ben 的公寓 — 夜晚</span>
+<span class="action">
+江南区一栋高层公寓的顶层。落地窗占据整面墙，首尔的夜景像一幅电子画挂在外面。室内设计极简：白色墙面、灰色沙发、一张巨大的原木茶桌。厨房是开放式的，所有的电器都是隐藏式的，表面看不到一根电线。
+</span>
+<span class="action">
+Ben 在开放式厨房里煮意面。动作熟练。惠美躺在沙发上，赤着脚，脚趾甲涂成鲜艳的橙色。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（对钟秀）</span>
+<span class="dialogue">你看这房子。像不像杂志照片？我每次来都觉得——我呼吸声太大了。怕把灰尘震下来。</span>
+<span class="action">
+钟秀站在窗边。他的手插在口袋里。口袋里有惠美公寓的钥匙。那个塑料小猫吊坠硌着他的指关节。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（轻声）</span>
+<span class="dialogue">Ben 是做什么的？</span>
+<span class="character">惠美</span>
+<span class="dialogue">我也说不清楚。他说他玩。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">玩？</span>
+<span class="character">惠美</span>
+<span class="dialogue">对。就是——玩。购物，旅行，认识人。他说他的工作就是保持年轻。多酷。</span>
+<span class="action">
+Ben 端着三盘意面走过来。意面上撒着帕尔马干酪和黑松露碎。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（放下盘子）</span>
+<span class="dialogue">来。随便吃。我做饭的水平配不上这间厨房。</span>
+<span class="character">惠美</span>
+<span class="paren">（吃了一口）</span>
+<span class="dialogue">天哪。太好吃了。Ben 什么都做得好。不公平。</span>
+<span class="action">
+钟秀吃了一口。确实好吃。但他嚼着嚼着，忽然发现一件事——Ben 在吃意面的时候，一次只吃一根面条。用叉子卷起来。放进嘴里。咀嚼。咽下。再卷下一根。
+</span>
+<span class="action">
+那不是饥饿。那是品味。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">11</div>
+<span class="slug">外景 · 钟秀家农场 — 黄昏</span>
+<span class="action">
+日落。天空是一种脏脏的粉紫色，像冲了很多遍的咖啡渣。远处那三座废弃的塑料大棚在风里颤抖。塑料布上裂了无数道口子，风从口子里灌进去，发出一种像笛子的声音——只是走音的。
+</span>
+<span class="action">
+Ben 的保时捷停在院子里。很突兀。像一个穿西装的人坐在牛棚里。
+</span>
+<span class="action">
+Ben、惠美和钟秀坐在院子里的旧木桌旁。桌上放着一瓶红酒——Ben 带来的。还有三个纸杯。钟秀从屋里搬出两把褪色的塑料椅。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（环顾四周）</span>
+<span class="dialogue">这里一点都没变。我小时候从坡州镇上骑车过来。有一次车链子断了，推着车走了五公里。那时候这条路还是土路。</span>
+<span class="character">Ben</span>
+<span class="paren">（看着那三座大棚）</span>
+<span class="dialogue">那些——是做什么的？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">以前种番茄。后来不种了。荒了。</span>
+<span class="character">Ben</span>
+<span class="dialogue">荒了多久了？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">三四年吧。</span>
+<span class="action">
+Ben 站起来。端着酒。走向最近的一座大棚。塑料布被风吹得猛地鼓起来又瘪下去。像一个巨大的肺在呼吸——只是里面没有生命。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（没有回头）</span>
+<span class="dialogue">钟秀。你知道我喜欢做什么吗？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">什么？</span>
+<span class="character">Ben</span>
+<span class="dialogue">我喜欢烧塑料大棚。</span>
+<span class="action">
+安静。风突然停了一秒。然后又猛地吹起来。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（愣了一下）</span>
+<span class="dialogue">烧？</span>
+<span class="character">Ben</span>
+<span class="paren">（转身微笑）</span>
+<span class="dialogue">
+大概每两个月一次。选一座废弃的塑料大棚。浇上汽油。点一根火柴。然后就看着它烧。那种感觉——你懂吗？塑料布烧起来很快的。十分钟就没了。只剩下一副黑色的骨架。然后太阳升起来，没有人注意到少了一座大棚。这个世界就是这样的——有些东西消失了，没有人注意到。
+</span>
+<span class="action">
+钟秀看着 Ben。Ben 的微笑没有变化。一丝一毫都没有。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（试探）</span>
+<span class="dialogue">那是犯罪。</span>
+<span class="character">Ben</span>
+<span class="paren">（轻轻点头）</span>
+<span class="dialogue">严格来说。是的。但谁会报警呢？一座废弃的大棚。没有人在乎。</span>
+<span class="action">
+惠美从桌边站起来。她喝了太多酒，步伐有点摇晃。夕阳把她的影子拉得很长，一直延伸到那三座大棚的方向。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（冲着天空）</span>
+<span class="dialogue">我来跳舞。大饥饿之舞。我在肯尼亚学的。</span>
+<span class="action">
+她走到院子中央。脱掉外套。光着胳膊。然后她开始跳舞。
+</span>
+<span class="transition">> 不切。继续：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">12</div>
+<span class="slug">外景 · 农场院子 — 黄昏（连续）</span>
+<span class="action">
+惠美在跳舞。
+</span>
+<span class="action">
+那不是一种漂亮的舞蹈。没有编舞。没有节奏。她闭着眼睛。双臂像鸟的翅膀一样张开。身体在晚风里旋转、扭动、弯曲。有时候她的动作很慢——像在水中。有时候突然猛抽一下——像被电击。
+</span>
+<span class="action">
+她的影子在泥土地上拉长、缩短、分裂、重合。灰尘从她脚底扬起。远处的牛停止了咀嚼，抬头看着。好像在看着什么它无法理解的东西。
+</span>
+<span class="action">
+钟秀看着。Ben 也看着。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（轻声）</span>
+<span class="dialogue">真美。</span>
+<span class="action">
+钟秀没有说话。他的眼眶有点湿。他说不清为什么。不是因为美——是因为某种他不敢命名的东西。是饿。是大饥饿。
+</span>
+<span class="action">
+惠美继续跳。她的胸口剧烈起伏。脸上的肌肉在抽搐。嘴唇在动——好像在说什么话，但没有声音。她把自己变成了一只鸟。变成了一团火焰。变成了一件正在燃烧的东西。
+</span>
+<span class="action">
+她突然停下来。
+</span>
+<span class="action">
+仰面朝天。双臂垂下。像一个被钉在无形十字架上的人。呼吸很重。
+</span>
+<span class="character">惠美</span>
+<span class="paren">（喘着气，没有睁眼）</span>
+<span class="dialogue">那一刻。我感觉自己不存在了。不是消失——是从来没存在过。然后——那个不存在的地方——有一点点暖和。就像太阳照在塑料大棚外面。</span>
+<span class="action">
+沉默。风吹过大棚。塑料布哗哗响。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（鼓掌，缓缓的）</span>
+<span class="dialogue">惠美。你是一个奇迹。</span>
+<span class="character">惠美</span>
+<span class="paren">（睁开眼，笑）</span>
+<span class="dialogue">我知道。</span>
+<span class="action">
+钟秀低头看自己的手。指甲缝里嵌着泥土。他想说话。但找不到合适的词。所有的词都像塑料大棚一样——空的。等着被烧掉。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">13</div>
+<span class="slug">内景 · 钟秀公寓 — 夜晚</span>
+<span class="action">
+几天后。钟秀躺在床上。天花板上那块非洲形状的水渍还在。更暗了。好像非洲在缩小。
+</span>
+<span class="action">
+他拿起手机。给惠美打电话。响了两声。转入语音信箱。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（对着手机，犹豫）</span>
+<span class="dialogue">惠美。是我。那个。你什么时候来拿钥匙？猫我已经喂了。但猫还是没出来。我不知道它到底存不存在。你知道有时候我觉得什么事——</span>
+<span class="action">
+嘟嘟嘟。语音信箱时间到了。自动挂断。
+</span>
+<span class="action">
+钟秀盯着手机屏幕。屏幕上，惠美的 KakaoTalk 头像是一只卡通猫。最后一次在线时间是：昨天下午五点零三分。她的最后一条朋友圈是肯尼亚草原的那张落日照片。配文：大饥饿。来了。
+</span>
+<span class="action">
+他试着再打一次。
+</span>
+<span class="action">
+关机。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">14</div>
+<span class="slug">内景 · 惠美的公寓 — 白天</span>
+<span class="action">
+钟秀用钥匙打开惠美的公寓门。房间里的一切和上一次一样。世界地图还在墙上。非洲草原照片还在。猫粮碗还是满的，猫没有来过。
+</span>
+<span class="action">
+但有一些东西不一样了。
+</span>
+<span class="action">
+床上的被褥被整齐地叠成正方形——不是惠美的风格。她从不叠被子。床头那本《斯瓦希里语入门》不见了。衣柜旁边那个收纳盒也不见了。地上有一根头发——很长的头发，但颜色是浅棕色的。
+</span>
+<span class="action">
+钟秀蹲下来。捡起那根头发。对着窗户的光看。
+</span>
+<span class="action">
+不是惠美的。惠美是黑发。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="act-break">
+<div class="act-title">第三幕</div>
+<div class="act-divider"></div>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">15</div>
+<span class="slug">内景 · 坡州咖啡馆 — 白天</span>
+<span class="action">
+钟秀坐在咖啡馆靠窗的位置。面前放着一杯美式咖啡，已经凉了，没有喝。他面前摊着一本笔记本，上面潦草写了一些句子，又涂掉了。整页纸密密麻麻像一个被反复轰炸过的战场。
+</span>
+<span class="action">
+窗外。街对面。Ben 的保时捷停在路边。
+</span>
+<span class="action">
+钟秀已经跟了他三天。每天开着那辆破卡车，远远地跟着保时捷。像一只跟在渔船后面的海鸥——不远不近，等着渔民扔下什么。
+</span>
+<span class="action">
+Ben 走进一家高端健身会所。大约一个小时后出来。换了一身运动服。开车去了一家画廊——江南区的一栋白色建筑，门卫拉开玻璃门时，玻璃反射的光正好打在钟秀的挡风玻璃上，刺得他眯了眼。
+</span>
+<span class="action">
+钟秀在笔记本上写：Ben 的一天——健身、艺术、晚餐、朋友。没有工作。没有家人。没有任何看起来像"必须做的事情"。
+</span>
+<span class="action">
+他翻到新的一页。写：惠美在哪。
+</span>
+<span class="action">
+然后用笔把这句话涂掉。从不同方向涂。横的。竖的。斜的。直到那四个字被黑色墨水彻底淹没，变成一个黑色的矩形。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">16</div>
+<span class="slug">外景 · 江南区某咖啡店 — 午后</span>
+<span class="action">
+钟秀约了 Ben 在咖啡店见面。Ben 提前到了。坐在户外座位上，面前一杯浓缩咖啡。他戴着一副墨镜，墨镜上映出钟秀走近的影子。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（摘下墨镜，微笑）</span>
+<span class="dialogue">钟秀。好久不见。你瘦了。</span>
+<span class="character">钟秀</span>
+<span class="paren">（坐下，不点咖啡）</span>
+<span class="dialogue">惠美不见了。</span>
+<span class="character">Ben</span>
+<span class="paren">（没有明显反应）</span>
+<span class="dialogue">是吗。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你也联系不上她？</span>
+<span class="character">Ben</span>
+<span class="dialogue">她有时候会消失一阵子。她本来就是那样的人。有一天出现。有一天不见。像月亮。</span>
+<span class="character">钟秀</span>
+<span class="paren">（盯着他）</span>
+<span class="dialogue">你没有去找她？</span>
+<span class="character">Ben</span>
+<span class="paren">（喝了一口咖啡）</span>
+<span class="dialogue">找她？她又不是我的东西。她想去哪里就去哪里。这就是我喜欢她的原因。</span>
+<span class="action">
+钟秀的拳头在桌子底下攥紧。指甲掐进掌心。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你上次烧塑料大棚是什么时候？</span>
+<span class="character">Ben</span>
+<span class="paren">（微笑不变）</span>
+<span class="dialogue">最近没有。太忙了。怎么，你也想试试？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">我不烧东西。</span>
+<span class="character">Ben</span>
+<span class="paren">（身体微微前倾）</span>
+<span class="dialogue">你会的。每个人都会。只是有些人烧大棚，有些人烧别的——烧时间，烧青春，烧掉所有可能性。所有的人都在烧什么东西。区别只在于——你有没有意识到你在烧它。</span>
+<span class="action">
+沉默。咖啡店里有人在大笑。街上有摩托车疾驰而过。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（站起来）</span>
+<span class="dialogue">如果你有她的消息。告诉我。</span>
+<span class="character">Ben</span>
+<span class="paren">（抬头看他）</span>
+<span class="dialogue">当然。</span>
+<span class="action">
+钟秀转身走。走了三步。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（在他身后）</span>
+<span class="dialogue">钟秀。惠美说过一句话。她说，你是一个认真的人。太认真了。所以容易被烧到。注意别被烧到。</span>
+<span class="action">
+钟秀没有回头。他走进街上的阳光里。阳光很猛。但他感觉很冷。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">17</div>
+<span class="slug">内景 · 钟秀公寓 — 夜晚</span>
+<span class="action">
+钟秀坐在桌前。面前摊着笔记本。他拿起笔。开始写。
+</span>
+<span class="action">
+写了一会儿。停下。撕掉这一页。揉成团。扔到墙角。墙角已经有了很多纸团，像一大堆乒乓球。
+</span>
+<span class="action">
+他拿出手机。翻看惠美的 KakaoTalk 聊天记录。从头开始看。
+</span>
+<span class="dialogue">「惠美：钟秀，我今天又扮了一天兔子。一个小孩冲我喊，兔子是假的。他妈说你才是假的。我爱那位妈妈。」</span>
+<span class="dialogue">「惠美：我存够钱啦。去非洲的钱。下下个月。我要去看狮子。不是动物园里的。是真的。」</span>
+<span class="dialogue">「钟秀：你去非洲干什么。」</span>
+<span class="dialogue">「惠美：找一个能让我感受到小饥饿的地方。」</span>
+<span class="dialogue">「钟秀：什么意思。」</span>
+<span class="dialogue">「惠美：现在我只感受到大饥饿。」</span>
+<span class="action">
+钟秀放下手机。躺在床上。盯着天花板上的水渍。那块非洲的形状在夜里看不到。因为太暗了。但他知道它在那里。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（对着天花板）</span>
+<span class="dialogue">你到底在哪里。</span>
+<span class="action">
+没有人回答。只有冰箱的噪音。嗡嗡嗡。像一只蜜蜂。困在冰箱里。永远出不去。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">18</div>
+<span class="slug">外景 · 江南区某高端餐厅 — 夜晚</span>
+<span class="action">
+一家米其林二星餐厅的露台。Ben 和一群朋友在聚餐。大约七八个人，都穿着得体，笑声像被调过音量的背景音乐——不会太大声，不会太安静。恰到好处。
+</span>
+<span class="action">
+钟秀站在街对面的便利店门口。透过玻璃门往露台看。Ben 旁边坐着一个新的女孩。短发，穿一件白色的连衣裙。她在笑，嘴型很大。
+</span>
+<span class="action">
+钟秀的呼吸变重了。他推门走进便利店。
+</span>
+<span class="action">
+买了一包烟。站在门口。点燃。深吸一口。烟雾在黄色的路灯下显得很稠，像撕下来的丝绵，在空中滞留着不肯散去。
+</span>
+<span class="action">
+他盯着那个女孩。她也有一副喜欢大笑的嘴。但她是短发。惠美是长发。惠美跳舞的时候会把头发甩起来。像黑色的火焰。
+</span>
+<span class="action">
+钟秀掐灭烟。把烟蒂扔在地上。踩了一脚。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">19</div>
+<span class="slug">内景 · Ben 的公寓 — 夜晚</span>
+<span class="action">
+钟秀在 Ben 的公寓楼下站了很久。保安看了他好几次。他把卡车的遮阳板放下来。假装在看什么东西。其实什么也没有看。
+</span>
+<span class="action">
+他最终没有上去。他开着卡车回到坡州。
+</span>
+<span class="action">
+一路向北。从江南到坡州大约一个小时。高速公路两侧的风景从写字楼逐渐变成农田。路灯越来越少。越来越暗。最后只剩下轮胎碾过路面的声音——沙沙沙，像一个持续不断的、无声的叹息。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">20</div>
+<span class="slug">外景 · 坡州塑料大棚 — 夜晚</span>
+<span class="action">
+深夜。没有月亮。远处有狗在叫，断断续续。钟秀打着手电筒，在坡州附近的农田里走。他在检查塑料大棚。
+</span>
+<span class="action">
+一座。两座。三座。
+</span>
+<span class="action">
+每一座大棚他都停下来。用手电照进去。大部分是空的。里面堆着废弃的塑料箱、生锈的农具、枯死的藤蔓。有些大棚的塑料布已经破了大半，月光漏进来。有些还完好，里面漆黑一片，像一个关掉灯的水族箱。
+</span>
+<span class="action">
+他在笔记本上记录位置。画了一张粗略的地图。标注了每一座大棚的位置、颜色（白色、半透明、发黄）、塑料布的破损程度。
+</span>
+<span class="action">
+凌晨三点。他回到卡车里。打开暖风。但没有开走。就这么坐着。看着挡风玻璃上慢慢凝起雾气。他用手指在雾气上写了一个字——"找"。
+</span>
+<span class="action">
+然后发动引擎。驶回农场。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">21</div>
+<span class="slug">内景 · 农场老屋 — 凌晨</span>
+<span class="action">
+钟秀走进父亲的房间。房间还是从前的样子。床、衣柜、一台老式电视机。床头柜上放着一本相册。他以前从来没打开过。
+</span>
+<span class="action">
+今天他打开了。
+</span>
+<span class="action">
+第一页：父亲年轻时的照片。穿着军装，站在什么地方，看起来很瘦。第二页：母亲。完整的脸。微笑着。头发烫成大卷。第三页：还是母亲。但脸被剪掉了。第四页：整页被撕掉了，留下参差不齐的纸边，像一排坏掉的牙齿。第五页是空的。
+</span>
+<span class="action">
+钟秀把相册放在一边。打开父亲的衣柜。衣柜里塞满了旧衣服。一件旧夹克的右边口袋里装着一把折叠小刀。很旧。刀柄已经磨得发亮，木纹上渗透着一层暗黑色的油脂——可能是汗，也可能是别的。
+</span>
+<span class="action">
+他把折叠小刀放进口袋。合上衣柜。走出房间。走出屋子。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="act-break">
+<div class="act-title">第四幕</div>
+<div class="act-divider"></div>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">22</div>
+<span class="slug">外景 · 江南区 — 白天</span>
+<span class="action">
+一个晴朗的星期天下午。钟秀把卡车停在 Ben 公寓楼下一个不显眼的位置。他戴着棒球帽。帽檐压得很低。
+</span>
+<span class="action">
+等了两个小时。
+</span>
+<span class="action">
+Ben 出来了。一个人。开着他的保时捷。钟秀发动卡车，跟在后面。保持着大约三辆车的距离。保时捷没有上高速，而是往城市边缘开去。上了盘山公路。经过几片零星的居民区。最后停在一处正在开发的工地附近。
+</span>
+<span class="action">
+钟秀也停下车。很远。几乎看不到。他拿起望远镜——一个旧的双筒望远镜，是他父亲打猎用的，镜片上有一道划痕，看出去的世界像是被一条细细的闪电反复劈开。
+</span>
+<span class="action">
+Ben 从车上下来。走到工地边缘的一座废弃塑料大棚前。他在那儿站了一会儿。然后从后备箱里拿出一样东西——一个红色的汽油桶。
+</span>
+<span class="action">
+钟秀的心跳加速了。
+</span>
+<span class="action">
+但 Ben 没有走进大棚。他只是把汽油桶放在大棚旁边，然后靠在保时捷上，拿出手机。好像在发短信。然后又收回口袋。他在看夕阳。夕阳很红。他把手插在口袋里。站着。一动不动。像一个沉默的雕塑。像一尊等待被点燃的引信。
+</span>
+<span class="action">
+钟秀把望远镜放下。再拿起来。再放下。他的手掌全是汗。握望远镜的地方留下了两道潮湿的印记。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">23</div>
+<span class="slug">内景 · 坡州派出所 — 白天</span>
+<span class="action">
+钟秀坐在派出所的塑料椅上。一个中年警察在柜台后面吃泡面。泡面的味道填满了整个房间。墙上贴着通缉令和反诈骗海报。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（站起来走到柜台前）</span>
+<span class="dialogue">我要报案。失踪人口。</span>
+<span class="character">警察</span>
+<span class="paren">（抬头，嘴里还在嚼）</span>
+<span class="dialogue">姓名。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">申惠美。二十三岁。女性。身高大约一米六五。最后一次联系是——</span>
+<span class="character">警察</span>
+<span class="paren">（打断）</span>
+<span class="dialogue">你是她什么人。</span>
+<span class="character">钟秀</span>
+<span class="paren">（停顿）</span>
+<span class="dialogue">朋友。小学同学。</span>
+<span class="character">警察</span>
+<span class="paren">（放下泡面，开始在电脑上打字）</span>
+<span class="dialogue">家人呢？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">她没有家人。一个人住。</span>
+<span class="character">警察</span>
+<span class="paren">（打字的手停了一下）</span>
+<span class="dialogue">欠钱了吗？信用卡？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">不是那种失踪。她——她不是那种人。</span>
+<span class="character">警察</span>
+<span class="paren">（继续打字，漫不经心）</span>
+<span class="dialogue">这种情况每天都有。过几天自己就回来了。大部分。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">她不一样。</span>
+<span class="character">警察</span>
+<span class="paren">（停下来，看着钟秀）</span>
+<span class="dialogue">你有什么证据？有人威胁她？绑架？</span>
+<span class="action">
+钟秀沉默了。他想说 Ben。但他没有证据。他什么都没有。只有一个猜测。像雾一样。抓不住。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">……没有。</span>
+<span class="character">警察</span>
+<span class="paren">（叹了口气）</span>
+<span class="dialogue">我们记录一下。如果有消息通知你。留个电话。</span>
+<span class="action">
+钟秀写下了自己的电话号码。数字写得很用力。笔尖把纸划破了。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">24</div>
+<span class="slug">外景 · 惠美家附近的街道 — 黄昏</span>
+<span class="action">
+钟秀在惠美家附近的街道上徘徊。他走进每一家便利店、洗衣店、小吃店。掏出手机里惠美的照片。问店员：你见过这个人吗。
+</span>
+<span class="action">
+第一家：摇头。第二家：摇头。第三家：摇头。第四家：一个正在擦玻璃的大妈眯着眼睛看了三秒钟，摇了摇头。第五家：一个正在打游戏的年轻店员连头都懒得抬。
+</span>
+<span class="action">
+第六家。一家二十四小时无人洗衣店。钟秀走进去。所有的洗衣机都在转。滚筒里的衣服翻来覆去，像被困在一个循环里的人。他把照片贴在玻璃门上。当然。没有人回答。洗衣机不会说话。
+</span>
+<span class="action">
+外面天色已暗。路灯亮了。钟秀坐在洗衣店门口的长椅上。看着对面的便利店灯光。那个白色连衣裙的女孩会不会就在某一家便利店里，对着冰柜挑一瓶饮料？短发。笑声很大。但不是惠美。
+</span>
+<span class="action">
+他的手机震动了一下。他迅速掏出来。
+</span>
+<span class="action">
+是短信广告。「您本月流量已用完，回复 1 购买 2GB 流量包。」
+</span>
+<span class="action">
+他把手机重新塞回口袋。站起来。走进夜色。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">25</div>
+<span class="slug">内景 · Ben 的公寓 — 夜晚 · 数日后</span>
+<span class="action">
+钟秀站在 Ben 的公寓楼前。这一次他没有停在路边。他没有开卡车。他是搭公交来的。他穿着那件旧夹克。口袋里有那把折叠小刀。
+</span>
+<span class="action">
+他进入大堂。保安在柜台后面看手机，没有注意到他。电梯门开了。他走进去。按下顶层按钮。电梯很安静。没有任何声音。镜面墙壁上，他看到了自己的脸——凹陷的眼眶、干裂的嘴唇、两天没刮的胡茬。他看起来像一个陌生人。
+</span>
+<span class="action">
+到达顶层。门开了。走到 Ben 的门前。
+</span>
+<span class="action">
+他按门铃。等了一会儿。门开了。Ben 穿着一件深蓝色的家居服。手里端着一杯红酒。背景里飘出爵士乐——是很轻很慢的那种，小号吹得懒洋洋的，像是喝醉了。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（没有惊讶）</span>
+<span class="dialogue">钟秀。进来。</span>
+<span class="action">
+钟秀走进去。客厅没有变化。白色墙面。灰色沙发。落地窗外的首尔夜景依然像一幅电子画。只不过今天窗外有雾——夜景变得模糊，像一幅没对上焦的照片。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（走向厨房）</span>
+<span class="dialogue">喝点什么。威士忌？红酒？还是咖啡？</span>
+<span class="character">钟秀</span>
+<span class="dialogue">不必了。</span>
+<span class="action">
+钟秀站在客厅中央。手插在口袋里没有拿出来。他扫视四周。餐桌上有一瓶开过的红酒，两只酒杯。一只杯子边缘沾着口红。鲜艳的橙红色。
+</span>
+<span class="action">
+他的呼吸变重了。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你有惠美的消息吗。</span>
+<span class="character">Ben</span>
+<span class="paren">（倒了一杯威士忌，自饮一口）</span>
+<span class="dialogue">钟秀。我上次说过——我不知道她在哪。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你一点都不在乎？</span>
+<span class="character">Ben</span>
+<span class="paren">（转身，靠在吧台上，看着钟秀）</span>
+<span class="dialogue">
+在乎。当然在乎。但我的在乎和你的在乎不一样。你在乎一个人，是想把她关在一个你知道在哪儿的地方。我在乎一个人，是愿意让她来去自由。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你烧大棚的时候。也这么想的吗。</span>
+<span class="action">
+房间里突然很安静。爵士乐还在放。但好像变慢了。每一个音符都拉得很长。鼓刷在鼓面上划过的声音，像手指划过皮肤。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（放下威士忌杯，声音变得很低）</span>
+<span class="dialogue">钟秀。我给你讲个比喻。你是一个作家，你应该能理解比喻。这个世界有太多塑料大棚。没人要的大棚。它们立在那里，占地方，挡太阳。它们已经死了。只是还没倒。我只是帮它们完成最后一步。这是——一种自然清理。你懂吗。</span>
+<span class="character">钟秀</span>
+<span class="paren">（声音发抖）</span>
+<span class="dialogue">那人呢。</span>
+<span class="action">Ben 看着钟秀。他的眼神没有任何波动。像两块磨光的鹅卵石，表面光滑，看不出里面是否有纹路。</span>
+<span class="character">Ben</span>
+<span class="dialogue">钟秀。你确定你想问的是这个。</span>
+<span class="action">钟秀把手从口袋里抽出来。空的。他握紧拳头。然后又松开。又握紧。反复三次。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">如果你做了任何事——</span>
+<span class="character">Ben</span>
+<span class="paren">（打断，微笑）</span>
+<span class="dialogue">那你打算怎么办。报警？写一篇小说？还是——也烧一座大棚？</span>
+<span class="action">钟秀没有回答。他转身。走向门口。走到一半停下来。</span>
+<span class="character">钟秀</span>
+<span class="paren">（没有回头）</span>
+<span class="dialogue">我会找到她的。</span>
+<span class="character">Ben</span>
+<span class="paren">（在他身后，声音平静）</span>
+<span class="dialogue">祝你找到。</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">26</div>
+<span class="slug">外景 · 坡州农田 — 黎明</span>
+<span class="action">
+日出前。天空从深紫色渐渐变成灰蓝色。像一块正在被漂洗的布料。露水很重。钟秀的鞋子湿透了。他走在田埂上。手电筒已经没电了。他凭着记忆走。
+</span>
+<span class="action">
+他来到一座大棚前。停下。用手电筒的残光看了一下——这是他笔记本上标注的第四十七座大棚。也是最后一座。
+</span>
+<span class="action">
+塑料布完好。他掏出折叠小刀。划开一道口子。钻进去。
+</span>
+<span class="action">
+里面很暗。空气中有腐烂的有机物和潮湿土壤的气味。角落里堆着一些旧农具。还有一个铁皮柜子——锈迹斑斑。他拉开柜门。空的。只有一只蜘蛛匆忙地爬走了。
+</span>
+<span class="action">
+他在大棚中间站了一会儿。然后蹲下来。看着地面。他的影子投在泥土上——被入口处漏进来的光拉得很长。看起来不像一个人。像一个符号。一个他还没写出来的句子。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">27</div>
+<span class="slug">外景 · 江南区某高级百货商场停车场 — 黄昏</span>
+<span class="action">
+Ben 从百货商场出来。手里提着几个购物袋。袋子上的 logo 是法文，镀金的。他走向自己的保时捷。用遥控钥匙开门。尾灯闪了两下，很乖巧，像宠物狗摇了摇尾巴。
+</span>
+<span class="action">
+他没有注意到停在远处的一辆旧卡车。没有注意到卡车里坐着的人——钟秀，正透过挡风玻璃看着他。挡风玻璃上还有那天晚上钟秀用手指写下的"找"字。雾气早已散去，但在合适的光线下，似乎还隐约可见那个字残存的痕迹。
+</span>
+<span class="action">
+Ben 把袋子放进后备箱。后备箱自动缓缓关上，没有发出任何声音。他坐进驾驶座。关上门。引擎发动。保时捷无声地滑出停车场。汇入车流。消失在黄昏里。
+</span>
+<span class="action">
+钟秀发动卡车。没有跟上去。他把两个手掌平放在方向盘上。低着头。呼吸。一下。两下。三下。车窗外，夜幕降临。城市的霓虹灯一盏接一盏亮起来。整座城市像一座巨大的塑料大棚——灯火通明。里面装满了活着的人。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="act-break">
+<div class="act-title">终 章</div>
+<div class="act-divider"></div>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">28</div>
+<span class="slug">外景 · 钟秀家农场 — 冬天</span>
+<span class="action">
+冬天到了。那三座废弃的塑料大棚还在风里颤抖。塑料布裂了更多的口子。雪从口子里飘进去。落在黑色的泥土上。白色的雪。黑色的土。形成了强烈的对比——像一张曝光过度的黑白照片。
+</span>
+<span class="action">
+钟秀站在大棚前。穿着一件旧军大衣。呼出的白气在冷空气里迅速消散，像是语言被冻结然后碎掉。
+</span>
+<span class="action">
+他从口袋里拿出一个打火机。一次性的。透明塑料壳已经磨花了，能看到里面还剩下半管液体。
+</span>
+<span class="action">
+他看着打火机。打了三次火。第一次没着。第二次跳了一下就灭了。第三次——火苗稳定了。很小。橘黄色的。在寒风里瑟瑟发抖，像一只刚刚孵出来的小鸟。
+</span>
+<span class="action">
+他把打火机握在手里。火光照亮了他的脸。他的脸上没有表情。但他的眼睛里有一些东西——那些东西无法用词语描述。你只能说——它们在动。在燃烧。
+</span>
+<span class="action">
+他抬头看着面前的大棚。塑料布被风吹起来又落下。像一面旗帜——不，更像一面裹尸布。白色的、半透明的、等待着什么的。
+</span>
+<span class="action">
+他把打火机举到大棚的塑料布旁边。
+</span>
+<span class="action">
+停了很久。
+</span>
+<span class="action">
+风吹着打火机的火苗。倾斜。但没灭。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（轻声，像对自己说，又像对空气说，又像对那个不在房间里的听众说）</span>
+<span class="dialogue">大饥饿到底是什么。是不是——当你意识到这个世界不需要你。但你还想留下一点痕迹。哪怕是一点灰烬。</span>
+<span class="action">
+他把打火机收进口袋。转身走回屋里。
+</span>
+<span class="action">
+在他的身后，三座大棚立在冬日的北风里。它们没有被点燃。它们继续站在那里——空的，破的，等着下一个春天的来临。或者，等着一根火柴。
+</span>
+<span class="transition">> 淡出至黑。</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">29</div>
+<span class="slug">内景 · 钟秀的公寓 — 夜晚 · 数月后</span>
+<span class="action">
+钟秀坐在桌前。面前是那台老式笔记本电脑。屏幕上是一个空白的 Word 文档。光标在左上角闪动着。闪了很长时间。他一个字也没有打进去。
+</span>
+<span class="action">
+他终于开始打字。手指敲打键盘，在安静的房间里发出一种沉闷的、有节奏的声响。
+</span>
+<span class="action">
+屏幕上出现了第一行字：
+
+</span>
+<span class="action">
+「她第一次跟我说话的时候，我正在首尔街头推一辆手推车。轮子卡在路缝里。她说，李钟秀，你一点都没变。但其实，我已经变了。」
+</span>
+<span class="action">
+他停下来。看了一遍刚才写的。然后删掉最后五个字。改成：
+</span>
+<span class="action">
+「但其实，我们都变了。」
+</span>
+<span class="action">
+然后又删掉。改成：
+</span>
+<span class="action">
+「但其实，一切都没有变。只是大棚烧完了，灰烬被风刮走了，然后没有人记得那里曾经有一座大棚。」
+</span>
+<span class="action">
+他靠在椅背上。房间很安静。冰箱还在响。那只永远困在冰箱里的蜜蜂。猫没有来。猫可能从来没有存在过，也可能只是饥渴感的一种具象化——一种在角落里等着被喂养的、无人认领的饥渴。
+</span>
+<span class="action">
+窗外是一个普通城市的夜晚。有人出生。有人死去。有人跳大饥饿之舞。有人在烧塑料大棚。有人坐在房间里，对着一片空白，努力把虚无变成句子。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（对着屏幕，很轻很轻）</span>
+<span class="dialogue">我会写完的。惠美。我会写完的。</span>
+<span class="action">
+光标继续闪。一下。两下。三下。
+</span>
+<span class="action">
+他按下 Ctrl+S。
+</span>
+<span class="transition">> 淡出至黑。</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">· 尾声 ·</div>
+<span class="slug">外景 · 非洲大草原 — 日落 · 梦境 / 记忆 / 不存在之地的某个黄昏</span>
+<span class="action">
+落日。大得不像真的。金黄色的草原一望无际。没有路。没有电线杆。没有塑料大棚。没有任何人造的东西。只有草、天空、落日——和一只羚羊的尸体。它躺在草地上，腹部被撕开了，内脏已经不见了。鬣狗来过。秃鹫来过。蚂蚁正在来。蚂蚁的队伍排得很长，像一串省略号，从地平线那头一直延伸过来。
+</span>
+<span class="action">
+惠美站在那里。她穿着那件非洲印花长裙。赤脚。她看着那只死去的羚羊。表情很平静，像一个在看艺术品的参观者。
+</span>
+<span class="action">
+她举起双臂——开始跳舞。
+</span>
+<span class="action">
+没有音乐。但她的身体在节奏里。在只有她能听到的某种声音里。她的舞不是快乐。也不是悲伤。它是一些介于两者之间的东西——就像被撕开的羚羊腹部。不是生。不是死。是两者之间的那个瞬间。
+</span>
+<span class="action">
+一轮巨大的落日渐渐沉入草线以下。草原变成紫红色。然后是灰色。然后什么都看不见了。只有风吹过草叶的声音。沙沙沙。沙沙沙。那声音穿过草原，穿过地球，穿过语言——变成了一个持续不断的、无声的回答。
+</span>
+<span class="action">
+屏幕全黑。
+</span>
+<span class="action">
+一行白色字幕缓缓浮现：
+</span>
+<span class="character"></span>
+<span class="dialogue">有些东西消失了。<br>没有人注意到。<br>但这并不意味着<br>它不曾存在过。</span>
+<span class="transition">—— 终 ——</span>
+</div>
+
+<!-- === 扩充场景 === -->
+
+<div class="scene-block">
+<div class="scene-number">30</div>
+<span class="slug">内景 · 坡州法院 — 白天</span>
+<span class="action">
+坡州地方法院。一间沉闷的法庭。天花板上的日光灯管在嗡嗡响，其中一根已经快坏了，每隔几秒就闪一下。法官席后面的国徽蒙着一层灰。旁听席只有三个人——钟秀，一个打瞌睡的老头，和一个不停地用圆珠笔在报纸上画圈的大妈。
+</span>
+<span class="action">
+被告席上站着钟秀的父亲。李京哲。五十七岁。穿着一件借来的西装，袖子太长，堆在手腕上像一个多余的承诺。他的头发剪得很短，但白发已经漫过了黑发，像一层淡淡的霜，覆在一场迟来的冬天的旷野上。
+</span>
+<span class="action">
+罪名：暴力抗法、妨害公务。因为拒绝拆迁自家的养牛场——那三座塑料大棚旁边的那片地。开发商带着推土机来，他拿猎枪对准了他们的轮胎。枪里没有子弹。但法律不关心枪里有没有子弹。
+</span>
+<span class="character">法官</span>
+<span class="paren">（读判决书，声音没有起伏）</span>
+<span class="dialogue">被告李京哲。暴力抗法。妨害公务。认罪态度恶劣。判处有期徒刑一年六个月。缓刑三年。没收作案工具——猎枪一支。</span>
+<span class="action">
+父亲没有表情。从头到尾没有表情。像一个把脸寄存到别处的人，忘记去取了。
+</span>
+<span class="action">
+法槌落下。声音很轻。但在这个近乎空荡的法庭里，像一颗钉子砸进了棺材。
+</span>
+<span class="action">
+钟秀坐着。他的手平放在膝盖上。他的指甲干净了——他刚才在洗手间洗过手。他洗了三遍。把指甲缝里的泥土一点一点地挑出来，直到看不见任何黑泥。但那种像腐烂有机物和潮湿土壤的气息始终残留在记忆里，怎么洗也洗不掉。
+</span>
+<span class="action">
+法警领着父亲从侧门出去。路过钟秀旁边时，父亲停下了一秒钟。他看着钟秀。嘴巴张了张。像要说些什么——但最后什么都没说。他继续走了。袖口上有干掉的泥，每一步都掉下来一些碎屑。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（没有站起来，也没有叫住他）</span>
+<span class="dialogue"></span>
+<span class="action">
+只是看着父亲的背影消失在侧门的阴影里。然后低下头，看着自己洗干净的手。手指缝里什么都没有。但他还是在看，好像泥土仍然嵌在那里，在角质层下面，在那些不被肉眼可见的纹路里生根。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">31</div>
+<span class="slug">内景 · 坡州农协办公室 — 白天</span>
+<span class="action">
+坡州农业协同组合办公室。一间老旧的房间。墙上挂着一张泛黄的坡州行政地图，地图的边角卷了起来，像一片枯叶的边缘。钟秀坐在一位中年女职员对面。女职员的眼镜链是金色的，垂在耳边，随着她翻文件的动作轻轻晃动。
+</span>
+<span class="character">女职员</span>
+<span class="paren">（翻阅文件）</span>
+<span class="dialogue">这片地——你父亲名下的。养牛场加三座大棚。总面积大约两千坪。地的产权没有问题。但大棚已经废弃四年。根据农业振兴法，连续弃耕三年以上，农地银行有优先收购权。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">我不卖。</span>
+<span class="character">女职员</span>
+<span class="paren">（抬头看了他一眼）</span>
+<span class="dialogue">不是卖不卖的问题。如果你不恢复耕种——他们可以强制执行。开发商已经递交了土地转用申请。你父亲之所以被起诉——你知道吧——跟这个也有关。</span>
+<span class="action">
+钟秀看着桌上那张坡州地图。他的手指指到农场的位置。地图上那里是一个小点。旁边标注了几个字：农业用地·三级。他指了三秒钟。然后把手收回来。指甲干净，没有泥。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（站起来）</span>
+<span class="dialogue">我知道了。</span>
+<span class="action">
+走出办公室。走廊很长。地面是绿色水磨石，已经磨得发亮。他走到走廊尽头，推开门。阳光很猛。眯起眼睛。远处农田上，某座塑料大棚在反光——远远的，像一滴从天边溢出来的白色颜料。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">32</div>
+<span class="slug">内景 · Ben 的朋友聚会 — 夜晚</span>
+<span class="action">
+清潭洞某高档公寓楼顶层的私人聚会。大约十二个人。灯光调得很暗，只有角落里的落地灯和茶几上几根蜡烛在发亮。音乐是某种电子氛围——贝斯很重，但音量很低，像一只心跳得很慢的大型动物在睡觉。空气中是香薰蜡烛和红葡萄酒混合的气味。
+</span>
+<span class="action">
+钟秀被 Ben 邀请——准确地说，是 Ben 发了一条短信：「今晚有朋友聚会。来。地址——清潭洞 XX 大楼顶楼。8 点。」钟秀没有回复。但他来了。穿着一件洗过太多次的灰色衬衫。衬衫的领子依然没有熨平，在锁骨上方倔强地翘着。
+</span>
+<span class="action">
+聚会的人都在聊天。话题从 NFT 聊到圣巴特岛度假，从某个硅谷基金聊到最近苏富比拍卖的一幅巴斯奎特。没有人提到工作——他们似乎都没有工作。但他们的信用卡从不断供。钟秀坐在角落的沙发上，端着一杯他没怎么喝的香槟。香槟的气泡正在一个个破灭，在他杯子里发出微弱的、几不可闻的爆裂声。
+</span>
+<span class="character">某女孩 A</span>
+<span class="paren">（短发，穿着纪梵希，对 Ben）</span>
+<span class="dialogue">Ben 欧巴——你上次说你烧什么东西来着？大棚？真的假的？</span>
+<span class="character">Ben</span>
+<span class="paren">（斜靠在落地窗前，背对夜景）</span>
+<span class="dialogue">真的。很有趣。你想看吗。</span>
+<span class="character">某女孩 A</span>
+<span class="paren">（兴奋地拍手）</span>
+<span class="dialogue">想看！什么时候？带我！</span>
+<span class="character">Ben</span>
+<span class="paren">（微笑）</span>
+<span class="dialogue">很快。最近就有一次。我物色好了一个地方——坡州那边。有一片特别好的大棚。特别……孤零零的。像在等着我。</span>
+<span class="action">
+钟秀的手指收紧了。酒杯发出了极其细微的咔嚓声——没有碎，但像要碎了。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（突然转向钟秀）</span>
+<span class="dialogue">钟秀。你是坡州来的吧。那一带你熟。</span>
+<span class="character">钟秀</span>
+<span class="paren">（声音很平）</span>
+<span class="dialogue">熟。</span>
+<span class="character">Ben</span>
+<span class="dialogue">改天一起。我指给你看是哪一座。</span>
+<span class="action">
+所有的人都看着钟秀。他们的目光很有礼貌，但礼貌本身就是一种距离。钟秀喝了一口香槟。气泡在舌头上炸开。微苦。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">好。</span>
+<span class="action">
+他放下酒杯。站起来。说他要去趟洗手间。但他没有去洗手间。他走进电梯。下楼。走出大堂。走到街上。春天的夜风很凉。他蹲在垃圾桶旁边。吐了。不是喝酒吐的，是因为反胃。反胃不是因为喝多了，是因为那些人的微笑太像 Ben 了，或者 Ben 的微笑太像那些人了——他已经分不清。就像他分不清一座大棚和另一座大棚。空的，白的，站着的，等着的。它们看起来都一样。它们死了也不会有谁发现。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">33</div>
+<span class="slug">内景 · 钟秀公寓 — 深夜</span>
+<span class="action">
+钟秀回到公寓。踢掉鞋子。没有开灯。他躺在床上。盯着天花板上的水渍。那块像非洲的形状在夜里看不见。
+</span>
+<span class="action">
+他拿出手机。翻看惠美的聊天记录。从头开始。第十遍。可能第二十遍。他已经记不清了。
+</span>
+<span class="action">
+他翻到一张照片——惠美在非洲拍的。她站在草原上。落日在她背后。她双臂张开。像一个十字架。不对——像一只鸟。一只困在地面上、正在努力想起飞行姿势的鸟。她的嘴型很大，在笑——但她的眼睛没有笑。她的眼睛在看着镜头外面的什么东西，看着镜头之外那片不可见的旷野。好像她在看大饥饿本身。好像她正在被它吃掉。并且很高兴被吃掉。
+</span>
+<span class="action">
+钟秀把手机放在胸口上。屏幕熄灭。房间全黑。他闭上眼睛。但眼睛在眼皮后面还是睁着的。他看到了很多画面——切割成碎片：惠美跳舞。塑料大棚燃烧。父亲的背影。Ben 的微笑。那只从来没有出现过的猫——他给它起了个名字，Boil，沸腾。但他从来没有见过它。也许它不叫 Boil。也许它根本不存在。也许惠美从来没有养过猫。也许一切都是一场精心设计的虚构——在大饥饿面前，所有的虚构都是一种自我保护，一种在彻底崩塌之前勉强维持的骨架，像塑料大棚在雪中撑住自己，直到某一天风太大了，雪太厚了，然后它终于塌掉。
+</span>
+<span class="transition">> 淡出：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">34</div>
+<span class="slug">外景 · 坡州某大棚 — 凌晨</span>
+<span class="action">
+凌晨四点半。没有太阳。东方刚刚有一点微弱的灰白色，冷得像是褪了色的屏幕。钟秀开着卡车，停在一座大棚附近。
+</span>
+<span class="action">
+他下车。从后备箱拿出一个红色的汽油桶。和他看到 Ben 拿的那个一模一样——他专门去加油站买的。加满。二十升。沉甸甸的，压得他的手腕有点酸。
+</span>
+<span class="action">
+他把汽油桶放在大棚旁边。然后靠在卡车上，拿出手机。发了一条短信。收件人：Ben。
+</span>
+<span class="character">钟秀（短信）</span>
+<span class="paren">（打字）</span>
+<span class="dialogue">坡州。老农场。今天。你来。</span>
+<span class="action">
+发送。
+</span>
+<span class="action">
+他把手机收回口袋。看着天际线。东方那条灰白色在慢慢变亮。再过半个小时，太阳就会升起来，照在那些大棚上——白色的塑料布会把阳光反射得很刺眼，让人看不清楚里面的东西。就像这个世界上的很多东西：它们看起来是白的，但你不知道里面是什么。你不知道那些大棚里是空的，还是装着一个人的身体。或者一个人的梦。或者什么都没有。或者有——但你永远不能确定，因为你在外面，阳光太刺眼了，你看不进去。你只能猜。而猜是人类最古老的自毁方式。
+</span>
+<span class="action">
+他从口袋里掏出那把折叠小刀。打开。刀刃在暗淡的晨光里没有丝毫反光——它太旧了。旧的刀刃不反光。真正能伤害人的东西，都不反光。
+</span>
+<span class="action">
+他把它握在手里。刀刃朝下。呼吸。一下。两下。三下。露水从大棚的塑料布上滴下来。滴答。滴答。像一只走不准的钟——不是太快就是太慢，但从来不会刚好。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">35</div>
+<span class="slug">外景 · Ben 的保时捷 · 坡州乡村道路 — 清晨</span>
+<span class="action">
+晨光中的乡村道路。薄雾还没有散尽。远处有公鸡在打鸣——叫声很沙哑，像被人踩住了脖子。
+</span>
+<span class="action">
+保时捷卡宴沿着土路开过来。很慢。轮胎碾过碎石子，发出细密的嘎吱声。车停在离大棚大约五十米的地方。引擎熄火。安静了。只有风。风吹着塑料布，哗哗哗——像大雨。但没有雨。
+</span>
+<span class="action">
+车门打开。Ben 从车上下来。穿着一件米色的羊绒大衣，围了一条灰色围巾。他看起来像从杂志封面走下来的。但他的表情不同了——不是往常那种游刃有余的微笑，而是一种……好奇。像一个收到了一份说不清是礼物还是威胁的人，决定亲自来看看包裹里装的是什么。
+</span>
+<span class="action">
+他看到了站在大棚前的钟秀。
+</span>
+<span class="action">
+看到了钟秀旁边的汽油桶。看到了钟秀手里的小刀。
+</span>
+<span class="action">
+他停下来。保持着五十米的距离。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（提高音量，但声音仍然平稳）</span>
+<span class="dialogue">钟秀。你要烧哪一座？</span>
+<span class="character">钟秀</span>
+<span class="paren">（没有回答他的问题）</span>
+<span class="dialogue">惠美在哪。</span>
+<span class="character">Ben</span>
+<span class="paren">（停了一会儿）</span>
+<span class="dialogue">我说过。我不知道。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你最后一次见她是什么时候。</span>
+<span class="character">Ben</span>
+<span class="dialogue">……就在你也在的那天。你的农场。她跳舞。那天之后我没再见过她。</span>
+<span class="action">
+钟秀往前走了一步。现在他们之间的距离是四十五米。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">她的公寓被人收拾过。她的东西不见了。你进去过。</span>
+<span class="character">Ben</span>
+<span class="paren">（没有否认）</span>
+<span class="dialogue">她欠我一些钱。我去拿了一些可以抵债的东西。我没有碰别的。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">什么东西。</span>
+<span class="character">Ben</span>
+<span class="dialogue">一块手表。Gucci。我送她的。别的我都没碰。</span>
+<span class="action">
+钟秀又往前走了一步。四十米。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">你没有报警。她失踪了你没有报警。</span>
+<span class="character">Ben</span>
+<span class="paren">（轻声）</span>
+<span class="dialogue">钟秀。你知道为什么我不报警吗。因为我知道她还活着。她没有失踪——她只是离开了。离开你。离开我。离开首尔。离开所有让她觉得被困住的东西。她不是失踪了——她是把我们都烧掉了。只是你没闻到烟味而已。</span>
+<span class="action">
+沉默。田野上，风突然停了。塑料布不再哗哗响。整个世界静得像一个屏住呼吸的人。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（声音发抖，但很慢）</span>
+<span class="dialogue">你烧的每一座大棚。里面有什么。</span>
+<span class="character">Ben</span>
+<span class="paren">（看着他，过了很长一段时间）</span>
+<span class="dialogue">都是空的。钟秀。都是空的。这就是问题的关键——它们从来都是空的。我只是在清理空地。为新的东西挪地方。你明白吗。</span>
+<span class="action">
+钟秀握刀的手松了一下。又紧了一下。
+</span>
+<span class="character">钟秀</span>
+<span class="dialogue">我不信你。</span>
+<span class="character">Ben</span>
+<span class="paren">（第一次收起微笑，语气变得认真，但不像害怕——像遗憾）</span>
+<span class="dialogue">你不必信我。但你可以信惠美。她选择消失。不是因为我。不是因为任何人。是因为她自己。那天跳舞——你看到了吗。她不是在跳舞。她是在告别。她在跟我们告别。跟这片土地告别。跟她所有的小饥饿和大饥饿告别。你那么认真地看了，但你看到了吗。</span>
+<span class="action">
+风吹回来了。比刚才更大。大棚的塑料布猛地鼓起来，像一个正在深呼吸的巨大白色肺叶。草叶被风压弯，发出细密的窸窣声，像有无数人在窃窃私语，但又听不清他们到底在说什么。
+</span>
+<span class="action">
+钟秀站在原地。手里的刀很重。但他没有动。Ben 也没有动。两个人站在田野上。隔着四十米。四十米的距离里是清晨的露水、低矮的野草、碎石子、一条细细的蚂蚁队列、以及所有他们还没有说出口的话。
+</span>
+<span class="transition">> 切至：</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">36</div>
+<span class="slug">外景 · 坡州大棚前 — 清晨（连续）</span>
+<span class="action">
+蚂蚁的队伍被一滴露水截断了。前面的蚂蚁找不到路，开始原地转圈。后面的蚂蚁撞上来。乱成一团。但很快它们就重组了队伍——绕开了露水，继续往前走。
+</span>
+<span class="character">钟秀</span>
+<span class="paren">（慢慢地把折叠刀合上，塞回口袋）</span>
+<span class="dialogue">你走吧。</span>
+<span class="character">Ben</span>
+<span class="paren">（没有动）</span>
+<span class="dialogue">那你呢。</span>
+<span class="character">钟秀</span>
+<span class="dialogue">我要写点东西。</span>
+<span class="character">Ben</span>
+<span class="paren">（微微点了点头）</span>
+<span class="dialogue">好。</span>
+<span class="action">
+Ben 转身。走回保时捷。打开车门。临上车前，他停了一下。回头看着钟秀。阳光这时候刚好升起来——第一束阳光越过东边的山脊，掠过田野，穿过塑料大棚的缝隙，打在两个男人中间的那四十米距离上。光里有灰尘在翻飞。无数细小的颗粒，金色的。像燃烧后的灰烬又被风吹了起来，在空中慢慢旋转、飘落、再升起，好像永远不会真正落地。
+</span>
+<span class="character">Ben</span>
+<span class="paren">（声音很轻，但在空旷的田野上，每一个字都听得很清楚）</span>
+<span class="dialogue">钟秀。如果你真的想烧点什么——别烧大棚。烧你的小说。把你的大饥饿烧进去。把惠美烧进去。把今天早晨的太阳也烧进去。把所有没说出的话都烧进去。然后看看还剩下什么。剩下的——那才是真的。</span>
+<span class="action">
+他坐进车里。关门。发动引擎。保时捷无声地掉头，沿着土路慢慢驶远。车后扬起一小片灰尘。灰尘在晨光中缓缓落下。好像什么都没有发生过。又好像一切都已经发生了，只是还没找到合适的词语来描述。
+</span>
+<span class="action">
+钟秀一个人站在大棚前。阳光照在他脸上。他的眼睛很红。
+</span>
+<span class="action">
+他提起汽油桶。拧开盖子。汽油的气味很浓烈，刺得他鼻子里一片酸涩。他缓缓走了一圈，把汽油均匀地浇在大棚的塑料布上。浇完后，把油桶放在一边。退后五步。
+</span>
+<span class="action">
+从口袋里拿出打火机。那个一次性的。塑料壳已经磨花了。半管液体。打了三下——第一下没着。第二下跳了一下就灭了。
+</span>
+<span class="action">
+第三下。稳定了。橘黄色的火苗。很小。在晨风中摇曳。
+</span>
+<span class="action">
+他把火苗凑近塑料布。
+</span>
+<span class="action">
+塑料布烧起来很快。火焰是蓝色的——有一瞬间是纯蓝色，像汽油在歌唱，然后变成橘色。然后再变成红色。火舌沿着塑料布往上爬。炽热的气流把塑料布撕开，露出里面黑色的骨架——那些锈蚀的铁管。骨架在火里站得很直。像一个终于被点燃的句号。像一个终于等到火种的引信。
+</span>
+<span class="action">
+黑色的烟雾升起来。很浓。在晨光中变成一根斜斜的柱子，扶摇而上。像是大地在给天空写信。用浓烟写的信。但没有人能读懂。牛在远处叫了一声。声音很闷。像是从很深很深的地方传上来的。
+</span>
+<span class="action">
+钟秀退后几步。看着火焰。他的脸上没有笑容。也没有眼泪。只是看着。像一个终于写完了第一章的作家——故事还很长，但第一把火，已经点着了。火焰映在他的瞳孔里，像两座正在燃烧的塑料大棚。
+</span>
+<span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">37</div>
+<span class="slug">内景 · 钟秀公寓 — 白天 · 一个月后</span>
+<span class="action">
+钟秀坐在桌前。笔记本电脑的屏幕亮着。Word 文档上已经有不少文字——大约五十页。他瘦了很多。但眼神不同了——不再空洞。不再只在"找"和"等"之间徘徊。他找到了什么？他自己也说不清楚。但他不再只是在找了。他开始写了。
+</span>
+<span class="action">
+笔记本的标题栏显示着文件名称：「燃烧.docx」。
+</span>
+<span class="action">
+他翻到最后一页。开始打字。速度很快。键盘声很密集。像一场突然来临的暴雨，敲在铁皮屋顶上。
+</span>
+<span class="action">
+他打完最后一句话。停下来。
+</span>
+<span class="action">
+靠在椅背上。深吸一口气。然后他打开浏览器。搜索框里输入了一个名字：「申惠美」。
+</span>
+<span class="action">
+搜索结果。没有。没有她的任何社交账号。没有新闻。没有任何记录。她在互联网上不存在。像一个被删除的文件——但清除程序没有运行完整，留下了零星的痕迹，在缓存里、在聊天记录里、在一个人的记忆里，断断续续地闪着。
+</span>
+<span class="action">
+钟秀关掉浏览器。回到 Word。光标停在最后一句话的末尾。闪动。一下。两下。三下。
+</span>
+<span class="action">
+他输入了一行新的字：
+</span>
+<span class="dialogue">「惠美。如果你能读到这个故事。这里面有你。有你的大饥饿。有你的舞蹈。有你的猫——虽然我始终没有见到它。但你放心，我还是把它写进去了。因为我开始觉得——有些东西就算不存在，被写下来之后，就存在了。你教会我的。虽然你从来没有说过。」</span>
+<span class="action">
+他按下 Ctrl+S。
+</span>
+<span class="action">
+然后他站起来。走到窗边。那扇巴掌大的窗户。窗外的世界没有变化。行人。猫尾巴。阳光下漂浮的灰尘。但他看到的东西变了：那不再只是行人、猫尾巴和灰尘。那是塑料大棚外面的世界——一个正在等着被写下来，或是被点燃的世界。
+</span>
+<span class="transition">> 淡出至黑。</span>
+</div>
+
+<div class="scene-block">
+<div class="scene-number">38</div>
+<span class="slug">外景 · 坡州农场 — 春天 · 一年后</span>
+<span class="action">
+春天。那三座大棚已经没有了。只剩下黑色的铁管骨架，歪歪斜斜地立在田野上，像三具被剥去血肉的恐龙化石。野草从铁管之间长出来，开出了细小的白色花朵。风一吹，花朵就摇晃，像在点头——对什么点头，谁也不知道。
+</span>
+<span class="action">
+钟秀站在田野上。他穿着一件干净的衬衫。头发剪短了。手里拿着一本书——那是他刚刚出版的小说，封面上只有一个字：「燃」。书很薄，不到两百页。但拿在手里，沉甸甸的，像一块烧过的石头。
+</span>
+<span class="action">
+他翻开书。翻到最后一页。那里有一行字：「献给所有正在燃烧的人——无论你烧的是大棚，是时间，还是你自己。」
+</span>
+<span class="action">
+他把书放在地上。放在那些白色野花中间。然后他蹲下来，从口袋里拿出一个打火机。还是那个一次性的。塑料壳更花了，能看到里面的液体已经见底，只剩下一层薄薄的、像油膜一样的东西。
+</span>
+<span class="action">
+他打了三次火。第一下没着。第二下跳了一下就灭了。第三下——火苗稳定了。很小。橘黄色的。在春天的风里摇曳，像一个刚刚醒来的、还很脆弱的念头。
+</span>
+<span class="action">
+他把火苗凑近书页。
+</span>
+<span class="action">
+纸烧起来比塑料慢。但烧得更彻底。火焰是橘红色的，边缘有一圈蓝色。书页在火焰里卷曲、变黑、然后变成灰烬。灰烬很轻，被风卷起来，在空中飘散，像一群黑色的蝴蝶，飞向田野的各个方向。
+</span>
+<span class="action">
+钟秀站起来。看着火焰。他的脸上没有表情。但眼睛里有一些东西——不是悲伤，不是快乐，不是愤怒，不是解脱。是所有这些的混合，是燃烧之后剩下的那种灰烬的颜色——一种介于黑和白之间的、无法命名的颜色。
+</span>
+<span class="action">
+火焰渐渐小了。最后只剩下一小堆黑色的灰烬。风把灰烬吹散，露出下面被烧焦的泥土。泥土上留下了一个浅浅的印子——书的形状。像一个墓碑，但上面没有字。
+</span>
+<span class="action">
+钟秀转身。走回卡车。发动引擎。卡车沿着土路慢慢驶离农场。后视镜里，那三具铁管骨架越来越小，最后消失在春天的绿色里。
+</span>
+<span class="action">
+他开上高速公路。往首尔方向。车窗外，城市的天际线在远处浮现——高楼大厦，玻璃幕墙，广告牌，车流。像一座巨大的、永远不会被烧掉的塑料大棚。里面装满了活着的人。每个人都在燃烧着什么。每个人都在等待被点燃，或者正在被点燃，或者已经烧完了，只剩下灰烬。
+</span>
+<span class="action">
+钟秀打开收音机。里面在播一首老歌——是惠美曾经哼过的那首。他记不清歌名了。但他记得旋律。他跟着哼了两句。然后停下来。看着前方。前方是高速公路，是隧道，是城市，是未来，是无数个还没有被写下来的句子，是无数座还没有被点燃的大棚。
+</span>
+<span class="action">
+他踩下油门。卡车加速。驶进隧道。隧道里的灯光一盏接一盏掠过他的脸，像一排正在被点燃的火把，照亮他，然后熄灭，再照亮，再熄灭。如此反复，直到隧道的尽头，直到出口，直到阳光重新照进来，直到他再次进入那个正在等待被写下来、或是被点燃的世界。
+</span>
+<span class="transition">> 淡出至黑。</span>
+</div>
+
+</section>
+<section class="script-footer">
+  <p>燃烧 · Burning</p>
+  <button class="btn-back" onclick="window.location.href='index.html'">返回写作器</button>
+</section>
+
+<script>
+/* === PAGE LOAD === */
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+});
+
+/* === NAV SCROLL === */
+let navShown = false;
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 300 && !navShown) { nav.classList.add('visible'); navShown = true; }
+  if (window.scrollY <= 300 && navShown) { nav.classList.remove('visible'); navShown = false; }
+
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+}, { passive: true });
+
+/* === SCENE REVEAL === */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.scene-block').forEach(el => observer.observe(el));
+document.querySelectorAll('.act-break').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
