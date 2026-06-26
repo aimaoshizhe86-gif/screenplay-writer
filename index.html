@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灰烬手稿 — 纪实忧郁主义剧本写作器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.12 0.014 260);
+    --ash: oklch(0.18 0.01 250);
+    --concrete: oklch(0.28 0.008 245);
+    --blood: oklch(0.38 0.22 25);
+    --neon-yellow: oklch(0.92 0.19 106);
+    --rust: oklch(0.52 0.17 55);
+    --bone: oklch(0.88 0.02 90);
+    --cyan-shock: oklch(0.75 0.16 195);
+    --magenta: oklch(0.58 0.25 350);
+    --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 2rem);
+    --space-lg: clamp(2rem, 6vw, 5rem);
+    --space-xl: clamp(3rem, 10vw, 8rem);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--ink);
+    color: var(--bone);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                var(--ink);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-sm) var(--space-md);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.12 0.014 260 / 0.8);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  nav.visible { transform: translateY(0); }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.4rem, 2.5vw, 2rem); color: var(--neon-yellow); letter-spacing: 0.08em; text-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.3); cursor: pointer; transition: color 0.25s; }
+  .nav-logo:hover { color: var(--blood); }
+  .nav-links { display: flex; gap: var(--space-md); align-items: center; }
+  .nav-links a { color: oklch(0.6 0.01 100); text-decoration: none; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.25s; }
+  .nav-links a:hover { color: var(--neon-yellow); }
+  .nav-cta {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; padding: 0.5em 1.4em;
+    border: 1.5px solid var(--blood); color: var(--blood); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.25s ease-out; position: relative; overflow: hidden;
+  }
+  .nav-cta::after { content: ''; position: absolute; inset: 0; background: var(--blood); transform: translateX(-102%); transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); z-index: -1; }
+  .nav-cta:hover { color: var(--bone); }
+  .nav-cta:hover::after { transform: translateX(0); }
+
+  /* === HERO === */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: var(--space-xl) var(--space-md); position: relative; }
+  .hero-content { max-width: 900px; margin-left: clamp(0rem, 5vw, 6rem); }
+  .hero-eyebrow { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; letter-spacing: 0.3em; color: var(--rust); text-transform: uppercase; margin-bottom: var(--space-sm); display: flex; align-items: center; gap: 0.8em; opacity: 0; transform: translateY(20px); }
+  .hero-eyebrow::before { content: ''; width: 2.5em; height: 1px; background: var(--blood); display: block; }
+  .hero h1 { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(3.5rem, 12vw, 9rem); line-height: 1; letter-spacing: 0.03em; margin-bottom: var(--space-sm); opacity: 0; transform: translateY(30px); }
+  .hero h1 .line1 { display: block; color: var(--neon-yellow); text-shadow: 3px 3px 0 var(--blood); }
+  .hero h1 .line2 { display: block; color: var(--cyan-shock); text-shadow: -3px 3px 0 var(--magenta); margin-top: -0.15em; }
+  .hero-sub { font-size: clamp(1rem, 2vw, 1.35rem); color: oklch(0.7 0.015 100); max-width: 560px; margin-top: var(--space-md); line-height: 1.6; padding-left: 1.2em; border-left: 2px solid var(--blood); opacity: 0; transform: translateY(20px); }
+  .hero-sub em { color: var(--rust); font-style: normal; font-weight: 700; }
+  .hero-buttons { display: flex; gap: var(--space-sm); margin-top: var(--space-lg); flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1rem; padding: 0.9em 2.4em;
+    background: var(--neon-yellow); color: var(--ink); border: none; cursor: pointer;
+    letter-spacing: 0.15em; font-weight: 700; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    transition: all 0.2s ease-out; position: relative;
+  }
+  .btn-primary:hover { background: var(--blood); color: var(--bone); clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:focus-visible { outline: 2px solid var(--cyan-shock); outline-offset: 3px; }
+  .btn-ghost {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1rem; padding: 0.9em 2.4em;
+    background: transparent; color: var(--bone); border: 1.5px solid oklch(1 0 0 / 0.2);
+    cursor: pointer; letter-spacing: 0.15em; text-transform: uppercase; transition: all 0.25s;
+  }
+  .btn-ghost:hover { border-color: var(--bone); }
+
+  /* === STATS === */
+  .stats-strip { display: flex; gap: var(--space-lg); padding: var(--space-md); border-top: 1px solid oklch(1 0 0 / 0.08); border-bottom: 1px solid oklch(1 0 0 / 0.08); flex-wrap: wrap; justify-content: center; background: oklch(0.14 0.012 260 / 0.6); backdrop-filter: blur(8px); }
+  .stat { text-align: center; min-width: 120px; }
+  .stat-num { font-family: 'ZCOOL XiaoWei', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1; display: inline-block; transition: color 0.6s; }
+  .stat-num.red { color: var(--blood); }
+  .stat-num.yellow { color: var(--neon-yellow); }
+  .stat-num.cyan { color: var(--cyan-shock); }
+  .stat-label { display: block; font-size: 0.75rem; letter-spacing: 0.12em; color: oklch(0.55 0.01 100); margin-top: 0.4em; text-transform: uppercase; }
+
+  /* === FEATURES === */
+  .features { padding: var(--space-xl) var(--space-md); max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.35em; color: var(--rust); text-transform: uppercase; display: inline-block; padding: 0.3em 1em; border: 1px solid oklch(0.52 0.17 55 / 0.3); margin-bottom: var(--space-lg); }
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: oklch(1 0 0 / 0.06); border: 1px solid oklch(1 0 0 / 0.06); }
+  .feature-card { background: var(--ash); padding: var(--space-lg) var(--space-md); position: relative; transition: background 0.3s, transform 0.3s; overflow: hidden; cursor: pointer; }
+  .feature-card:hover { background: oklch(0.2 0.01 250); transform: translateY(-4px); }
+  .feature-card::before { content: attr(data-index); font-family: 'ZCOOL XiaoWei', serif; font-size: 6rem; font-weight: 900; position: absolute; top: -0.35em; right: -0.1em; color: oklch(1 0 0 / 0.025); line-height: 1; pointer-events: none; }
+  .feature-icon { font-size: 2rem; margin-bottom: var(--space-sm); display: block; }
+  .feature-card h3 { font-family: 'ZCOOL XiaoWei', serif; font-size: 1.3rem; letter-spacing: 0.05em; color: var(--neon-yellow); margin-bottom: 0.5em; }
+  .feature-card p { font-size: 0.9rem; color: oklch(0.65 0.01 100); line-height: 1.55; }
+  .feature-card .accent { color: var(--blood); font-weight: 700; }
+
+  /* === SCROLL REVEAL === */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.33, 1, 0.68, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* === EDITOR === */
+  .editor-section { padding: var(--space-xl) var(--space-md); max-width: 1100px; margin: 0 auto; }
+  .editor-toolbar { display: flex; gap: var(--space-sm); padding: var(--space-sm) 0; margin-bottom: var(--space-sm); flex-wrap: wrap; align-items: center; justify-content: space-between; }
+  .toolbar-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .tool-btn {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1em;
+    background: var(--ash); color: var(--bone); border: 1px solid oklch(1 0 0 / 0.12);
+    cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
+  }
+  .tool-btn:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+  .tool-btn:active { background: var(--neon-yellow); color: var(--ink); }
+  .tool-btn:focus-visible { outline: 2px solid var(--cyan-shock); outline-offset: 2px; }
+  .tool-btn.accent { border-color: var(--blood); color: var(--blood); }
+  .tool-btn.accent:hover { background: var(--blood); color: var(--bone); }
+  .word-count { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; color: oklch(0.5 0.01 100); letter-spacing: 0.1em; }
+  .word-count span { color: var(--neon-yellow); font-weight: 700; font-size: 1.1em; }
+
+  .editor-frame { background: oklch(0.15 0.012 260); border: 1px solid oklch(1 0 0 / 0.08); position: relative; overflow: hidden; }
+  .editor-frame::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(180deg, var(--blood), var(--neon-yellow), var(--cyan-shock)); z-index: 2; }
+  .editor-header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) var(--space-md); border-bottom: 1px dashed oklch(1 0 0 / 0.1); background: oklch(0.13 0.012 260); }
+  .editor-title { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.85rem; letter-spacing: 0.2em; color: var(--rust); text-transform: uppercase; }
+  .editor-title input { background: transparent; border: none; color: var(--rust); font-family: inherit; font-size: inherit; letter-spacing: inherit; text-transform: uppercase; width: 260px; outline: none; border-bottom: 1px dashed oklch(1 0 0 / 0.15); padding: 0.1em 0; }
+  .editor-title input:focus { border-bottom-color: var(--neon-yellow); }
+  .editor-dots { display: flex; gap: 6px; }
+  .editor-dots span { width: 8px; height: 8px; border-radius: 50%; display: block; }
+  .dot1 { background: var(--blood); } .dot2 { background: var(--neon-yellow); } .dot3 { background: var(--cyan-shock); }
+  .editor-body { display: flex; min-height: 480px; max-height: 70vh; }
+  #scriptInput {
+    flex: 1; background: oklch(0.14 0.01 260); color: oklch(0.8 0.015 100);
+    border: none; border-right: 1px solid oklch(1 0 0 / 0.06);
+    padding: var(--space-md); font-family: 'Noto Serif SC', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem); line-height: 2;
+    resize: none; outline: none; tab-size: 4;
+  }
+  #scriptInput::placeholder { color: oklch(0.4 0.01 100); font-style: italic; }
+  #scriptInput:focus { background: oklch(0.16 0.012 260); }
+  .editor-preview-pane {
+    flex: 1; padding: var(--space-md); overflow-y: auto;
+    font-family: 'Noto Serif SC', serif; font-size: clamp(0.85rem, 1.3vw, 1rem);
+    line-height: 2; background: oklch(0.16 0.01 260); max-height: 70vh;
+  }
+  .editor-preview-pane .slug { color: var(--neon-yellow); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-top: 0.8em; font-family: 'ZCOOL XiaoWei', serif; }
+  .editor-preview-pane .action { color: oklch(0.78 0.02 90); display: block; margin-top: 0.3em; }
+  .editor-preview-pane .character { color: var(--blood); font-weight: 700; display: block; margin-top: 0.6em; padding-left: 40%; }
+  .editor-preview-pane .dialogue { color: var(--bone); display: block; padding-left: 25%; }
+  .editor-preview-pane .paren { color: oklch(0.55 0.01 100); font-style: italic; display: block; padding-left: 30%; font-size: 0.9em; }
+  .editor-preview-pane .transition { color: var(--cyan-shock); text-transform: uppercase; text-align: right; display: block; margin-top: 0.6em; font-weight: 700; letter-spacing: 0.08em; }
+  .editor-preview-pane .empty-state { color: oklch(0.35 0.01 100); font-style: italic; text-align: center; padding: var(--space-lg); font-size: 0.9rem; }
+  .editor-footer { display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) var(--space-md); border-top: 1px solid oklch(1 0 0 / 0.06); background: oklch(0.13 0.012 260); font-size: 0.7rem; color: oklch(0.4 0.01 100); letter-spacing: 0.08em; }
+  .editor-footer .shortcuts { display: flex; gap: 1em; }
+  .editor-footer kbd { background: var(--concrete); padding: 0.15em 0.5em; border-radius: 2px; font-family: inherit; font-size: 0.9em; border: 1px solid oklch(1 0 0 / 0.1); }
+
+  /* === QUOTE === */
+  .quote-block { padding: var(--space-xl) var(--space-md); text-align: center; }
+  .quote-block blockquote { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.5rem, 4vw, 3rem); color: var(--cyan-shock); max-width: 700px; margin: 0 auto; line-height: 1.5; letter-spacing: 0.04em; text-shadow: -2px 2px 0 var(--magenta); }
+  .quote-block cite { display: block; margin-top: var(--space-md); font-family: 'ZCOOL XiaoWei', serif; font-size: 0.85rem; color: var(--rust); font-style: normal; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  /* === PRICING === */
+  .pricing { padding: var(--space-xl) var(--space-md); max-width: 1100px; margin: 0 auto; text-align: center; }
+  .price-badge { display: inline-block; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem; letter-spacing: 0.25em; color: var(--ink); background: var(--neon-yellow); padding: 0.3em 1.2em; text-transform: uppercase; margin-bottom: var(--space-md); clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 0 100%); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg); }
+  .plan-card { background: var(--ash); padding: var(--space-lg) var(--space-md); text-align: left; border: 1px solid oklch(1 0 0 / 0.05); transition: transform 0.3s, border-color 0.3s; position: relative; }
+  .plan-card:hover { transform: translateY(-4px); }
+  .plan-card.featured { border-color: var(--blood); background: oklch(0.2 0.014 260); }
+  .plan-card.featured::before { content: '推荐'; position: absolute; top: 0; right: 0; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.7rem; background: var(--blood); color: var(--bone); padding: 0.3em 1em; letter-spacing: 0.12em; }
+  .plan-name { font-family: 'Ma Shan Zheng', cursive; font-size: 1.6rem; color: var(--bone); letter-spacing: 0.06em; }
+  .plan-price { font-family: 'ZCOOL XiaoWei', serif; font-size: 3rem; font-weight: 900; color: var(--neon-yellow); margin: var(--space-sm) 0; line-height: 1; }
+  .plan-price sup { font-size: 0.4em; vertical-align: super; }
+  .plan-features { list-style: none; margin: var(--space-md) 0; font-size: 0.9rem; color: oklch(0.6 0.01 100); }
+  .plan-features li { padding: 0.4em 0; border-bottom: 1px solid oklch(1 0 0 / 0.04); }
+  .plan-features li::before { content: '—'; color: var(--blood); margin-right: 0.5em; }
+  .plan-btn { display: block; width: 100%; padding: 0.85em; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; border: 1.5px solid oklch(1 0 0 / 0.2); background: transparent; color: var(--bone); cursor: pointer; transition: all 0.25s; margin-top: var(--space-md); }
+  .plan-btn:hover { border-color: var(--bone); }
+  .plan-btn.primary { background: var(--neon-yellow); color: var(--ink); border-color: var(--neon-yellow); font-weight: 700; }
+  .plan-btn.primary:hover { background: var(--blood); border-color: var(--blood); color: var(--bone); }
+  .plan-btn:focus-visible { outline: 2px solid var(--cyan-shock); outline-offset: 2px; }
+
+  /* === FOOTER CTA === */
+  .footer-cta { padding: var(--space-xl) var(--space-md) var(--space-lg); text-align: center; border-top: 1px solid oklch(1 0 0 / 0.06); background: oklch(0.14 0.012 260 / 0.5); }
+  .footer-cta h2 { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(2rem, 6vw, 4rem); color: var(--neon-yellow); text-shadow: 2px 2px 0 var(--blood); letter-spacing: 0.05em; margin-bottom: var(--space-sm); }
+  .footer-cta p { color: oklch(0.65 0.01 100); max-width: 500px; margin: 0 auto var(--space-lg); font-size: 0.95rem; }
+  .tagline-strip { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.35em; color: oklch(0.45 0.01 100); text-transform: uppercase; padding: var(--space-sm) 0; display: flex; justify-content: center; gap: 2em; flex-wrap: wrap; margin-top: var(--space-lg); }
+  .tagline-strip span { opacity: 0.7; }
+
+  /* === SAVE INDICATOR === */
+  .save-indicator {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: oklch(0.45 0.01 100);
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  .save-indicator::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: oklch(0.45 0.01 100);
+    transition: background 0.3s;
+  }
+  .save-indicator.saved { color: oklch(0.65 0.12 140); }
+  .save-indicator.saved::before { background: oklch(0.65 0.12 140); }
+  .save-indicator.saving { color: var(--rust); animation: pulse 0.8s infinite; }
+  .save-indicator.saving::before { background: var(--rust); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* === LIBRARY MODAL === */
+  .library-list { max-height: 50vh; overflow-y: auto; margin: var(--space-sm) 0; }
+  .library-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid oklch(1 0 0 / 0.06);
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Noto Serif SC', serif;
+  }
+  .library-item:hover { border-color: var(--neon-yellow); background: oklch(0.18 0.01 250); }
+  .library-item .lib-title { color: var(--bone); font-size: 0.95rem; font-weight: 600; }
+  .library-item .lib-meta { color: oklch(0.5 0.01 100); font-size: 0.72rem; letter-spacing: 0.05em; }
+  .library-item .lib-actions { display: flex; gap: 6px; }
+  .lib-action-btn {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.65rem;
+    padding: 0.35em 0.8em; background: transparent; border: 1px solid oklch(1 0 0 / 0.15);
+    color: oklch(0.55 0.01 100); cursor: pointer; letter-spacing: 0.08em;
+    transition: all 0.2s; text-transform: uppercase;
+  }
+  .lib-action-btn:hover { border-color: var(--bone); color: var(--bone); }
+  .lib-action-btn.danger:hover { border-color: var(--blood); color: var(--blood); }
+  .library-empty { text-align: center; padding: var(--space-lg); color: oklch(0.4 0.01 100); font-style: italic; font-size: 0.9rem; }
+  .library-count { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; color: oklch(0.5 0.01 100); letter-spacing: 0.1em; margin-bottom: var(--space-sm); }
+
+  /* === IMPORT DROPZONE === */
+  .import-zone {
+    border: 2px dashed oklch(1 0 0 / 0.12);
+    padding: var(--space-md);
+    text-align: center;
+    cursor: pointer;
+    color: oklch(0.5 0.01 100);
+    font-size: 0.85rem;
+    transition: all 0.25s;
+    margin-top: var(--space-sm);
+  }
+  .import-zone:hover { border-color: var(--neon-yellow); color: var(--bone); }
+  .import-zone.dragover { border-color: var(--neon-yellow); background: oklch(0.18 0.01 250); }
+
+  /* === MODAL === */
+  .modal-overlay { position: fixed; inset: 0; background: oklch(0 0 0 / 0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal { background: var(--ash); border: 1px solid oklch(1 0 0 / 0.1); padding: var(--space-lg); max-width: 460px; width: 90%; position: relative; transform: translateY(20px); transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1); }
+  .modal-overlay.active .modal { transform: translateY(0); }
+  .modal-close { position: absolute; top: var(--space-sm); right: var(--space-sm); background: none; border: none; color: oklch(0.5 0.01 100); font-size: 1.3rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; }
+  .modal-close:hover { color: var(--blood); }
+  .modal h3 { font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--neon-yellow); letter-spacing: 0.06em; margin-bottom: var(--space-md); }
+  .modal label { display: block; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.15em; color: oklch(0.55 0.01 100); text-transform: uppercase; margin-bottom: 0.3em; margin-top: var(--space-sm); }
+  .modal input { width: 100%; padding: 0.7em 1em; background: var(--ink); border: 1px solid oklch(1 0 0 / 0.12); color: var(--bone); font-family: 'Noto Serif SC', serif; font-size: 0.95rem; outline: none; transition: border-color 0.25s; }
+  .modal input:focus { border-color: var(--neon-yellow); }
+  .modal .btn-primary { width: 100%; margin-top: var(--space-md); text-align: center; }
+  .modal-note { font-size: 0.7rem; color: oklch(0.45 0.01 100); text-align: center; margin-top: var(--space-sm); }
+
+  /* === TOAST === */
+  .toast { position: fixed; bottom: var(--space-lg); left: 50%; transform: translateX(-50%) translateY(100px); background: var(--neon-yellow); color: var(--ink); padding: 0.7em 2em; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; z-index: 2000; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--blood); color: var(--bone); }
+
+  /* === SHARE PANEL === */
+  .share-url-section { margin-bottom: var(--space-md); }
+  .share-url-section label { display: block; font-size: 0.72rem; color: oklch(0.55 0.01 100); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .share-url-row { display: flex; gap: var(--space-xs); }
+  .share-url-row input { flex: 1; background: var(--obsidian); border: 1px solid oklch(1 0 0 / 0.10); color: var(--bone); padding: 0.5em 0.8em; font-family: inherit; font-size: 0.78rem; border-radius: 4px; }
+  .share-url-row input:focus { outline: none; border-color: var(--neon-yellow); }
+  .share-platforms { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
+  .share-btn { display: flex; align-items: center; gap: 8px; justify-content: center; padding: 0.7em 1em; border: none; font-family: inherit; font-size: 0.85rem; letter-spacing: 0.06em; cursor: pointer; border-radius: 6px; color: var(--bone); transition: transform 0.15s, box-shadow 0.15s; }
+  .share-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .share-btn.weibo  { background: #E6162D; }
+  .share-btn.wechat { background: #07C160; }
+  .share-btn.copy   { background: var(--obsidian); border: 1px solid oklch(1 0 0 / 0.15); }
+  .share-btn.twitter{ background: #1DA1F2; }
+  .share-icon { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 4px; background: rgba(255,255,255,0.2); font-size: 0.6rem; font-weight: 900; letter-spacing: 0; }
+  .share-icon.cp { background: rgba(255,255,255,0.10); }
+  .share-icon.tw { background: rgba(255,255,255,0.25); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .hero-content { margin-left: 0; }
+    .stats-strip { gap: var(--space-md); }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: clamp(2.5rem, 10vw, 5rem); }
+    .editor-body { flex-direction: column; max-height: none; }
+    #scriptInput { min-height: 250px; border-right: none; border-bottom: 1px solid oklch(1 0 0 / 0.06); }
+    .editor-preview-pane { max-height: 400px; }
+    .nav-links { display: none; }
+    .editor-title input { width: 160px; }
+    .toolbar { flex-wrap: wrap; gap: 4px; }
+    .toolbar-group { flex-wrap: wrap; }
+    .tool-btn { font-size: 0.68rem; padding: 0.35em 0.7em; }
+    .share-platforms { grid-template-columns: 1fr; }
+    .modal { width: calc(100vw - 2rem); max-width: 100%; padding: var(--space-md); }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 1.8rem; }
+    .stats-strip { font-size: 0.6rem; gap: var(--space-sm); }
+    .editor-title input { width: 120px; font-size: 1rem; }
+    #scriptInput { font-size: 0.85rem; padding: var(--space-sm); }
+    .tool-btn { font-size: 0.62rem; padding: 0.3em 0.55em; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <span class="nav-logo" onclick="scrollToSection('hero')">灰烬手稿</span>
+  <div class="nav-links">
+    <a href="#features" onclick="scrollToSection('features');return false">功能</a>
+    <a href="#editor" onclick="scrollToSection('editor');return false">写作</a>
+    <a href="#pricing" onclick="scrollToSection('pricing');return false">定价</a>
+  </div>
+  <button class="nav-cta" onclick="scrollToSection('editor')">开始写作</button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow reveal">纪实忧郁主义 × 黑色喜剧</p>
+    <h1>
+      <span class="line1 reveal reveal-delay-1">灰烬手稿</span>
+      <span class="line2 reveal reveal-delay-2">Ashes to Script</span>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-3">
+      世界是一出蹩脚的荒诞剧。<em>你要做的不是美化它，</em>而是把那些裂缝、淤青和冷笑话，一字一句地钉进剧本里。
+    </p>
+    <div class="hero-buttons">
+      <button class="btn-primary reveal reveal-delay-3" onclick="scrollToSection('editor')">免费开始</button>
+      <button class="btn-ghost reveal reveal-delay-3" onclick="scrollToSection('editor')">看个样例</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats-strip" id="stats">
+  <div class="stat reveal"><span class="stat-num red" data-target="12847">0</span><span class="stat-label">剧本已写</span></div>
+  <div class="stat reveal reveal-delay-1"><span class="stat-num yellow" data-target="386">0</span><span class="stat-label">黑色喜剧</span></div>
+  <div class="stat reveal reveal-delay-2"><span class="stat-num cyan" data-target="94">0</span><span class="stat-label">打开率 %</span></div>
+  <div class="stat reveal reveal-delay-3"><span class="stat-num red">&infin;</span><span class="stat-label">绝望循环</span></div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="features" id="features">
+  <span class="section-label reveal">写作工具箱</span>
+  <div class="feature-grid">
+    <div class="feature-card reveal reveal-delay-1" data-index="01" onclick="scrollToSection('editor')"><span class="feature-icon">🎭</span><h3>荒诞场景速写</h3><p>内置 <span class="accent">纪实忧郁</span> 场景模板：凌晨三点的便利店、无人应答的公用电话、地铁末班车上的对视——从日常中榨取出戏剧性。</p></div>
+    <div class="feature-card reveal reveal-delay-1" data-index="02" onclick="scrollToSection('editor')"><span class="feature-icon">💬</span><h3>黑色对白引擎</h3><p>一键生成 <span class="accent">冷幽默式</span> 人物对白。角色可以一边谈论死亡，一边纠结外卖点什么。</p></div>
+    <div class="feature-card reveal reveal-delay-2" data-index="03" onclick="scrollToSection('editor')"><span class="feature-icon">📐</span><h3>专业剧本格式</h3><p>自动排版为标准 <span class="accent">好莱坞剧本格式</span>，场标、动作、角色、对白、括号——你只需负责把痛苦写下来。</p></div>
+    <div class="feature-card reveal reveal-delay-2" data-index="04" onclick="scrollToSection('editor')"><span class="feature-icon">🕯️</span><h3>气氛渲染词典</h3><p>专为 <span class="accent">压抑美学</span> 打造的词汇库：灰烬、潮湿、铁锈、荧光灯频闪——精准描述那些让你不舒服的东西。</p></div>
+    <div class="feature-card reveal reveal-delay-3" data-index="05" onclick="scrollToSection('editor')"><span class="feature-icon">🔪</span><h3>反转生成器</h3><p>当你写进死胡同，<span class="accent">黑色喜剧反转</span> 生成器会给你一个意料之外、情理之中的荒诞转折。</p></div>
+    <div class="feature-card reveal reveal-delay-3" data-index="06" onclick="scrollToSection('editor')"><span class="feature-icon">📤</span><h3>一键导出</h3><p>导出为标准 <span class="accent">纯文本 / Fountain</span> 格式，直接投给制片人，或者压在硬盘最深处永不打开。</p></div>
+  </div>
+</section>
+
+<!-- ===== EDITOR ===== -->
+<section class="editor-section" id="editor">
+  <span class="section-label reveal">写作界面</span>
+  <div class="editor-toolbar reveal reveal-delay-1">
+    <div class="toolbar-group">
+      <button class="tool-btn accent" onclick="insertTemplate('convenience')">便利店模板</button>
+      <button class="tool-btn" onclick="insertTemplate('office')">办公室模板</button>
+      <button class="tool-btn" onclick="insertTemplate('subway')">地铁模板</button>
+      <button class="tool-btn accent" onclick="window.location.href='matsuko-script.html'">松子的一生</button>
+      <button class="tool-btn" onclick="insertTemplate('parasite')">寄生虫</button>
+      <button class="tool-btn" onclick="insertTemplate('burning')">燃烧</button>
+      <button class="tool-btn" onclick="insertTemplate('nowhere')">无人区</button>
+      <button class="tool-btn" onclick="insertSlug()">+ 场标</button>
+      <button class="tool-btn" onclick="insertCharacter()">+ 角色</button>
+      <button class="tool-btn" onclick="insertTransition()">+ 转场</button>
+    </div>
+    <div class="toolbar-group">
+      <span class="save-indicator" id="saveIndicator" title="自动保存状态">草稿</span>
+      <span class="word-count">字数: <span id="wordCount">0</span></span>
+      <button class="tool-btn accent" onclick="saveScript()">保存</button>
+      <button class="tool-btn" onclick="openLibrary()">加载</button>
+      <button class="tool-btn accent" onclick="syncToCloud()">云保存</button>
+      <button class="tool-btn" onclick="loadFromCloud()">云加载</button>
+      <button class="tool-btn" onclick="exportScript('json')">导出 JSON</button>
+      <button class="tool-btn" onclick="exportScript('txt')">导出 TXT</button>
+      <button class="tool-btn" onclick="exportScript('fountain')">Fountain</button>
+      <button class="tool-btn" onclick="openShare()">分享</button>
+      <button class="tool-btn" onclick="openSubscribe('黑色幽默家')">升级 Pro</button>
+    </div>
+  </div>
+
+  <div class="editor-frame reveal reveal-delay-2">
+    <div class="editor-header">
+      <span class="editor-title"><input type="text" id="scriptTitle" value="未命名剧本" placeholder="剧本标题"></span>
+      <div class="editor-dots"><span class="dot1"></span><span class="dot2"></span><span class="dot3"></span></div>
+    </div>
+    <div class="editor-body">
+      <textarea id="scriptInput" placeholder="开始写你的剧本……
+
+每一行会自动识别格式：
+· 全大写 → 场标（如：内景 · 凌晨便利店 — 凌晨 03:42）
+· 「角色名：对白」→ 角色 + 对白
+· （括号内容）→ 舞台指示
+· 以 > 开头 → 转场
+· 其他 → 动作描述
+
+试试看——先写一个场标吧。"></textarea>
+      <div class="editor-preview-pane" id="previewPane">
+        <div class="empty-state">左侧输入内容，这里实时预览格式化后的剧本。</div>
+      </div>
+    </div>
+    <div class="editor-footer">
+      <span>第 <span id="sceneCount">0</span> 场</span>
+      <div class="shortcuts">
+        <span><kbd>Tab</kbd> 角色:</span>
+        <span><kbd>Enter</kbd> 换行</span>
+        <span><kbd>Ctrl+S</kbd> 保存</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUOTE ===== -->
+<section class="quote-block reveal">
+  <blockquote>"喜剧不过是披着防弹衣的悲剧。"</blockquote>
+  <cite>— 某位还没成名的编剧</cite>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing" id="pricing">
+  <span class="price-badge reveal">定价方案</span>
+  <div class="pricing-grid">
+    <div class="plan-card reveal reveal-delay-1">
+      <div class="plan-name">地下室写手</div>
+      <div class="plan-price">¥0<sup>/月</sup></div>
+      <ul class="plan-features">
+        <li>每月 3 个剧本</li><li>基础格式排版</li><li>导出纯文本</li><li>无限的绝望</li>
+      </ul>
+      <button class="plan-btn" onclick="openSubscribe('地下室写手')">免费入坑</button>
+    </div>
+    <div class="plan-card featured reveal reveal-delay-2">
+      <div class="plan-name">黑色幽默家</div>
+      <div class="plan-price">¥29<sup>/月</sup></div>
+      <ul class="plan-features">
+        <li>无限剧本创作</li><li>黑色对白引擎</li><li>反转生成器</li><li>PDF / Fountain 导出</li><li>气氛渲染词典</li>
+      </ul>
+      <button class="plan-btn primary" onclick="openSubscribe('黑色幽默家')">立即订阅</button>
+    </div>
+    <div class="plan-card reveal reveal-delay-3">
+      <div class="plan-name">孤独大师</div>
+      <div class="plan-price">¥69<sup>/月</sup></div>
+      <ul class="plan-features">
+        <li>黑色幽默家全部功能</li><li>AI 剧本分析</li><li>协作写作</li><li>优先技术支持</li><li>署名"灰烬手稿出品"</li>
+      </ul>
+      <button class="plan-btn" onclick="openSubscribe('孤独大师')">立即订阅</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER CTA ===== -->
+<section class="footer-cta">
+  <h2 class="reveal">把你的噩梦写下来</h2>
+  <p class="reveal reveal-delay-1">反正最坏的结果不过是没人看。最好的结果，也是没人看。但至少你写了。</p>
+  <button class="btn-primary reveal reveal-delay-2" style="font-size:1.15rem;padding:1em 3em;" onclick="scrollToSection('editor')">免费开始写作</button>
+  <div class="tagline-strip reveal reveal-delay-3"><span>无订阅可取消</span><span>数据本地加密</span><span>永不出售你的故事</span></div>
+</section>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="subscribeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('subscribeModal')">&times;</button>
+    <h3 id="modalPlanTitle">订阅 黑色幽默家</h3>
+    <p style="color:oklch(0.6 0.01 100);font-size:0.85rem;margin-bottom:var(--space-sm);">请输入您的邮箱，我们会发送一份令人沮丧的确认邮件。</p>
+    <label>邮箱地址</label>
+    <input type="email" id="subscribeEmail" placeholder="nobody@ashes-script.com">
+    <button class="btn-primary" onclick="confirmSubscribe()">确认订阅</button>
+    <p class="modal-note">您随时可以取消订阅——就像随时可以放弃写作一样。</p>
+  </div>
+</div>
+
+<!-- ===== LIBRARY MODAL ===== -->
+<div class="modal-overlay" id="libraryModal">
+  <div class="modal" style="max-width: 560px;">
+    <button class="modal-close" onclick="closeModal('libraryModal')">&times;</button>
+    <h3>剧本库</h3>
+    <p class="library-count" id="libraryCount"></p>
+    <div class="library-list" id="libraryList"></div>
+    <div class="import-zone" id="importZone" onclick="document.getElementById('importFile').click()">
+      点击或拖拽 .json 剧本文件导入
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importScript(event)">
+    </div>
+  </div>
+</div>
+
+<!-- ===== CLOUD LIBRARY MODAL ===== -->
+<div class="modal-overlay" id="cloudModal">
+  <div class="modal" style="max-width: 560px;">
+    <button class="modal-close" onclick="closeModal('cloudModal')">&times;</button>
+    <h3>云端剧本 · GitHub Gist</h3>
+    <p class="library-count" id="cloudCount"></p>
+    <div class="library-list" id="cloudList"></div>
+    <p style="font-size:0.72rem;color:oklch(0.45 0.01 100);text-align:center;margin-top:var(--space-sm);">
+      数据通过 GitHub Gist API 同步，仅你自己可访问。
+    </p>
+  </div>
+</div>
+
+<!-- ===== SHARE MODAL ===== -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal" style="max-width: 480px;">
+    <button class="modal-close" onclick="closeModal('shareModal')">&times;</button>
+    <h3>分享写作器</h3>
+
+    <div class="share-url-section">
+      <label>部署地址（先部署到公网，再分享）</label>
+      <div class="share-url-row">
+        <input type="text" id="shareBaseUrl" placeholder="https://你的域名/写作器/index.html" oninput="saveShareUrl()">
+        <button onclick="resetShareUrl()" class="tool-btn" style="font-size:0.72rem;padding:0.3rem 0.6rem;">重置</button>
+      </div>
+    </div>
+
+    <div class="share-platforms">
+      <button class="share-btn weibo" onclick="shareTo('weibo')">
+        <span class="share-icon">W</span>微博
+      </button>
+      <button class="share-btn wechat" onclick="shareTo('wechat')">
+        <span class="share-icon">WX</span>朋友圈
+      </button>
+      <button class="share-btn copy" onclick="shareTo('copy')">
+        <span class="share-icon cp">CP</span>复制链接
+      </button>
+      <button class="share-btn twitter" onclick="shareTo('twitter')">
+        <span class="share-icon tw">X</span>Twitter
+      </button>
+    </div>
+
+    <div id="shareQrWrap" style="display:none;text-align:center;margin-top:var(--space-sm);">
+      <p style="font-size:0.75rem;color:oklch(0.5 0.01 100);margin-bottom:var(--space-xs);">微信扫码打开</p>
+      <img id="shareQrImg" src="" alt="QR Code" style="width:180px;height:180px;border-radius:8px;border:2px solid var(--ink);">
+      <p style="font-size:0.65rem;color:oklch(0.45 0.01 100);margin-top:6px;">用微信「扫一扫」打开，再分享到朋友圈</p>
+    </div>
+
+    <p style="font-size:0.68rem;color:oklch(0.45 0.01 100);text-align:center;margin-top:var(--space-sm);">
+      提示：本地 HTML 无法被外网访问。请先将文件部署到 GitHub Pages、Vercel 等平台，填入地址后分享。
+    </p>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== UTILS ========== */
+function $(id) { return document.getElementById(id); }
+function scrollToSection(id) { const el = $(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
+
+function showToast(msg, isError) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (isError ? 'error' : '');
+  requestAnimationFrame(() => { t.classList.add('show'); });
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => { t.classList.remove('show'); }, 2200);
+}
+
+/* ========== NAV ========== */
+let navShown = false;
+window.addEventListener('scroll', () => {
+  const nav = $('navbar');
+  if (window.scrollY > 300 && !navShown) { nav.classList.add('visible'); navShown = true; }
+  if (window.scrollY <= 300 && navShown) { nav.classList.remove('visible'); navShown = false; }
+}, { passive: true });
+
+/* ========== SCROLL REVEAL ========== */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ========== STATS COUNT-UP ========== */
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    if (!target || el._counted) return;
+    el._counted = true;
+    const duration = 1500;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(target * eased).toLocaleString();
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(tick);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num[data-target]').forEach(el => statsObserver.observe(el));
+
+/* ========== SCRIPT PARSER ========== */
+function parseLine(line) {
+  const trimmed = line.trim();
+  if (!trimmed) return { type: 'empty', content: '' };
+
+  // Transition: starts with >
+  if (trimmed.startsWith('>')) return { type: 'transition', content: trimmed.slice(1).trim() };
+
+  // Parenthetical: wrapped in ()
+  if (/^\(.+\)$/.test(trimmed)) return { type: 'paren', content: trimmed.slice(1, -1) };
+
+  // Character + Dialogue: "角色名：对白" or "角色名:对白"
+  const charMatch = trimmed.match(/^(.+?)[：:](.+)$/);
+  if (charMatch) {
+    const name = charMatch[1].trim();
+    const dialogue = charMatch[2].trim();
+    // Only treat as character if name is short (≤8 chars) and not all-caps slug
+    if (name.length <= 12 && !/^[A-Z\s·\-\—]+$/.test(name) && name.length >= 1) {
+      return { type: 'character', name, dialogue };
+    }
+  }
+
+  // Slug: mostly uppercase or contains scene indicators
+  if (/^[A-Z\s·\-\—0-9：:]+$/.test(trimmed) && trimmed.length > 3) {
+    return { type: 'slug', content: trimmed };
+  }
+  if (/^(内景|外景|INT\.|EXT\.|日|夜|晨|黄昏|凌晨|上午|下午)/i.test(trimmed)) {
+    return { type: 'slug', content: trimmed };
+  }
+
+  // Default: action
+  return { type: 'action', content: trimmed };
+}
+
+function renderPreview() {
+  const text = $('scriptInput').value;
+  const lines = text.split('\n');
+  const preview = $('previewPane');
+
+  if (!text.trim()) {
+    preview.innerHTML = '<div class="empty-state">左侧输入内容，这里实时预览格式化后的剧本。</div>';
+    $('wordCount').textContent = '0';
+    $('sceneCount').textContent = '0';
+    return;
+  }
+
+  let html = '';
+  let sceneCount = 0;
+  for (const line of lines) {
+    const parsed = parseLine(line);
+    switch (parsed.type) {
+      case 'empty':
+        html += '<br>'; break;
+      case 'slug':
+        sceneCount++;
+        html += `<span class="slug">${escHtml(parsed.content)}</span>\n`; break;
+      case 'action':
+        html += `<span class="action">${escHtml(parsed.content)}</span>\n`; break;
+      case 'character':
+        html += `<span class="character">${escHtml(parsed.name)}</span>\n`;
+        html += `<span class="dialogue">${escHtml(parsed.dialogue)}</span>\n`; break;
+      case 'paren':
+        html += `<span class="paren">（${escHtml(parsed.content)}）</span>\n`; break;
+      case 'transition':
+        html += `<span class="transition">${escHtml(parsed.content)}</span>\n`; break;
+      default: html += `<span class="action">${escHtml(line)}</span>\n`;
+    }
+  }
+
+  preview.innerHTML = html;
+
+  // Word count
+  const chars = text.replace(/\s/g, '').length;
+  $('wordCount').textContent = chars;
+  $('sceneCount').textContent = sceneCount;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ========== TEMPLATES ========== */
+const templates = {
+  convenience: `内景 · 凌晨便利店 — 凌晨 03:42
+
+一个男人站在微波炉前，盯着里面旋转的便当。荧光灯每隔七秒闪一次。他已经在这里站了十二分钟。
+
+男人：你知道速冻水饺在微波炉里转三分钟的时候，在想什么吗。
+
+店员：想回到冰箱里？
+
+男人：不。它在想——反正都是被吃掉，转几圈有什么区别。
+
+微波炉「叮」一声响了。男人打开门，又关上，加了三十秒。`,
+
+  office: `内景 · 开放办公室 — 下午 05:47
+
+荧光灯管发出令人不安的嗡嗡声。几十个隔间里，没有人工作，所有人都在假装工作。
+
+林姐：我提离职了。
+
+小张：什么时候走？
+
+林姐：（看着屏幕）三年前。他们还没批。
+
+> 切至：
+
+林姐的电脑屏幕——上面只有一行字反复闪烁：「您已成功提交离职申请。等待审批中。」下方小字：第 1,247 天。`,
+
+  subway: `外景 · 末班地铁站台 — 午夜 11:58
+
+站台上只有一个女孩，耳机里什么音乐都没放。她在等末班车，或者等一个不存在的理由。
+
+列车进站。门开了。里面空无一人。
+
+女孩：（迟疑三秒后上车）
+
+车内广播：本次列车开往——不重要。反正终点都一样。
+
+女孩：喂。
+
+（没有回应。）
+
+女孩：我知道这车上不止我一个人。
+
+车厢尽头的灯闪了一下。`,
+
+  matsuko: `外景 · 荒川河堤 — 黄昏
+
+松子站在夕阳底下，手里提着一个便利店的塑料袋。她五十三岁，看上去像七十三岁。
+
+松子：小时候，大家都觉得未来会闪闪发光。可是长大以后，却发现没有一件事会遂了自己的心愿。
+
+河面上浮着垃圾和泡沫。风吹过来，塑料袋啪嗒啪嗒响。
+
+松子：（对河面）我啊，只要和这个人在一起，地狱也好，什么地方都好，我都跟着他。这就是我的幸福。
+
+（风停了。河对岸几个孩子在骑自行车。松子看着他们，笑了。）
+
+松子：可是啊——到头来，我还是一个人。
+
+她转身。背后是整片烧成橙红色的天空，她的影子越来越长。
+
+> 淡出。
+
+画外音（少年松子）：生而为人，我很抱歉。`,
+
+  parasite: `内景 · 金家半地下室 — 上午
+
+窗户在地面以上三十厘米，能看到醉汉撒尿的腿。金基泽坐在马桶边，举着手机找免费的WiFi信号。
+
+金基宇：爸，披萨时代说我们折的盒子有四个不合格。
+
+金基泽：不是折的问题，是他们给的那个硬纸板太薄了。
+
+金基婷：我们换个思路。反正都是不合格——为什么不四个人都去应聘披萨时代？
+
+（沉默。一家四口面面相觑。）
+
+忠淑：你是说——
+
+金基婷：一个一个来。先从基宇开始。
+
+金基泽：（突然笑了，笑得很响）你知道有钱人最怕什么吗？
+
+金基宇：什么？
+
+金基泽：太善良了。他们有钱所以善良。要是我也有钱，我比他们更善良。
+
+（头顶的窗户被尿浇了一道弧线。没人注意到。）`,
+
+  burning: `外景 · 朝韩边境附近的田野 — 日落前
+
+惠美脱掉上衣，在夕阳里开始跳舞。远处是山的影子，天边是海。
+
+惠美：非洲卡拉哈里沙漠的布须曼人，把世界分成「伟大饥饿者」和「渺小饥饿者」。
+
+钟秀：（坐在田埂上，抽着烟）……
+
+惠美：「渺小饥饿者」是肚子饿的人。「伟大饥饿者」是——
+
+钟秀：是什么？
+
+惠美：（停下舞蹈，大口喘息）是那些渴望生命意义的人。我两种都是。
+
+（她继续跳，手臂像鸟一样张开。眼泪从她脸上流下来。）
+
+惠美：你看不见的、我内心的小橘子——你能看见吗？
+
+（钟秀摇头。他看不见。他看着她一点一点哭着跳舞，直到天色彻底暗下来，变成一个剪影。）
+
+> 切至黑场。`,
+
+  nowhere: `外景 · 戈壁公路 — 正午 12:03
+
+一条没有尽头的柏油路，两侧是荒漠。一辆破旧的越野车停在路边。引擎盖开着，冒着白烟。
+
+潘肖：（踹了一脚轮胎，对手机）没信号。油表是坏的，GPS是坏的，路是坏的，人是坏的。
+
+（远处地平线上出现一个黑点。越来越近——是一辆马车。）
+
+马车上下来一个老头，脸上有道疤。
+
+老头：车坏了？
+
+潘肖：废话。你要能修，我给你钱。
+
+老头：（看都没看车）在无人区，钱没用。有用的只有两样东西——水，和命。
+
+（他牵着马走了。潘肖看着他的背影，扯着嗓子喊。）
+
+潘肖：你叫什么名字？
+
+老头：（没回头）没人会在无人区问名字。
+
+> 切至：
+
+潘肖一个人坐在车顶上。秃鹫在他头顶盘旋。远处传来狼嚎。`,
+
+};
+
+function insertTemplate(type) {[type];
+  if (!t) return;
+  const ta = $('scriptInput');
+  if (ta.value.trim()) {
+    if (!confirm('当前编辑器已有内容，插入模板会覆盖。要继续吗？')) return;
+  }
+  ta.value = t;
+  ta.focus();
+  renderPreview();
+  showToast('模板已加载');
+}
+
+/* ========== QUICK INSERTS ========== */
+function insertSlug() {
+  const ta = $('scriptInput');
+  ta.value += (ta.value && !ta.value.endsWith('\n') ? '\n\n' : '') + '内景 · 场景名称 — 时间\n';
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+  renderPreview();
+}
+
+function insertCharacter() {
+  const ta = $('scriptInput');
+  ta.value += (ta.value && !ta.value.endsWith('\n') ? '\n' : '') + '角色名：对白内容\n';
+  ta.focus();
+  const pos = ta.value.lastIndexOf('角色名：');
+  ta.setSelectionRange(pos + 4, pos + 7);
+  renderPreview();
+}
+
+function insertTransition() {
+  const ta = $('scriptInput');
+  ta.value += (ta.value && !ta.value.endsWith('\n') ? '\n\n' : '') + '> 切至：\n';
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+  renderPreview();
+}
+
+/* ========== EXPORT ========== */
+function exportScript(format) {
+  const title = $('scriptTitle').value || '未命名剧本';
+  const text = $('scriptInput').value;
+
+  if (!text.trim()) { showToast('剧本是空的，写点什么再导出吧', true); return; }
+
+  let content, filename, mime;
+
+  if (format === 'json') {
+    const data = {
+      title: title,
+      content: text,
+      savedAt: new Date().toISOString(),
+      version: '1.0',
+      app: '灰烬手稿 (Ashes to Script)',
+      chars: text.replace(/\s/g, '').length
+    };
+    content = JSON.stringify(data, null, 2);
+    filename = title + '.json';
+    mime = 'application/json';
+  } else if (format === 'fountain') {
+    content = `Title: ${title}\nCredit: Written with 灰烬手稿 (Ashes to Script)\nAuthor: \n\n${text}`;
+    filename = title + '.fountain';
+    mime = 'text/plain';
+  } else {
+    content = `${title}\n${'—'.repeat(40)}\n\n${text}`;
+    filename = title + '.txt';
+    mime = 'text/plain';
+  }
+
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast(`已导出: ${filename}`);
+}
+
+/* ========== KEYBOARD SHORTCUTS ========== */
+$('scriptInput').addEventListener('keydown', function(e) {
+  // Ctrl+S → save to library
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveScript();
+  }
+  // Tab → jump to next line and insert "角色名："
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const ta = this;
+    const before = ta.value.slice(0, ta.selectionStart);
+    const after = ta.value.slice(ta.selectionEnd);
+    if (!before.endsWith('\n') && before.length > 0) ta.value = before + '\n角色名：' + after;
+    else ta.value = before + '角色名：' + after;
+    const pos = before.length + 4;
+    ta.setSelectionRange(pos, pos);
+    ta.focus();
+    renderPreview();
+  }
+});
+
+/* ========== SAVE / LOAD / LIBRARY ========== */
+const STORAGE_KEY = 'ashes_script_library';
+const DRAFT_KEY = 'ashes_script_draft';
+
+function getLibrary() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveLibrary(lib) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(lib));
+}
+
+function generateId() {
+  return 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+}
+
+function saveScript() {
+  const title = $('scriptTitle').value.trim() || '未命名剧本';
+  const text = $('scriptInput').value;
+  if (!text.trim()) { showToast('剧本是空的，写点什么再保存吧', true); return; }
+
+  const lib = getLibrary();
+  const now = new Date().toISOString();
+  const existing = lib.find(s => s.title === title);
+
+  if (existing) {
+    // Update existing entry
+    if (!confirm(`已存在同名剧本「${title}」。要覆盖保存吗？`)) return;
+    existing.content = text;
+    existing.updatedAt = now;
+    existing.chars = text.replace(/\s/g, '').length;
+  } else {
+    lib.push({
+      id: generateId(),
+      title: title,
+      content: text,
+      createdAt: now,
+      updatedAt: now,
+      chars: text.replace(/\s/g, '').length
+    });
+  }
+
+  saveLibrary(lib);
+  showToast(`已保存: ${title}`);
+}
+
+function openLibrary() {
+  renderLibrary();
+  $('libraryModal').classList.add('active');
+}
+
+function renderLibrary() {
+  const lib = getLibrary();
+  const list = $('libraryList');
+  $('libraryCount').textContent = `共 ${lib.length} 个剧本`;
+
+  if (!lib.length) {
+    list.innerHTML = '<div class="library-empty">还没有保存过剧本。写点什么然后点「保存」吧。</div>';
+    return;
+  }
+
+  lib.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+  list.innerHTML = lib.map(s => {
+    const date = new Date(s.updatedAt);
+    const dateStr = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `<div class="library-item" onclick="loadScript('${s.id}')">
+      <div>
+        <div class="lib-title">${escHtml(s.title)}</div>
+        <div class="lib-meta">${dateStr} · ${s.chars || 0} 字</div>
+      </div>
+      <div class="lib-actions" onclick="event.stopPropagation()">
+        <button class="lib-action-btn" onclick="loadScript('${s.id}')">打开</button>
+        <button class="lib-action-btn" onclick="exportLibraryItem('${s.id}')">导出</button>
+        <button class="lib-action-btn danger" onclick="deleteScript('${s.id}')">删除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadScript(id) {
+  const lib = getLibrary();
+  const s = lib.find(x => x.id === id);
+  if (!s) { showToast('剧本不存在', true); return; }
+
+  const ta = $('scriptInput');
+  if (ta.value.trim() && ta.value !== s.content) {
+    if (!confirm('当前编辑器有未保存内容。加载剧本会覆盖。要继续吗？')) return;
+  }
+
+  ta.value = s.content;
+  $('scriptTitle').value = s.title;
+  renderPreview();
+  closeModal('libraryModal');
+  showToast(`已加载: ${s.title}`);
+}
+
+function deleteScript(id) {
+  const lib = getLibrary();
+  const s = lib.find(x => x.id === id);
+  if (!s) return;
+  if (!confirm(`确定删除剧本「${s.title}」？此操作不可恢复。`)) return;
+
+  const updated = lib.filter(x => x.id !== id);
+  saveLibrary(updated);
+  renderLibrary();
+  showToast(`已删除: ${s.title}`);
+}
+
+function exportLibraryItem(id) {
+  const lib = getLibrary();
+  const s = lib.find(x => x.id === id);
+  if (!s) { showToast('剧本不存在', true); return; }
+
+  const data = {
+    title: s.title,
+    content: s.content,
+    savedAt: s.updatedAt,
+    version: '1.0',
+    app: '灰烬手稿 (Ashes to Script)',
+    chars: s.chars
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = s.title + '.json';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`已导出: ${s.title}.json`);
+}
+
+function importScript(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.content || !data.title) throw new Error('格式不正确');
+      $('scriptInput').value = data.content;
+      $('scriptTitle').value = data.title;
+      renderPreview();
+      showToast(`已导入: ${data.title}`);
+    } catch (err) {
+      showToast('文件格式不正确，需要灰烬手稿导出的 .json 文件', true);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+  closeModal('libraryModal');
+}
+
+/* ========== AUTO-SAVE (Draft) ========== */
+let autoSaveTimer = null;
+function autoSaveDraft() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    const title = $('scriptTitle').value.trim() || '未命名剧本';
+    const text = $('scriptInput').value;
+    if (!text.trim()) { localStorage.removeItem(DRAFT_KEY); updateSaveIndicator('idle'); return; }
+    const draft = { title, content: text, savedAt: new Date().toISOString() };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    updateSaveIndicator('saved');
+    setTimeout(() => updateSaveIndicator('idle'), 2000);
+  }, 800);
+}
+
+function updateSaveIndicator(state) {
+  const el = $('saveIndicator');
+  el.className = 'save-indicator ' + (state === 'saved' ? 'saved' : state === 'saving' ? 'saving' : '');
+  el.textContent = state === 'saved' ? '已保存' : state === 'saving' ? '保存中...' : '草稿';
+}
+
+$('scriptInput').addEventListener('input', () => { renderPreview(); autoSaveDraft(); });
+$('scriptTitle').addEventListener('input', autoSaveDraft);
+
+/* ========== IMPORT DRAG & DROP ========== */
+const importZone = $('importZone');
+if (importZone) {
+  importZone.addEventListener('dragover', (e) => { e.preventDefault(); importZone.classList.add('dragover'); });
+  importZone.addEventListener('dragleave', () => { importZone.classList.remove('dragover'); });
+  importZone.addEventListener('drop', (e) => {
+    e.preventDefault(); importZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.name.endsWith('.json')) { showToast('请拖入 .json 剧本文件', true); return; }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.content || !data.title) throw new Error('格式不正确');
+        $('scriptInput').value = data.content;
+        $('scriptTitle').value = data.title;
+        renderPreview();
+        closeModal('libraryModal');
+        showToast(`已导入: ${data.title}`);
+      } catch (err) {
+        showToast('文件格式不正确', true);
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+/* ========== GITHUB GIST CLOUD SYNC ========== */
+const GIST_APP_TAG = '[灰烬手稿]';
+const GH_API = 'https://api.github.com';
+const GIST_TOKEN_KEY = 'gistToken';
+
+function getGistToken() {
+  const saved = localStorage.getItem(GIST_TOKEN_KEY);
+  if (saved) return saved;
+  return '';
+}
+
+function setGistToken(token) {
+  if (token) {
+    localStorage.setItem(GIST_TOKEN_KEY, token);
+    showToast('Token 已保存，现在可以使用云同步了');
+  } else {
+    localStorage.removeItem(GIST_TOKEN_KEY);
+  }
+}
+
+function promptForToken(callback) {
+  // Show inline prompt instead of native prompt for better UX
+  const existing = $('cloudList');
+  existing.innerHTML = `
+    <div style="padding:var(--space-md);text-align:center;">
+      <p style="margin-bottom:var(--space-sm);font-size:0.85rem;">需要 GitHub Personal Access Token 才能使用云同步</p>
+      <p style="font-size:0.68rem;color:oklch(0.5 0.01 100);margin-bottom:var(--space-sm);">
+        前往 <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--neon-yellow);">github.com/settings/tokens</a> 创建 Token，勾选 <b>gist</b> 权限即可
+      </p>
+      <div class="share-url-row" style="margin-bottom:8px;">
+        <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx" style="text-align:center;">
+      </div>
+      <button class="tool-btn accent" onclick="(function(){var t=document.getElementById('tokenInput').value.trim();if(t){setGistToken(t);loadFromCloud();}})()" style="margin-right:4px;">保存并使用</button>
+      <button class="tool-btn" onclick="closeModal('cloudModal')" style="font-size:0.68rem;">取消</button>
+    </div>`;
+  $('cloudCount').textContent = '';
+}
+
+async function gistRequest(method, path, body) {
+  const token = getGistToken();
+  if (!token) throw new Error('Token 未配置');
+  const opts = {
+    method,
+    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  };
+  if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const res = await fetch(GH_API + path, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    if (res.status === 401) throw new Error('Token 无效或已过期');
+    if (res.status === 403 && err.message && err.message.includes('rate limit')) throw new Error('API 请求太频繁，请稍后再试');
+    throw new Error(err.message || `请求失败 (${res.status})`);
+  }
+  return res.json();
+}
+
+async function syncToCloud() {
+  const title = $('scriptTitle').value.trim() || '未命名剧本';
+  const text = $('scriptInput').value;
+  if (!text.trim()) { showToast('剧本是空的，写点什么再上传吧', true); return; }
+  if (!getGistToken()) { showToast('请先在「云加载」中配置 GitHub Token', true); return; }
+
+  updateSaveIndicator('saving');
+  const description = `${GIST_APP_TAG} ${title}`;
+  const files = {};
+  files[title + '.txt'] = { content: text };
+  const body = { description, files, public: false };
+
+  try {
+    // Check if a gist with same description already exists, update it
+    const existing = await findCloudGist(title);
+    if (existing) {
+      await gistRequest('PATCH', '/gists/' + existing.id, { description, files });
+      showToast(`云端已更新: ${title}`);
+    } else {
+      await gistRequest('POST', '/gists', body);
+      showToast(`云端已保存: ${title}`);
+    }
+    updateSaveIndicator('saved');
+    setTimeout(() => updateSaveIndicator('idle'), 2000);
+  } catch (err) {
+    updateSaveIndicator('idle');
+    showToast('云保存失败: ' + err.message, true);
+  }
+}
+
+async function findCloudGist(title) {
+  // Fetch first page of gists and find match
+  const gists = await gistRequest('GET', '/gists?per_page=100');
+  const targetDesc = `${GIST_APP_TAG} ${title}`;
+  return gists.find(g => g.description === targetDesc);
+}
+
+async function loadFromCloud() {
+  $('cloudModal').classList.add('active');
+  if (!getGistToken()) { promptForToken(); return; }
+
+  $('cloudCount').textContent = '加载中...';
+  $('cloudList').innerHTML = '<div class="library-empty">正在从 GitHub 拉取...</div>';
+
+  try {
+    const gists = await gistRequest('GET', '/gists?per_page=100');
+    const ours = gists.filter(g => g.description && g.description.startsWith(GIST_APP_TAG));
+
+    $('cloudCount').textContent = `共 ${ours.length} 个云端剧本`;
+    if (!ours.length) {
+      $('cloudList').innerHTML = '<div class="library-empty">云端还没有保存过剧本。写点什么然后点「云保存」吧。</div>';
+      return;
+    }
+
+    ours.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+    $('cloudList').innerHTML = ours.map(g => {
+      const title = g.description.replace(GIST_APP_TAG, '').trim();
+      const date = new Date(g.updated_at);
+      const dateStr = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      return `<div class="library-item" onclick="downloadCloudGist('${g.id}', '${escAttr(title)}')">
+        <div>
+          <div class="lib-title">${escHtml(title)}</div>
+          <div class="lib-meta">${dateStr} · ${Object.keys(g.files).length} 文件</div>
+        </div>
+        <div class="lib-actions" onclick="event.stopPropagation()">
+          <button class="lib-action-btn" onclick="downloadCloudGist('${g.id}', '${escAttr(title)}')">加载</button>
+          <button class="lib-action-btn danger" onclick="deleteCloudGist('${g.id}', '${escAttr(title)}')">删除</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    $('cloudList').innerHTML = `<div class="library-empty" style="color:var(--blood)">加载失败: ${escHtml(err.message)}</div>`;
+  }
+}
+
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+async function downloadCloudGist(gistId, title) {
+  try {
+    const gist = await gistRequest('GET', '/gists/' + gistId);
+    // Get content of the first file
+    const firstFile = Object.values(gist.files)[0];
+    if (!firstFile || !firstFile.content) throw new Error('Gist 内容为空');
+
+    const ta = $('scriptInput');
+    if (ta.value.trim() && ta.value !== firstFile.content) {
+      if (!confirm('当前编辑器有未保存内容。加载云端剧本会覆盖。要继续吗？')) return;
+    }
+
+    ta.value = firstFile.content;
+    $('scriptTitle').value = title;
+    renderPreview();
+    closeModal('cloudModal');
+    showToast(`已从云端加载: ${title}`);
+  } catch (err) {
+    showToast('加载失败: ' + err.message, true);
+  }
+}
+
+async function deleteCloudGist(gistId, title) {
+  if (!confirm(`确定从云端删除剧本「${title}」？此操作不可恢复。`)) return;
+  try {
+    await gistRequest('DELETE', '/gists/' + gistId);
+    showToast(`云端已删除: ${title}`);
+    loadFromCloud(); // Refresh list
+  } catch (err) {
+    showToast('删除失败: ' + err.message, true);
+  }
+}
+
+/* ========== SHARE ========== */
+const SHARE_URL_KEY = 'shareBaseUrl';
+
+function getShareUrl() {
+  const saved = localStorage.getItem(SHARE_URL_KEY);
+  if (saved) return saved;
+  // Default: guess GitHub Pages URL from repo structure
+  return window.location.origin + window.location.pathname;
+}
+
+function saveShareUrl() {
+  const val = $('shareBaseUrl').value.trim();
+  if (val) localStorage.setItem(SHARE_URL_KEY, val);
+  else localStorage.removeItem(SHARE_URL_KEY);
+}
+
+function resetShareUrl() {
+  localStorage.removeItem(SHARE_URL_KEY);
+  $('shareBaseUrl').value = '';
+  $('shareQrWrap').style.display = 'none';
+  showToast('分享地址已重置');
+}
+
+function openShare() {
+  $('shareBaseUrl').value = getShareUrl();
+  $('shareQrWrap').style.display = 'none';
+  $('shareModal').classList.add('active');
+}
+
+function shareTo(platform) {
+  const url = encodeURIComponent(getShareUrl());
+  const title = encodeURIComponent(document.title || '灰烬手稿 · 剧本写作器');
+  const summary = encodeURIComponent('暗黑美学剧本写作工具，支持 Fountain 格式、本地保存与云端同步。');
+
+  switch (platform) {
+    case 'weibo':
+      window.open(`https://service.weibo.com/share/share.php?url=${url}&title=${title}&pic=&appkey=&ralateUid=&language=zh_cn`, '_blank', 'width=620,height=450');
+      break;
+    case 'wechat':
+      // Generate QR code via API, user scans it with WeChat then shares to Moments
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}`;
+      $('shareQrImg').src = qrUrl;
+      $('shareQrWrap').style.display = 'block';
+      break;
+    case 'copy':
+      navigator.clipboard.writeText(decodeURIComponent(url)).then(() => {
+        showToast('链接已复制到剪贴板');
+      }).catch(() => {
+        // Fallback: select text
+        const ta = document.createElement('textarea');
+        ta.value = decodeURIComponent(url);
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('链接已复制');
+      });
+      break;
+    case 'twitter':
+      window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`, '_blank', 'width=600,height=350');
+      break;
+  }
+}
+
+/* ========== MODAL ========== */
+let currentPlan = '';
+
+function openSubscribe(plan) {
+  currentPlan = plan;
+  $('modalPlanTitle').textContent = '订阅 ' + plan;
+  $('subscribeEmail').value = '';
+  $('subscribeModal').classList.add('active');
+}
+
+function closeModal(id) {
+  $(id).classList.remove('active');
+  currentPlan = '';
+}
+
+function confirmSubscribe() {
+  const email = $('subscribeEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('请输入有效的邮箱地址', true);
+    return;
+  }
+  closeModal('subscribeModal');
+  showToast(`已提交 ${currentPlan} 订阅——祝你好运。`);
+}
+
+$('subscribeModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal('subscribeModal');
+});
+$('libraryModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal('libraryModal');
+});
+
+/* ========== PAGE LOAD ========== */
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+
+  // Restore draft if available
+  try {
+    const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if (draft && draft.content && draft.content.trim()) {
+      if (confirm(`检测到上次未保存的草稿「${draft.title || '未命名剧本'}」。要恢复吗？`)) {
+        $('scriptInput').value = draft.content;
+        if (draft.title) $('scriptTitle').value = draft.title;
+        renderPreview();
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Fallback: load sample template
+  $('scriptInput').value = templates.convenience;
+  renderPreview();
+});
+
+/* ========== ESC TO CLOSE MODAL ========== */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal('subscribeModal');
+    closeModal('libraryModal');
+  }
+});
+</script>
+</body>
+</html>
