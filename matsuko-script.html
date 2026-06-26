@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>被嫌弃的松子的一生 — 完整剧本 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.12 0.014 260);
+    --ash: oklch(0.18 0.01 250);
+    --concrete: oklch(0.28 0.008 245);
+    --blood: oklch(0.38 0.22 25);
+    --neon-yellow: oklch(0.92 0.19 106);
+    --rust: oklch(0.52 0.17 55);
+    --bone: oklch(0.88 0.02 90);
+    --cyan-shock: oklch(0.75 0.16 195);
+    --magenta: oklch(0.58 0.25 350);
+    --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 2rem);
+    --space-lg: clamp(2rem, 6vw, 5rem);
+    --space-xl: clamp(3rem, 10vw, 8rem);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--ink);
+    color: var(--bone);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                radial-gradient(ellipse 50% 50% at 15% 80%, oklch(0.3 0.04 20 / 0.15), transparent),
+                var(--ink);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-sm) var(--space-md);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.12 0.014 260 / 0.85);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  nav.visible { transform: translateY(0); }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--neon-yellow); letter-spacing: 0.08em; text-shadow: 0 0 20px oklch(0.92 0.19 106 / 0.3); cursor: pointer; transition: color 0.25s; }
+  .nav-logo:hover { color: var(--blood); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid oklch(1 0 0 / 0.15); color: oklch(0.6 0.01 100); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: all 0.25s; text-decoration: none;
+  }
+  .nav-back:hover { border-color: var(--bone); color: var(--bone); }
+
+  /* === HERO === */
+  .script-hero {
+    min-height: 45vh;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
+    position: relative;
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  }
+  .script-hero::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(transparent, oklch(0.38 0.22 25 / 0.08));
+    pointer-events: none;
+  }
+  .script-hero-content { max-width: 900px; margin-left: clamp(0rem, 5vw, 6rem); position: relative; z-index: 1; }
+  .script-eyebrow { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--rust); text-transform: uppercase; margin-bottom: var(--space-sm); display: flex; align-items: center; gap: 0.8em; }
+  .script-eyebrow::before { content: ''; width: 2.5em; height: 1px; background: var(--blood); display: block; }
+  .script-hero h1 {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    color: var(--neon-yellow);
+    text-shadow: 3px 3px 0 var(--blood);
+    margin-bottom: var(--space-sm);
+  }
+  .script-hero .subtitle {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: var(--cyan-shock);
+    letter-spacing: 0.08em;
+    text-shadow: -2px 2px 0 var(--magenta);
+  }
+  .script-meta {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.7rem;
+    color: oklch(0.5 0.01 100);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .script-meta span { display: flex; align-items: center; gap: 0.5em; }
+  .script-meta span::before { content: ''; width: 6px; height: 6px; background: var(--blood); display: block; }
+
+  /* === SCRIPT BODY === */
+  .script-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-md) var(--space-xl);
+  }
+
+  .scene-block {
+    margin-bottom: var(--space-xl);
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .scene-block.visible { opacity: 1; transform: translateY(0); }
+
+  .scene-number {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--rust);
+    position: absolute;
+    left: -3em;
+    top: 0.2em;
+    text-align: right;
+    width: 2em;
+  }
+
+  .slug {
+    color: var(--neon-yellow);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.9rem;
+    margin-bottom: 0.4em;
+    padding: 0.3em 0;
+    border-bottom: 1px solid oklch(1 0 0 / 0.05);
+    margin-top: 1.2em;
+  }
+
+  .action {
+    color: oklch(0.78 0.02 90);
+    display: block;
+    margin: 0.4em 0;
+    line-height: 1.8;
+  }
+
+  .character {
+    color: var(--blood);
+    font-weight: 700;
+    display: block;
+    margin-top: 0.8em;
+    padding-left: 40%;
+    font-family: 'ZCOOL XiaoWei', serif;
+    letter-spacing: 0.06em;
+  }
+
+  .dialogue {
+    color: var(--bone);
+    display: block;
+    padding-left: 25%;
+    margin-bottom: 0.3em;
+    line-height: 1.7;
+  }
+
+  .paren {
+    color: oklch(0.55 0.01 100);
+    font-style: italic;
+    display: block;
+    padding-left: 30%;
+    font-size: 0.9em;
+    margin: 0.2em 0;
+  }
+
+  .transition {
+    color: var(--cyan-shock);
+    text-transform: uppercase;
+    text-align: right;
+    display: block;
+    margin: 1em 0;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-family: 'ZCOOL XiaoWei', serif;
+  }
+
+  .note {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.85rem;
+    color: oklch(0.5 0.01 100);
+    font-style: italic;
+    padding: var(--space-sm) var(--space-md);
+    border-left: 3px solid var(--blood);
+    margin: var(--space-md) 0;
+    background: oklch(0.15 0.01 260 / 0.6);
+  }
+
+  .act-break {
+    text-align: center;
+    padding: var(--space-lg) 0;
+    position: relative;
+  }
+  .act-break span {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2.5rem;
+    color: var(--blood);
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 var(--magenta);
+  }
+  .act-break::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--blood);
+    margin: 0 auto var(--space-sm);
+  }
+
+  /* === SCENE DIVIDER === */
+  .scene-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+    opacity: 0.3;
+  }
+  .scene-divider::before, .scene-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blood), transparent);
+  }
+  .scene-divider span {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--blood);
+  }
+
+  /* === FOOTER === */
+  .script-footer {
+    text-align: center;
+    padding: var(--space-xl) var(--space-md);
+    border-top: 1px solid oklch(1 0 0 / 0.06);
+    background: oklch(0.14 0.012 260 / 0.5);
+  }
+  .script-footer p {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--cyan-shock);
+    text-shadow: -2px 2px 0 var(--magenta);
+  }
+  .script-footer .btn-back {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.9rem;
+    padding: 0.7em 2em;
+    border: 1.5px solid var(--blood);
+    color: var(--blood);
+    background: transparent;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+  }
+  .script-footer .btn-back:hover {
+    background: var(--blood);
+    color: var(--bone);
+  }
+
+  /* === TOOLBAR (scroll progress) === */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blood), var(--neon-yellow));
+    z-index: 101;
+    transition: width 0.1s linear;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .script-hero-content { margin-left: 0; }
+    .script-hero h1 { font-size: clamp(2rem, 8vw, 3.5rem); }
+    .script-body { padding: var(--space-lg) var(--space-sm); }
+    .character { padding-left: 25%; }
+    .dialogue { padding-left: 15%; }
+    .paren { padding-left: 18%; }
+    .scene-number { left: 0; position: relative; text-align: left; margin-bottom: 0.3em; display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav id="navbar">
+  <span class="nav-logo" onclick="window.location.href='screenplay-writer_20260626_120544_202.html'">灰烬手稿</span>
+  <a class="nav-back" href="screenplay-writer_20260626_120544_202.html">← 返回写作器</a>
+</nav>
+
+<section class="script-hero">
+  <div class="script-hero-content">
+    <p class="script-eyebrow">经典剧本全本 · 纪实忧郁主义</p>
+    <h1>被嫌弃的松子的<br>一生</h1>
+    <p class="subtitle">Memories of Matsuko</p>
+    <div class="script-meta">
+      <span>原著 山田宗树</span>
+      <span>导演 中岛哲也</span>
+      <span>2006</span>
+      <span>日本</span>
+    </div>
+  </div>
+</section>
+
+<section class="script-body">
+
+<!-- ===== 序章 ===== -->
+<div class="scene-block" id="scene-01">
+  <span class="scene-number">01</span>
+
+  <span class="slug">外景 · 荒川河堤 — 黄昏</span>
+
+  <span class="action">河堤上空无一人。天空烧成一种不真实的橙红色，像廉价滤镜拍出的明信片。松子站在河边，手里提着一个便利店的塑料袋。她五十三岁，看上去像七十三岁。</span>
+
+  <span class="action">塑料袋里是几罐啤酒和一盒过期的寿司。风很大。塑料袋啪嗒啪嗒响个不停，像在鼓掌。</span>
+
+  <div class="note">「生而为人，我很抱歉」——这句话贯穿松子的一生。以下是她的人生。以下是所有人的人生。</div>
+
+  <span class="character">松子（画外音）</span>
+  <span class="paren">（平静地）</span>
+  <span class="dialogue">我叫川尻松子。昭和二十二年八月二日出生。狮子座。血型O型。最喜欢的人是爸爸。最讨厌的人是——</span>
+
+  <span class="action">她停住了。河面上浮着塑料瓶和枯叶。有人在远处放烟花，声音闷闷的。</span>
+
+  <span class="character">松子（画外音）</span>
+  <span class="dialogue">算了。没有最讨厌的人。只有——最不想想起的人。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第一幕：童年 ===== -->
+<div class="act-break"><span>第一幕</span></div>
+
+<div class="scene-block" id="scene-02">
+  <span class="scene-number">02</span>
+
+  <span class="slug">内景 · 川尻家客厅 — 白天 · 昭和三十年</span>
+
+  <span class="action">七岁的松子趴在榻榻米上画画。她画了一个穿红色连衣裙的女人。旁边歪歪扭扭写了四个字：妈妈·回来。</span>
+
+  <span class="action">客厅另一端，父亲坐在轮椅上，背对松子。轮椅面向窗户。窗外什么也没有。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">爸爸，你看。</span>
+
+  <span class="action">父亲没有回头。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（更大声）</span>
+  <span class="dialogue">爸爸！你看我画的什么！</span>
+
+  <span class="action">父亲缓缓转过头。他的脸在逆光里一片模糊。</span>
+
+  <span class="character">父亲</span>
+  <span class="dialogue">……嗯。</span>
+
+  <span class="action">松子等了很久。但父亲已经转回去了。她又等了很久。然后她做了一个鬼脸——像电视里的小丑那样，把嘴角往两边拉，把眼睛挤成两条缝。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（挤着鬼脸）</span>
+  <span class="dialogue">爸爸——</span>
+
+  <span class="action">父亲愣了一下。</span>
+
+  <span class="action">然后他笑了。</span>
+
+  <span class="action">松子看见父亲笑了。她把这个鬼脸记住了。在此后的二十多年里，这个鬼脸是她唯一确认被爱的证据。</span>
+</div>
+
+<div class="scene-block" id="scene-03">
+  <span class="scene-number">03</span>
+
+  <span class="slug">内景 · 小学教室 — 白天 · 昭和三十八年</span>
+
+  <span class="action">十七岁的松子站在黑板前，穿着水手服。她唱完一首歌，转身对全班做了一个鬼脸。全班哄堂大笑。松子也跟着笑。</span>
+
+  <span class="action">班主任站在教室后门，皱着眉头。</span>
+
+  <span class="character">班主任</span>
+  <span class="paren">（小声对旁边的老师）</span>
+  <span class="dialogue">川尻同学——成绩好，人漂亮，但总有一种说不出的讨好。你感觉到没有？</span>
+
+  <span class="action">旁边的老师没有回答。松子还在笑。笑声盖过了一切。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第二幕：堕落 ===== -->
+<div class="act-break"><span>第二幕</span></div>
+
+<div class="scene-block" id="scene-04">
+  <span class="scene-number">04</span>
+
+  <span class="slug">内景 · 中学教员室 — 傍晚</span>
+
+  <span class="action">二十三岁的松子站在教导主任面前。她现在是中学音乐老师。窗外在下雨。</span>
+
+  <span class="character">教导主任</span>
+  <span class="dialogue">川尻老师，修学旅行那天，你们班上的龙洋一同学——</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">是我让他把钱交出来的。</span>
+
+  <span class="character">教导主任</span>
+  <span class="dialogue">但据我们所知，钱是你——</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（很快地）</span>
+  <span class="dialogue">钱是我替他还的。是我的错。我道歉。</span>
+
+  <span class="action">教导主任盯着她。松子做了一个鬼脸。</span>
+
+  <span class="action">教导主任没有笑。</span>
+</div>
+
+<div class="scene-block" id="scene-05">
+  <span class="scene-number">05</span>
+
+  <span class="slug">内景 · 松子的小公寓 — 深夜 · 昭和四十七年</span>
+
+  <span class="action">六叠大的房间。地上堆满了空酒瓶和烟蒂。松子坐在角落，抱着膝盖。墙上贴着一张海报，上面写着太宰治的一句话。</span>
+
+  <span class="action">她旁边坐着一个男人——八女川彻也。自称作家。头发很长，眼睛很亮，手指甲里有洗不掉的油墨。</span>
+
+  <span class="character">八女川</span>
+  <span class="paren">（盯着天花板）</span>
+  <span class="dialogue">松子。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">嗯。</span>
+
+  <span class="character">八女川</span>
+  <span class="dialogue">我写不出来了。</span>
+
+  <span class="action">沉默。隔壁传来电视的声音。综艺节目的罐头笑声。</span>
+
+  <span class="character">八女川</span>
+  <span class="dialogue">你知道太宰治是怎么死的吗？</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（摇头）</span>
+
+  <span class="character">八女川</span>
+  <span class="dialogue">跳河。和女人一起。松子，你也一起吧。</span>
+
+  <span class="action">松子看着他的眼睛。那双眼睛亮得不像活人的眼睛。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（安静地）</span>
+  <span class="dialogue">好啊。</span>
+
+  <span class="action">她伸出手，握住他的。他的手指冰凉。</span>
+
+  <span class="character">八女川</span>
+  <span class="paren">（突然笑了）</span>
+  <span class="dialogue">你这个人——真有意思。你为什么从来不说"不"？</span>
+
+  <span class="action">松子没有回答。她在心里做了一个鬼脸。</span>
+
+  <span class="transition">> 切至。</span>
+
+  <span class="slug">外景 · 玉川上水 — 黎明</span>
+
+  <span class="action">天还没亮。河边的芦苇在风里沙沙响。松子和八女川站在河边。</span>
+
+  <span class="action">八女川向前迈了一步。水没到脚踝。</span>
+
+  <span class="action">松子站着没动。雨开始下起来了。</span>
+
+  <span class="character">八女川</span>
+  <span class="paren">（没回头）</span>
+  <span class="dialogue">松子。谢谢你。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">……不用谢。</span>
+
+  <span class="action">八女川继续往水里走。水一点点没过他的膝盖、腰、胸口。</span>
+
+  <span class="action">松子站在岸边。她没有动。她只是站着。雨落在她脸上，分不清是雨水还是别的什么。</span>
+
+  <span class="action">然后她转身走了。</span>
+
+  <span class="dialogue"></span>
+
+  <span class="action">她决定活下去。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-06">
+  <span class="scene-number">06</span>
+
+  <span class="slug">外景 · 东京街头 — 白天 · 昭和四十九年</span>
+
+  <span class="action">松子穿着浴衣，站在一家土耳其浴店的门口。霓虹灯还没亮。她的脸上化着浓妆，看起来像另一个人。</span>
+
+  <span class="action">一个中年男人从她身边走过，看了她一眼，又折回来。</span>
+
+  <span class="character">中年男人</span>
+  <span class="dialogue">你——新来的？</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（微笑）</span>
+  <span class="dialogue">是。</span>
+
+  <span class="character">中年男人</span>
+  <span class="dialogue">叫什么？</span>
+
+  <span class="action">松子看着自己的脚。木屐的带子有点松。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">……雪乃。</span>
+
+  <span class="action">男人点点头，走进店里。松子站在门口，又做了一个鬼脸。这一次没有人看见。</span>
+</div>
+
+<div class="scene-block" id="scene-07">
+  <span class="scene-number">07</span>
+
+  <span class="slug">内景 · 土耳其浴店 — 深夜</span>
+
+  <span class="action">灯光昏暗。松子一个人坐在梳妆台前。镜子里的女人她不认识。她伸手摸了摸镜子。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（对镜子里的人）</span>
+  <span class="dialogue">你以前是老师，你知道吗？</span>
+
+  <span class="action">镜子里的人没有回答。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（对镜子里的人）</span>
+  <span class="dialogue">你的学生偷了钱。你替他赔了。然后你被开除了。然后——然后你就在这里了。</span>
+
+  <span class="action">她拿起口红，在镜子上写：生而为人，我很抱歉。</span>
+
+  <span class="action">然后她擦了。</span>
+
+  <span class="action">因为明天还有客人。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-08">
+  <span class="scene-number">08</span>
+
+  <span class="slug">内景 · 理发店 — 白天 · 昭和五十一年</span>
+
+  <span class="action">松子坐在理发椅上，围着围布。理发师叫岛津贤治，四十岁左右，头发梳得一丝不苟，手指修长，说话的时候嘴角有一个很小的弧度。</span>
+
+  <span class="character">岛津</span>
+  <span class="dialogue">剪短一点？</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">……随便。</span>
+
+  <span class="character">岛津</span>
+  <span class="paren">（笑）</span>
+  <span class="dialogue">随便是最难的。比客人说"你看着办"还难。</span>
+
+  <span class="action">松子从镜子里看他的手。剪刀在灯光下反着光。咔嚓。咔嚓。一缕头发落在围布上。</span>
+
+  <span class="character">岛津</span>
+  <span class="dialogue">你是做什么的？</span>
+
+  <span class="action">松子沉默了很久。久到岛津以为她没有听见。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">……美容师。</span>
+
+  <span class="character">岛津</span>
+  <span class="paren">（剪刀没停）</span>
+  <span class="dialogue">同行啊。在哪家店？</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（说谎了）</span>
+  <span class="dialogue">新宿。</span>
+
+  <span class="action">镜子里的松子直直地看着自己。剪刀继续发出好听的金属声。咔嚓。咔嚓。像心跳。</span>
+
+  <span class="action">这是松子一生中最接近幸福的时刻之一：她坐在一张椅子上，有人替她修剪头发，问她一些不需要撒谎的问题。</span>
+
+  <span class="action">但它没有持续多久。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-09">
+  <span class="scene-number">09</span>
+
+  <span class="slug">内景 · 监狱 · 接见室 — 白天 · 昭和五十二年</span>
+
+  <span class="action">松子穿着囚服，隔着玻璃。对面坐着岛津。他穿着西装，头发还是梳得一丝不苟。但他的眼神不一样了。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">你……等我吗？</span>
+
+  <span class="action">岛津没有马上回答。他低头看了一眼自己的手指。指甲剪得很干净。</span>
+
+  <span class="character">岛津</span>
+  <span class="dialogue">……我结婚了。</span>
+
+  <span class="action">松子张了张嘴，没发出声音。</span>
+
+  <span class="character">岛津</span>
+  <span class="dialogue">对方是来店里做头发的客人。很普通的一个人。不像你——</span>
+
+  <span class="action">他停了。</span>
+
+  <span class="action">松子等着他说完。但他没有。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（笑了）</span>
+  <span class="dialogue">没关系。</span>
+
+  <span class="action">她做了一个鬼脸。隔着玻璃。岛津愣了一下，然后移开了视线。</span>
+
+  <span class="action">松子把鬼脸收了。慢慢收的。像收起一件穿旧了的衣服。</span>
+
+  <span class="transition">> 淡出。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第三幕：重逢与毁灭 ===== -->
+<div class="act-break"><span>第三幕</span></div>
+
+<div class="scene-block" id="scene-10">
+  <span class="scene-number">10</span>
+
+  <span class="slug">内景 · 酒吧 — 深夜 · 昭和五十六年</span>
+
+  <span class="action">一家不起眼的酒吧。松子坐在角落，面前有一杯没喝完的威士忌。她四十岁了，看起来像五十岁。</span>
+
+  <span class="action">门开了。一个男人走进来。三十多岁，脸上有一道刀疤，走路微跛。他一进门就看见了她。</span>
+
+  <span class="action">松子也看见了他。她记得这张脸。虽然二十多年过去了。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="paren">（站在她面前）</span>
+  <span class="dialogue">川尻老师。</span>
+
+  <span class="action">松子抬起头。灯光打在她脸上。她的眼睛还是亮的。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">龙洋一。</span>
+
+  <span class="action">沉默。酒吧里放着很老的爵士乐。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">那笔钱——</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">别说了。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">是我偷的。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">我知道。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="paren">（愣住）</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（喝了一口威士忌）</span>
+  <span class="dialogue">我一直都知道。</span>
+
+  <span class="action">龙洋一在她对面坐下。两个人看着对方，谁都没有说话。爵士乐换了一首，比刚才更慢。</span>
+</div>
+
+<div class="scene-block" id="scene-11">
+  <span class="scene-number">11</span>
+
+  <span class="slug">内景 · 松子的公寓 — 凌晨</span>
+
+  <span class="action">天快亮了。松子和龙洋一并肩坐在窗边。窗外是高速公路，车灯一道一道划过。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">老师。你恨我吗。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（摇头）</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">为什么？你的人生——是我毁的。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">我的人生不是被毁掉的。</span>
+
+  <span class="action">她转头看他。窗外一辆卡车经过，灯光把她半张脸照得雪白。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">我的人生——是我自己一步一步选出来的。你只是第一个按钮。</span>
+
+  <span class="action">龙洋一低下头。他的手在发抖。松子伸出手，握住了他的。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">老师……我杀了人。我在逃。</span>
+
+  <span class="action">松子的手没有松开。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">那我们一起逃。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">你疯了。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（笑了）</span>
+  <span class="dialogue">你才知道。</span>
+
+  <span class="action">她没有做鬼脸。这是第一次。</span>
+
+  <span class="transition">> 切至。</span>
+
+  <span class="slug">外景 · 高速公路 — 黎明</span>
+
+  <span class="action">天色由黑转灰。松子坐在副驾驶座，车窗摇下来，风吹着她的头发。龙洋一开车。他们正朝着一个没有方向的方向驶去。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">老师。我一直想问你一个问题。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">问吧。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">你恨过什么人吗？</span>
+
+  <span class="action">松子想了很久。久到地平线开始发亮。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">恨过。但那个人已经死了。</span>
+
+  <span class="character">龙洋一</span>
+  <span class="dialogue">谁？</span>
+
+  <span class="action">松子没有回答。她把头靠在车窗上，闭上眼睛。</span>
+
+  <span class="action">那个人不是八女川。不是岛津。不是任何一个男人。</span>
+
+  <span class="action">那个人是她自己。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-12">
+  <span class="scene-number">12</span>
+
+  <span class="slug">外景 · 警察局门口 — 白天</span>
+
+  <span class="action">龙洋一被警察押进警车。松子站在街对面，没有哭。她只是站着。</span>
+
+  <span class="action">龙洋一回头看了一次。他张了张嘴，但什么都没说出来。</span>
+
+  <span class="action">警车开走了。松子目送它消失在路口。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（轻声）</span>
+  <span class="dialogue">他出来了，我等他。他不出来了——我也等他。</span>
+
+  <span class="action">一阵风吹过。她裹紧外套，转身往反方向走。街上的人纷纷避让她，像避开一堆没人收拾的垃圾。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<!-- ===== 第四幕：终章 ===== -->
+<div class="act-break"><span>终幕</span></div>
+
+<div class="scene-block" id="scene-13">
+  <span class="scene-number">13</span>
+
+  <span class="slug">内景 · 荒川廉价公寓 — 白天 · 平成十三年</span>
+
+  <span class="action">五十三岁的松子住在一间四叠半的公寓里。窗户对着另一栋楼的墙。永远照不到太阳。</span>
+
+  <span class="action">房间里堆满了垃圾袋、空便当盒、杂志。电视永远开着，没人在看。</span>
+
+  <span class="action">她蜷缩在被子下面，只露出一张脸。那张脸很老了，但眼睛还没死。</span>
+
+  <span class="action">门上贴着一张纸条：不要跟我说话。不要靠近我。不要管我。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（对着电视）</span>
+  <span class="dialogue">……这个综艺节目还挺好笑的。</span>
+
+  <span class="action">电视上是一个偶像组合在玩游戏。松子跟着笑了一会儿。然后她做了一个鬼脸。</span>
+
+  <span class="action">电视里的人也笑了。但不是因为她。</span>
+
+  <span class="action">她一个人坐在垃圾中间，做了整整十分钟的鬼脸。最后她停下来。脸上的肌肉有点酸。</span>
+
+  <span class="character">松子</span>
+  <span class="dialogue">爸爸。你看。</span>
+
+  <span class="action">没有人回答。电视里在放广告。</span>
+</div>
+
+<div class="scene-block" id="scene-14">
+  <span class="scene-number">14</span>
+
+  <span class="slug">外景 · 荒川河堤 — 傍晚 · 平成十三年七月</span>
+
+  <span class="action">松子又一次来到河堤。这一次她没有带啤酒。她两手空空，口袋里有三张揉皱的一万日元钞票。</span>
+
+  <span class="action">夕阳和几十年前一模一样。橙红色的，像融化的廉价糖果。河面上还是浮着垃圾。</span>
+
+  <span class="action">松子站在河边，面朝水面。风把她的头发吹得很乱。</span>
+
+  <span class="character">松子（画外音）</span>
+  <span class="dialogue">小时候，大家都觉得未来会闪闪发光。</span>
+
+  <span class="action">河对岸一群孩子在骑自行车。笑声一阵一阵飘过来。</span>
+
+  <span class="character">松子（画外音）</span>
+  <span class="dialogue">可是长大以后，却发现没有一件事会遂了自己的心愿。</span>
+
+  <span class="action">她看见了小时候的自己——七岁的松子，穿着红色的连衣裙，在对岸的斜坡上跑。跑着跑着摔了一跤，爬起来继续跑。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（眼眶红了，但是笑着）</span>
+  <span class="dialogue">对不起啊。</span>
+
+  <span class="action">是对小时候的自己说的。也是对爸爸说的。也是对所有她爱过的、被她拖累的、离她而去的、从来没有真正看过她一眼的人说的。</span>
+
+  <span class="action">但她没有说出口。她只是张了张嘴，然后闭上了。</span>
+
+  <span class="transition">> 切至黑场。</span>
+</div>
+
+<div class="scene-block" id="scene-15">
+  <span class="scene-number">15</span>
+
+  <span class="slug">外景 · 天国（幻象） — 无时间</span>
+
+  <span class="action">一条很长的台阶。从脚下一路延伸到看不见的云层里。台阶两边开满了红色的花。</span>
+
+  <span class="action">松子往上走。她穿着小时候那件红色连衣裙。五十三岁的脸，七岁的衣服。</span>
+
+  <span class="action">台阶的顶端站着一个人。背对着她。坐在轮椅上。</span>
+
+  <span class="action">松子往上走。走得很快。裙摆被风吹起来。</span>
+
+  <span class="character">松子</span>
+  <span class="paren">（大声）</span>
+  <span class="dialogue">爸爸——</span>
+
+  <span class="action">那个人慢慢转过头。</span>
+
+  <span class="action">不是爸爸。</span>
+
+  <span class="action">是她自己。年轻时的自己。二十三岁的松子，穿着水手服改成的连衣裙，站在黑板前，刚刚给全班唱完一首歌。</span>
+
+  <span class="action">年轻的松子对年老的松子笑了一下。</span>
+
+  <span class="action">然后做了一个鬼脸。</span>
+
+  <span class="action">年老的松子愣了一下。</span>
+
+  <span class="action">然后她笑了。</span>
+
+  <span class="transition">> 淡出至白。</span>
+</div>
+
+<div class="scene-divider"><span>◆</span></div>
+
+<div class="scene-block" id="scene-16">
+  <span class="scene-number">16</span>
+
+  <span class="slug">外景 · 荒川河堤 — 早晨 · 平成十三年七月</span>
+
+  <span class="action">天亮了。河堤上空无一人。水面上什么也没有。垃圾被前一晚的雨水冲走了。</span>
+
+  <span class="action">岸边的草地上，一个便利店的塑料袋被风吹起来，飘了一会儿，落在水里。</span>
+
+  <span class="action">塑料袋顺着水流漂走了。</span>
+
+  <span class="action">远处有人在放一首很老很老的歌。松子小时候唱过的那一首。</span>
+
+  <span class="action">歌声很轻，像是从一个很远的地方传来的。</span>
+
+  <span class="action">风吹过河堤。</span>
+
+  <span class="action">风停下来。</span>
+
+  <span class="action">什么都没有了。</span>
+
+  <span class="transition">> 淡出。</span>
+
+  <div class="note">
+    松子不是被嫌弃的。她只是从来没有被看见过。<br>
+    她的一生不是悲剧——是一场没有人来看的演出。<br>
+    但她在每一场戏里，都认真地做了鬼脸。<br><br>
+    全剧终。
+  </div>
+</div>
+
+</section>
+
+<section class="script-footer">
+  <p>生而为人，我很抱歉。</p>
+  <button class="btn-back" onclick="window.location.href='screenplay-writer_20260626_120544_202.html'">返回写作器</button>
+</section>
+
+<script>
+/* === PAGE LOAD === */
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('loaded');
+});
+
+/* === NAV SCROLL === */
+let navShown = false;
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 300 && !navShown) { nav.classList.add('visible'); navShown = true; }
+  if (window.scrollY <= 300 && navShown) { nav.classList.remove('visible'); navShown = false; }
+
+  // Progress bar
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+}, { passive: true });
+
+/* === SCENE REVEAL === */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.scene-block').forEach(el => observer.observe(el));
+document.querySelectorAll('.act-break').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
