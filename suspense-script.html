@@ -58,7 +58,7 @@
     backdrop-filter: blur(12px);
     background: oklch(0.93 0.006 85 / 0.92);
     border-bottom: 1px solid oklch(0.7 0.008 80 / 0.15);
-    transform: translateY(-100%);
+    transform: translateY(0);
     transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
   }
   nav.visible { transform: translateY(0); }
@@ -85,6 +85,21 @@
   }
   .nav-edit:hover { background: var(--accent-primary); color: var(--bg-warm); }
   .nav-edit.editing { background: var(--accent-primary); color: var(--bg-warm); }
+
+  /* floating edit button */
+  .fab-edit {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent-primary); color: var(--bg-warm);
+    border: none; cursor: pointer; font-size: 0.75rem;
+    font-family: 'ZCOOL XiaoWei', serif;
+    box-shadow: 0 4px 20px oklch(0.58 0.16 10 / 0.25);
+    transition: all 0.3s; letter-spacing: 0.08em;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fab-edit:hover { transform: scale(1.08); box-shadow: 0 6px 28px oklch(0.58 0.16 10 / 0.35); }
+  .fab-edit.editing { background: var(--accent-secondary); }
+
   .scene-block.editable { cursor: text; }
   .scene-block.editable:hover { border-color: var(--accent-primary); }
   .scene-block.editable:focus-within { border-color: var(--accent-primary); box-shadow: 0 0 0 2px oklch(0.58 0.16 10 / 0.15); }
@@ -1217,17 +1232,22 @@ const STORAGE_KEY = 'suspense_script_content';
 function toggleEdit() {
   isEditing = !isEditing;
   const btn = document.getElementById('editToggle');
+  const fab = document.getElementById('fabEdit');
   const blocks = document.querySelectorAll('.scene-block');
   
   if (isEditing) {
     btn.textContent = '保存';
     btn.classList.add('editing');
+    fab.textContent = '保存';
+    fab.classList.add('editing');
     loadSavedContent();
     blocks.forEach(b => { b.contentEditable = 'true'; b.classList.add('editable'); });
   } else {
     saveContent();
     btn.textContent = '编辑';
     btn.classList.remove('editing');
+    fab.textContent = '编辑';
+    fab.classList.remove('editing');
     blocks.forEach(b => { b.contentEditable = 'false'; b.classList.remove('editable'); });
   }
 }
@@ -1288,5 +1308,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.body.classList.add('loaded');
 });
 </script>
+<button class="fab-edit" id="fabEdit" onclick="toggleEdit()" title="编辑剧本">编辑</button>
 </body>
 </html>
