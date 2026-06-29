@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>结局续写大赛 · 灰烬手稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-warm: oklch(0.95 0.006 85);
+    --surface: oklch(0.91 0.010 80);
+    --card: oklch(0.87 0.012 75);
+    --ink: oklch(0.28 0.012 75);
+    --ink-light: oklch(0.42 0.010 70);
+    --ink-dim: oklch(0.55 0.008 65);
+    --accent-primary: oklch(0.58 0.16 10);
+    --accent-secondary: oklch(0.68 0.12 55);
+    --accent-soft: oklch(0.72 0.08 15);
+    --highlight: oklch(0.82 0.14 85);
+    --teal-subtle: oklch(0.58 0.06 195);
+    --plum-muted: oklch(0.50 0.08 340);
+    --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 2rem);
+    --space-lg: clamp(2rem, 6vw, 5rem);
+    --space-xl: clamp(3rem, 10vw, 8rem);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    background: var(--bg-warm);
+    color: var(--ink);
+    scroll-behavior: smooth;
+    font-size: clamp(15px, 1.2vw, 18px);
+  }
+  body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.82 0.06 15 / 0.18), transparent),
+                radial-gradient(ellipse 50% 50% at 85% 30%, oklch(0.75 0.10 25 / 0.10), transparent),
+                radial-gradient(ellipse 60% 40% at 15% 70%, oklch(0.68 0.12 55 / 0.08), transparent),
+                var(--bg-warm);
+    opacity: 0; transition: opacity 0.6s ease-out;
+  }
+  body.loaded { opacity: 1; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.012;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: var(--space-sm) var(--space-md);
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(12px);
+    background: oklch(0.93 0.006 85 / 0.92);
+    border-bottom: 1px solid oklch(0.7 0.008 80 / 0.15);
+  }
+  .nav-logo { font-family: 'Ma Shan Zheng', cursive; font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--accent-primary); letter-spacing: 0.08em; text-shadow: 0 0 12px oklch(0.58 0.16 10 / 0.15); cursor: pointer; transition: color 0.25s; }
+  .nav-logo:hover { color: var(--accent-secondary); }
+  .nav-edit {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid var(--accent-primary); color: var(--accent-primary); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; transition: all 0.25s;
+  }
+  .nav-edit:hover { background: var(--accent-primary); color: var(--bg-warm); }
+  .nav-edit.editing { background: var(--accent-primary); color: var(--bg-warm); }
+  .nav-back {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; padding: 0.5em 1.2em;
+    border: 1.5px solid var(--ink-dim); color: var(--ink-light); background: transparent;
+    cursor: pointer; letter-spacing: 0.12em; transition: all 0.25s; text-decoration: none;
+  }
+  .nav-back:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+  /* === HERO === */
+  .contest-hero {
+    min-height: 40vh;
+    display: flex; align-items: flex-end;
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
+    position: relative;
+    border-bottom: 1px solid oklch(0.7 0.008 80 / 0.15);
+  }
+  .contest-hero::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(transparent, oklch(0.58 0.12 15 / 0.06));
+    pointer-events: none;
+  }
+  .contest-hero-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+  .contest-eyebrow {
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem;
+    letter-spacing: 0.3em; color: var(--accent-secondary);
+    margin-bottom: var(--space-sm);
+  }
+  .contest-hero h1 {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.15; letter-spacing: 0.04em;
+    color: var(--accent-primary);
+    text-shadow: 2px 2px 0 var(--accent-soft);
+    margin-bottom: var(--space-sm);
+  }
+  .contest-hero .subtitle {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: var(--teal-subtle);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+  }
+  .contest-intro {
+    max-width: 600px; margin: 0 auto;
+    font-size: 0.9rem; color: var(--ink-light);
+    line-height: 1.8;
+  }
+  .contest-intro a { color: var(--accent-primary); text-decoration: none; border-bottom: 1px dashed var(--accent-soft); }
+  .contest-intro a:hover { border-bottom-style: solid; }
+
+  /* === TOC === */
+  .toc-section {
+    max-width: 800px; margin: 0 auto;
+    padding: var(--space-lg) var(--space-md);
+  }
+  .toc-section h2 {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.2rem; color: var(--accent-primary);
+    letter-spacing: 0.12em; text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-sm);
+  }
+  .toc-card {
+    display: block; text-decoration: none;
+    padding: var(--space-md);
+    background: oklch(0.90 0.008 80 / 0.6);
+    border: 1px solid oklch(0.7 0.008 80 / 0.15);
+    border-radius: 4px;
+    transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .toc-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--accent-primary); opacity: 0; transition: opacity 0.25s;
+  }
+  .toc-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px oklch(0.58 0.16 10 / 0.10);
+  }
+  .toc-card:hover::before { opacity: 1; }
+  .toc-card .author-name {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1rem; color: var(--accent-primary);
+    letter-spacing: 0.08em; margin-bottom: 0.3em;
+  }
+  .toc-card .author-meta {
+    font-size: 0.7rem; color: var(--ink-dim);
+    letter-spacing: 0.06em;
+  }
+
+  /* === ENTRIES === */
+  .entries-section {
+    max-width: 800px; margin: 0 auto;
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+  .entry-block {
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: oklch(0.90 0.008 80 / 0.6);
+    border: 1px solid oklch(0.7 0.008 80 / 0.15);
+    border-radius: 4px;
+    position: relative;
+  }
+  .entry-block:target {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px oklch(0.58 0.16 10 / 0.12);
+  }
+  .entry-block.editable { cursor: text; }
+  .entry-block.editable:hover { border-color: var(--accent-secondary); }
+  .entry-block.editable:focus-within {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px oklch(0.58 0.16 10 / 0.15);
+    outline: none;
+  }
+  .entry-header {
+    display: flex; align-items: center; gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid oklch(0.7 0.008 80 / 0.12);
+  }
+  .entry-number {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 2rem; color: var(--accent-soft);
+    line-height: 1;
+  }
+  .entry-author {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.1rem; color: var(--accent-primary);
+    letter-spacing: 0.08em;
+  }
+  .entry-date {
+    margin-left: auto;
+    font-size: 0.7rem; color: var(--ink-dim);
+    letter-spacing: 0.06em;
+  }
+  .entry-content {
+    font-size: 0.9rem; line-height: 2;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+  .entry-content p { margin-bottom: 1em; }
+  .entry-back {
+    display: inline-block; margin-top: var(--space-md);
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.7rem;
+    color: var(--ink-dim); text-decoration: none;
+    letter-spacing: 0.1em; transition: color 0.25s;
+  }
+  .entry-back:hover { color: var(--accent-primary); }
+
+  /* === FAB === */
+  .fab-edit {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent-primary); color: var(--bg-warm);
+    border: none; cursor: pointer; font-size: 0.75rem;
+    font-family: 'ZCOOL XiaoWei', serif;
+    box-shadow: 0 4px 20px oklch(0.58 0.16 10 / 0.25);
+    transition: all 0.3s; letter-spacing: 0.08em;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fab-edit:hover { transform: scale(1.08); box-shadow: 0 6px 28px oklch(0.58 0.16 10 / 0.35); }
+  .fab-edit.editing { background: var(--accent-secondary); }
+
+  /* === ADD AUTHOR FORM === */
+  .add-author-section {
+    display: none;
+    max-width: 800px; margin: 0 auto;
+    padding: 0 var(--space-md) var(--space-lg);
+  }
+  .add-author-section.show { display: block; }
+  .add-form {
+    background: var(--surface);
+    border: 1px solid oklch(0.7 0.008 80 / 0.2);
+    border-radius: 4px;
+    padding: var(--space-md);
+    display: flex; flex-direction: column; gap: var(--space-sm);
+  }
+  .add-form input, .add-form textarea {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.9rem; padding: 0.6em 0.8em;
+    border: 1px solid oklch(0.7 0.008 80 / 0.2);
+    border-radius: 4px; background: var(--bg-warm);
+    color: var(--ink); outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-form input:focus, .add-form textarea:focus { border-color: var(--accent-primary); }
+  .add-form textarea { min-height: 160px; resize: vertical; }
+  .add-form button {
+    align-self: flex-start;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem;
+    padding: 0.5em 1.5em; border: none; border-radius: 4px;
+    background: var(--accent-primary); color: var(--bg-warm);
+    cursor: pointer; letter-spacing: 0.1em; transition: all 0.25s;
+  }
+  .add-form button:hover { background: var(--accent-secondary); }
+  .add-btn {
+    display: block; margin: var(--space-md) auto;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.8rem;
+    padding: 0.5em 1.5em; border: 1.5px dashed var(--ink-dim);
+    color: var(--ink-dim); background: transparent;
+    cursor: pointer; letter-spacing: 0.1em; transition: all 0.25s;
+  }
+  .add-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+  .delete-entry-btn {
+    display: none; font-size: 0.65rem;
+    font-family: 'ZCOOL XiaoWei', serif;
+    color: var(--ink-dim); cursor: pointer;
+    background: none; border: none; letter-spacing: 0.08em;
+    padding: 0.2em 0.5em; margin-left: auto;
+  }
+  .delete-entry-btn.show { display: inline; }
+  .delete-entry-btn:hover { color: var(--accent-primary); }
+
+  /* === FOOTER === */
+  .contest-footer {
+    text-align: center; padding: var(--space-lg) var(--space-md);
+    color: var(--ink-dim); font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    border-top: 1px solid oklch(0.7 0.008 80 / 0.12);
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <span class="nav-logo" onclick="window.location.href='index.html'">灰烬手稿</span>
+  <button class="nav-edit" id="editToggle" onclick="toggleEdit()">编辑</button>
+  <a class="nav-back" href="index.html">← 返回主页</a>
+</nav>
+
+<section class="contest-hero">
+  <div class="contest-hero-content">
+    <div class="contest-eyebrow">灰烬手稿 · 第一届</div>
+    <h1>结局续写大赛</h1>
+    <div class="subtitle">《悬而未决》万字结局征集</div>
+    <div class="contest-intro">
+      <p>原著 <a href="suspense-script.html">《悬而未决》</a> 讲述了 姜予声 从五岁开始数数、用一生等待一个答案的故事。现在，结局由你来定。每位作者可从任一节点接续，给出你心中的终章。以下为参赛作品目录，点击作者名直达续写内容。</p>
+    </div>
+  </div>
+</section>
+
+<section class="toc-section" id="toc">
+  <h2>参赛作品目录</h2>
+  <div class="toc-grid" id="tocGrid">
+    <a href="#entry-0" class="toc-card">
+      <div class="author-name">示例作者 A</div>
+      <div class="author-meta">投稿 2026-06-29</div>
+    </a>
+    <a href="#entry-1" class="toc-card">
+      <div class="author-name">示例作者 B</div>
+      <div class="author-meta">投稿 2026-06-29</div>
+    </a>
+  </div>
+  <button class="add-btn" id="addAuthorBtn" onclick="toggleAddForm()">+ 添加投稿</button>
+</section>
+
+<section class="add-author-section" id="addAuthorSection">
+  <div class="add-form">
+    <input type="text" id="newAuthorName" placeholder="作者名">
+    <textarea id="newAuthorContent" placeholder="写下你的结局续写……"></textarea>
+    <button onclick="addEntry()">提交投稿</button>
+  </div>
+</section>
+
+<section class="entries-section" id="entriesSection">
+  <div class="entry-block" id="entry-0">
+    <div class="entry-header">
+      <span class="entry-number">01</span>
+      <span class="entry-author">示例作者 A</span>
+      <span class="entry-date">2026-06-29</span>
+      <button class="delete-entry-btn" onclick="deleteEntry(0)">删除</button>
+    </div>
+    <div class="entry-content">
+她终于停下数数的那一天，窗外什么也没有发生。没有电话，没有敲门声，没有奇迹。她只是突然觉得，这个数字太大了，大到已经不再属于任何人。
+
+姜予声站起来，走到厨房给自己倒了一杯水。水是温的。她看着杯子里的倒影，发现自己的嘴角是平的——不是笑，也不是哭。是平的。
+
+「喂。」她对着空房间说了一声。没有人回答，但她没有失望。她只是想知道自己的声音听起来是什么样的。还不错。她想。
+
+她穿上外套，推开门，走进了一场不大不小的雨。
+    </div>
+    <a href="#toc" class="entry-back">↑ 返回目录</a>
+  </div>
+
+  <div class="entry-block" id="entry-1">
+    <div class="entry-header">
+      <span class="entry-number">02</span>
+      <span class="entry-author">示例作者 B</span>
+      <span class="entry-date">2026-06-29</span>
+      <button class="delete-entry-btn" onclick="deleteEntry(1)">删除</button>
+    </div>
+    <div class="entry-content">
+何知远在第四十天推开了她的门。这一次他没有带粥，没有带药。他带了一个登机箱。
+
+「我要去冰岛。」他说。「后天。」
+
+姜予声看着他。她发现自己在数他眉毛上有几根白头发。三根。
+
+「我问你一个问题。」姜予声说。「你回答完之后，我就不数了。」
+
+何知远放下登机箱。「你问。」
+
+「你有没有在任何一个瞬间，想过留下来。」
+
+何知远沉默了很久。久到她以为他不会回答了。
+
+「想过。」他说。「每一次。」
+
+然后他拉起登机箱，走了。
+
+姜予声没有哭。她走到窗边，打开窗。外面没有樱花，没有雨，没有飞机尾灯。只有凌晨四点的天光，正在一点一点亮起来。
+
+她低下头，嘴唇动了。然后她笑了一下——
+
+停住了。没有数下去。
+    </div>
+    <a href="#toc" class="entry-back">↑ 返回目录</a>
+  </div>
+</section>
+
+<div class="contest-footer">灰烬手稿 · 结局续写大赛 · 持续征稿中</div>
+
+<button class="fab-edit" id="fabEdit" onclick="toggleEdit()" title="编辑模式">编辑</button>
+
+<script>
+let isEditing = false;
+const STORAGE_KEY = 'ending_contest_entries';
+const DEFAULT_ENTRIES = [
+  {
+    name: '示例作者 A',
+    date: '2026-06-29',
+    content: '她终于停下数数的那一天，窗外什么也没有发生。没有电话，没有敲门声，没有奇迹。她只是突然觉得，这个数字太大了，大到已经不再属于任何人。\n\n姜予声站起来，走到厨房给自己倒了一杯水。水是温的。她看着杯子里的倒影，发现自己的嘴角是平的——不是笑，也不是哭。是平的。\n\n「喂。」她对着空房间说了一声。没有人回答，但她没有失望。她只是想知道自己的声音听起来是什么样的。还不错。她想。\n\n她穿上外套，推开门，走进了一场不大不小的雨。'
+  },
+  {
+    name: '示例作者 B',
+    date: '2026-06-29',
+    content: '何知远在第四十天推开了她的门。这一次他没有带粥，没有带药。他带了一个登机箱。\n\n「我要去冰岛。」他说。「后天。」\n\n姜予声看着他。她发现自己在数他眉毛上有几根白头发。三根。\n\n「我问你一个问题。」姜予声说。「你回答完之后，我就不数了。」\n\n何知远放下登机箱。「你问。」\n\n「你有没有在任何一个瞬间，想过留下来。」\n\n何知远沉默了很久。久到她以为他不会回答了。\n\n「想过。」他说。「每一次。」\n\n然后他拉起登机箱，走了。\n\n姜予声没有哭。她走到窗边，打开窗。外面没有樱花，没有雨，没有飞机尾灯。只有凌晨四点的天光，正在一点一点亮起来。\n\n她低下头，嘴唇动了。然后她笑了一下——\n\n停住了。没有数下去。'
+  }
+];
+
+function loadEntries() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try { return JSON.parse(saved); } catch(e) {}
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_ENTRIES));
+}
+
+function saveEntries(entries) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function renderAll() {
+  const entries = loadEntries();
+  const tocGrid = document.getElementById('tocGrid');
+  const entriesSection = document.getElementById('entriesSection');
+
+  // Render TOC
+  tocGrid.innerHTML = entries.map((e, i) =>
+    `<a href="#entry-${i}" class="toc-card">
+      <div class="author-name">${escapeHtml(e.name)}</div>
+      <div class="author-meta">投稿 ${escapeHtml(e.date)}</div>
+    </a>`
+  ).join('');
+
+  // Render entries
+  entriesSection.innerHTML = entries.map((e, i) =>
+    `<div class="entry-block" id="entry-${i}">
+      <div class="entry-header">
+        <span class="entry-number">${String(i + 1).padStart(2, '0')}</span>
+        <span class="entry-author">${escapeHtml(e.name)}</span>
+        <span class="entry-date">${escapeHtml(e.date)}</span>
+        <button class="delete-entry-btn show" onclick="deleteEntry(${i})">删除</button>
+      </div>
+      <div class="entry-content">${escapeHtml(e.content).replace(/\n/g, '<br>')}</div>
+      <a href="#toc" class="entry-back">↑ 返回目录</a>
+    </div>`
+  ).join('');
+
+  // Re-bind delete buttons visibility
+  document.querySelectorAll('.delete-entry-btn').forEach(b => {
+    if (isEditing) b.classList.add('show'); else b.classList.remove('show');
+  });
+}
+
+function toggleEdit() {
+  isEditing = !isEditing;
+  const btn = document.getElementById('editToggle');
+  const fab = document.getElementById('fabEdit');
+  const blocks = document.querySelectorAll('.entry-block');
+  const addBtn = document.getElementById('addAuthorBtn');
+
+  if (isEditing) {
+    btn.textContent = '保存';
+    btn.classList.add('editing');
+    fab.textContent = '保存';
+    fab.classList.add('editing');
+    addBtn.style.display = 'block';
+    blocks.forEach(b => { b.contentEditable = 'true'; b.classList.add('editable'); });
+    document.querySelectorAll('.delete-entry-btn').forEach(b => b.classList.add('show'));
+  } else {
+    // Save edited content back
+    const entries = loadEntries();
+    blocks.forEach((b, i) => {
+      if (entries[i]) {
+        entries[i].content = b.querySelector('.entry-content').innerText;
+      }
+    });
+    saveEntries(entries);
+    btn.textContent = '编辑';
+    btn.classList.remove('editing');
+    fab.textContent = '编辑';
+    fab.classList.remove('editing');
+    addBtn.style.display = 'none';
+    blocks.forEach(b => { b.contentEditable = 'false'; b.classList.remove('editable'); });
+    document.querySelectorAll('.delete-entry-btn').forEach(b => b.classList.remove('show'));
+    renderAll(); // Re-render to clean up
+  }
+}
+
+function toggleAddForm() {
+  const section = document.getElementById('addAuthorSection');
+  section.classList.toggle('show');
+}
+
+function addEntry() {
+  const nameInput = document.getElementById('newAuthorName');
+  const contentInput = document.getElementById('newAuthorContent');
+  const name = nameInput.value.trim();
+  const content = contentInput.value.trim();
+  if (!name || !content) { alert('请填写作者名和续写内容'); return; }
+
+  const entries = loadEntries();
+  const today = new Date().toISOString().slice(0, 10);
+  entries.push({ name, date: today, content });
+  saveEntries(entries);
+
+  nameInput.value = '';
+  contentInput.value = '';
+  document.getElementById('addAuthorSection').classList.remove('show');
+  renderAll();
+}
+
+function deleteEntry(index) {
+  if (!isEditing) return;
+  if (!confirm('确认删除「' + loadEntries()[index].name + '」的投稿？')) return;
+  const entries = loadEntries();
+  entries.splice(index, 1);
+  saveEntries(entries);
+  renderAll();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Auto-save on input
+let saveTimer;
+document.addEventListener('input', function(e) {
+  if (!isEditing) return;
+  const block = e.target.closest('.entry-block');
+  if (!block) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const entries = loadEntries();
+    const blocks = document.querySelectorAll('.entry-block');
+    blocks.forEach((b, i) => {
+      if (entries[i]) {
+        entries[i].content = b.querySelector('.entry-content').innerText;
+      }
+    });
+    saveEntries(entries);
+  }, 800);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.body.classList.add('loaded');
+  renderAll();
+});
+</script>
+</body>
+</html>
