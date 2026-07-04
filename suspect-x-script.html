@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>嫌疑人X的献身 — 剧本</title>
+<style>
+    :root {
+        --bg: #1a1d23;
+        --surface: #21252b;
+        --border: #2c313a;
+        --text: #c8ccd4;
+        --text-dim: #7a8190;
+        --accent-cold: #5b7a9a;
+        --accent-red: #8b3a3a;
+        --accent-white: #e8ecf1;
+        --slug-bg: #1e2329;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+        line-height: 1.8;
+        min-height: 100vh;
+    }
+
+    /* 顶栏 */
+    .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        backdrop-filter: blur(8px);
+    }
+    .toolbar .title-sm {
+        font-size: 13px;
+        color: var(--text-dim);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        flex: 1;
+    }
+    .toolbar .badge {
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 3px;
+        background: #2a2f38;
+        color: var(--text-dim);
+        border: 1px solid var(--border);
+    }
+    .toolbar .badge.saved { color: #6a9b7a; border-color: #3a5a42; }
+
+    /* 封面 */
+    .cover {
+        text-align: center;
+        padding: 80px 24px 60px;
+        border-bottom: 1px solid var(--border);
+    }
+    .cover h1 {
+        font-size: 36px;
+        font-weight: 300;
+        letter-spacing: 6px;
+        color: var(--accent-white);
+        margin-bottom: 12px;
+    }
+    .cover .subtitle {
+        font-size: 14px;
+        color: var(--accent-cold);
+        letter-spacing: 3px;
+        margin-bottom: 8px;
+    }
+    .cover .author {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-top: 24px;
+        letter-spacing: 2px;
+    }
+    .cover .divider {
+        width: 60px;
+        height: 1px;
+        background: var(--accent-red);
+        margin: 24px auto;
+    }
+
+    /* 主体 */
+    .script-body {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+    }
+
+    /* 幕标题 */
+    .act-title {
+        text-align: center;
+        margin: 48px 0 32px;
+    }
+    .act-title .act-num {
+        font-size: 12px;
+        color: var(--accent-cold);
+        letter-spacing: 4px;
+        margin-bottom: 6px;
+    }
+    .act-title h2 {
+        font-size: 22px;
+        font-weight: 400;
+        letter-spacing: 3px;
+        color: var(--accent-white);
+    }
+    .act-title .act-divider {
+        width: 40px;
+        height: 2px;
+        background: var(--accent-red);
+        margin: 12px auto 0;
+    }
+
+    /* 场次 */
+    .scene {
+        margin-bottom: 32px;
+        padding: 20px 24px;
+        background: var(--surface);
+        border-left: 3px solid var(--border);
+        border-radius: 0 4px 4px 0;
+    }
+    .scene:hover { border-left-color: var(--accent-cold); }
+
+    .slug {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent-white);
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+    }
+    .slug .scene-num {
+        color: var(--accent-cold);
+        margin-right: 8px;
+    }
+
+    .action {
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 12px;
+        line-height: 1.9;
+    }
+
+    .character-block {
+        margin: 10px 0 6px;
+    }
+    .character {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent-cold);
+        letter-spacing: 1px;
+    }
+    .paren {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-style: italic;
+        margin-left: 6px;
+    }
+    .dialogue {
+        font-size: 14px;
+        color: var(--accent-white);
+        padding-left: 20px;
+        border-left: 1px solid #3a3f4a;
+        margin: 4px 0 12px;
+        line-height: 1.9;
+    }
+
+    /* 终幕 */
+    .the-end {
+        text-align: center;
+        margin: 60px 0 20px;
+        padding: 40px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+    }
+    .the-end .end-text {
+        font-size: 20px;
+        letter-spacing: 8px;
+        color: var(--accent-red);
+        font-weight: 300;
+    }
+    .the-end .end-sub {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-top: 10px;
+        letter-spacing: 3px;
+    }
+
+    /* 编辑模式提示 */
+    .edit-hint {
+        font-size: 11px;
+        color: var(--text-dim);
+        text-align: center;
+        margin-top: 32px;
+        letter-spacing: 1px;
+    }
+    .edit-hint span { color: var(--accent-cold); }
+
+    /* 响应式 */
+    @media (max-width: 640px) {
+        .cover h1 { font-size: 24px; letter-spacing: 3px; }
+        .script-body { padding: 20px 12px 60px; }
+        .scene { padding: 14px 16px; }
+    }
+
+    /* contentEditable 聚焦样式 */
+    [contenteditable]:focus { outline: none; }
+    .scene:focus-within { border-left-color: var(--accent-red); }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <span class="title-sm">Suspect X — Shooting Script</span>
+    <span class="badge" id="save-badge">自动保存</span>
+</div>
+
+<!-- ====== 封面 ====== -->
+<div class="cover">
+    <div class="subtitle">东野圭吾 原著改编</div>
+    <h1>嫌疑人X的献身</h1>
+    <div class="divider"></div>
+    <div class="author">脚本改编 · 剧本格式版</div>
+</div>
+
+<!-- ====== 剧本主体 ====== -->
+<div class="script-body" id="script-content" contenteditable="true">
+
+<!-- ========== 第一幕：罪与爱 ========== -->
+<div class="act-title">
+    <div class="act-num">ACT I</div>
+    <h2>罪 与 爱</h2>
+    <div class="act-divider"></div>
+</div>
+
+<!-- 场景 1 -->
+<div class="scene" id="scene-1">
+    <div class="slug"><span class="scene-num">S1.</span> 弁天亭便当店 — 清晨</div>
+    <div class="action">
+        清晨的街道尚未完全苏醒。弁天亭便当店的卷帘门刚刚拉起，花冈靖子系着围裙，将当日特价的标签逐一插进亚克力架上。玻璃柜里的炸鸡块冒着热气。
+    </div>
+    <div class="action">
+        石神哲哉从街道拐角走来。他穿着洗得略微褪色的深蓝色外套，步伐缓慢而规律，像在执行一道精密计算的数学公式。每天同一时间、同一条路线、同一家店。
+    </div>
+    <div class="action">
+        他在店门前停下，目光透过玻璃，落在靖子忙碌的身影上。那目光沉默而专注——不是窥视，而是一种近乎虔诚的凝视。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（抬头，微笑）</span>
+    </div>
+    <div class="dialogue">石神先生，早上好。今天还是老样子吗？</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（微微点头）</span>
+    </div>
+    <div class="dialogue">嗯。招牌便当。</div>
+    <div class="action">
+        靖子熟练地打包。石神递过零钱，指尖短暂触及她的手心。他迅速收回手，转身离去。靖子望着他的背影，目光中有一丝不易察觉的距离感——一种对这份沉默关注的本能回避。
+    </div>
+    <div class="action">
+        石神走回隔壁的公寓楼。两扇门之间，只隔着一堵薄墙。
+    </div>
+</div>
+
+<!-- 场景 2 -->
+<div class="scene" id="scene-2">
+    <div class="slug"><span class="scene-num">S2.</span> 花冈靖子公寓 / 客厅 — 夜</div>
+    <div class="action">
+        狭小的公寓客厅。电视机播放着综艺节目，笑声空洞。花冈美里坐在矮桌前写作业。靖子在厨房洗碗。
+    </div>
+    <div class="action">
+        突然，门铃响了——急促而不耐烦，持续不断。
+    </div>
+    <div class="action">
+        靖子擦干手，从猫眼望出去。她的表情瞬间僵硬。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（低声，对美里）</span>
+    </div>
+    <div class="dialogue">回房间去。锁上门。</div>
+    <div class="action">
+        美里看到母亲的表情，立刻收起作业，跑进里屋。靖子深吸一口气，打开了门。
+    </div>
+    <div class="action">
+        富樫慎二推门而入。他穿着皱巴巴的西装，身上带着酒气，脸上挂着一种令人生理不适的假笑。
+    </div>
+    <div class="character-block">
+        <span class="character">富樫慎二</span>
+    </div>
+    <div class="dialogue">靖子，好久不见。你还是那么漂亮。</div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（退后一步）</span>
+    </div>
+    <div class="dialogue">我们已经离婚了。请你离开。</div>
+    <div class="character-block">
+        <span class="character">富樫慎二</span>
+        <span class="paren">（环顾房间）</span>
+    </div>
+    <div class="dialogue">美里呢？我女儿在哪？你总不能不让父亲见女儿吧？</div>
+    <div class="action">
+        富樫的声音越来越大。靖子试图把他推向门口，但富樫反手抓住她的手腕。挣扎中，他甩出一叠照片——全是靖子在便当店工作的偷拍。
+    </div>
+    <div class="character-block">
+        <span class="character">富樫慎二</span>
+    </div>
+    <div class="dialogue">你以为搬到这种地方我就找不到你了？我告诉你，我这辈子都不会放过你。</div>
+    <div class="action">
+        美里从房间里冲出来，用花瓶砸向富樫的后脑。富樫踉跄了一下，转身抓住美里的衣领。靖子尖叫着扑上去。
+    </div>
+    <div class="action">
+        混乱中，电暖桌的电线缠住了富樫的脖子。他不慎摔倒，后脑撞在桌角。一切静止了。
+    </div>
+    <div class="action">
+        美里和靖子瘫坐在地上，急促地喘息。富樫一动不动地躺着。
+    </div>
+</div>
+
+<!-- 场景 3 -->
+<div class="scene" id="scene-3">
+    <div class="slug"><span class="scene-num">S3.</span> 花冈靖子公寓 — 夜（紧接前场）</div>
+    <div class="action">
+        靖子颤抖着探了探富樫的呼吸。她的手指僵住了。美里在角落里无声地流泪。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（声音发抖）</span>
+    </div>
+    <div class="dialogue">报警吧。美里，是妈妈做的。你什么都不知道。</div>
+    <div class="action">
+        就在这时，敲门声响起——三声，不轻不重，冷静而克制。
+    </div>
+    <div class="action">
+        靖子僵在原地。敲门声再次响起，伴随一个低沉的声音。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉（O.S.）</span>
+    </div>
+    <div class="dialogue">花冈小姐。我是隔壁的石神。听到了些声响，需要帮忙吗？</div>
+    <div class="action">
+        靖子与美里对视。漫长的沉默后，靖子缓慢地打开了门。
+    </div>
+    <div class="action">
+        石神站在门外。他的目光越过靖子的肩膀，看到了倒在地上的富樫。他的表情没有惊慌失措，没有道德评判。他只是看了几秒钟，然后平静地走进房间，关上了门。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（蹲下，检查脉搏）</span>
+    </div>
+    <div class="dialogue">你们打算怎么办？</div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+    </div>
+    <div class="dialogue">我……我去自首。</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（站起身，直视靖子）</span>
+    </div>
+    <div class="dialogue">如果你去自首，美里怎么办？</div>
+    <div class="action">
+        靖子哑然。石神环视房间，目光最终落在墙上的挂钟上。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">把尸体交给我处理。从现在开始，按我说的做。只要你们严格按照我的指示行事，就绝不会有事。</div>
+    <div class="action">
+        靖子看着他。这个每天来买便当的沉默男人，此刻的眼神中没有丝毫犹豫。那不是一时冲动的英雄主义，而是一种深思熟虑后的决断。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（轻声）</span>
+    </div>
+    <div class="dialogue">为什么……要帮我们？</div>
+    <div class="action">
+        石神沉默了一瞬。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">因为你们给了我活下去的理由。</div>
+    <div class="action">
+        这句话太轻了，靖子没有完全听清。但石神已经开始行动。
+    </div>
+</div>
+
+<!-- ========== 第二幕：完美的逻辑 ========== -->
+<div class="act-title">
+    <div class="act-num">ACT II</div>
+    <h2>完 美 的 逻 辑</h2>
+    <div class="act-divider"></div>
+</div>
+
+<!-- 场景 4 -->
+<div class="scene" id="scene-4">
+    <div class="slug"><span class="scene-num">S4.</span> 石神公寓 — 凌晨</div>
+    <div class="action">
+        石神的房间像一间极简主义牢房。四面墙都是书架，数学专著从地面堆到天花板。书桌上摊开着尚未完成的论文草稿，旁边放着一把钥匙。
+    </div>
+    <div class="action">
+        石神坐在书桌前，没有开灯。窗外的街灯在他脸上投下冷白色的光影。他在脑中推演着——不是数学公式，而是一套逻辑。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（独白，低沉）</span>
+    </div>
+    <div class="dialogue">
+        逻辑的尽头，不是理性得出的结论，而是为了守护某样东西而做出的选择。<br>
+        如果问题的本质是「不在场证明」，那么要破解它，需要的不是抹去证据——而是制造一个牢不可破的真相。
+    </div>
+    <div class="action">
+        他拿起电话，拨通了靖子的号码。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">花冈小姐。明天晚上，带美里去看电影。买票，保留票根。电影结束后去唱卡拉OK。记住，要在人多的地方。</div>
+    <div class="character-block">
+        <span class="character">花冈靖子（V.O.）</span>
+    </div>
+    <div class="dialogue">可是……尸体……</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">尸体已经处理好了。从现在起，你只需要记住一件事：3月9日晚上，你和美里在看电影，然后唱KTV。其他什么都不用想。</div>
+    <div class="action">
+        他挂断电话。桌面上摊着一份旧地图，上面用红笔圈出了几个地点：一座废弃工厂、一座桥下的流浪汉聚居地。
+    </div>
+</div>
+
+<!-- 场景 5 -->
+<div class="scene" id="scene-5">
+    <div class="slug"><span class="scene-num">S5.</span> 旧江户川畔 / 桥下营地 — 3月10日 凌晨</div>
+    <div class="action">
+        河边的风很大。石神沿着堤岸缓缓行走。他的目标是桥下那片用蓝色塑料布搭成的简易帐篷。
+    </div>
+    <div class="action">
+        一个中年流浪汉——在附近被称为「技师」，因为他总说自己以前是修机器的——正裹着一条肮脏的毛毯睡觉。他没有家人，没有登记在册的住址，与这个世界的连接几乎为零。
+    </div>
+    <div class="action">
+        石神在他面前停下。月光照在流浪汉粗糙的脸上。石神从口袋里掏出一叠钞票。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">跟我来。有一份工作给你，报酬足够你离开这个地方。</div>
+    <div class="action">
+        流浪汉睁开眼，看到钞票。他犹豫了一下，然后站起身，跟着石神消失在夜色中。
+    </div>
+    <div class="action">
+        ——切至——
+    </div>
+    <div class="action">
+        废弃工厂内部。石神与流浪汉面对面站着。流浪汉的脸上带着困惑和一丝不祥的预感。
+    </div>
+    <div class="character-block">
+        <span class="character">流浪汉「技师」</span>
+    </div>
+    <div class="dialogue">先生，这里什么工作也没有啊……</div>
+    <div class="action">
+        石神没有回答。他的手在口袋里握紧了一根绳索。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（极轻地，像在对自己说）</span>
+    </div>
+    <div class="dialogue">如果解题需要你，你就必须存在。</div>
+    <div class="action">
+        画面暗去。只留下河水冲刷堤岸的声音。
+    </div>
+</div>
+
+<!-- 场景 6 -->
+<div class="scene" id="scene-6">
+    <div class="slug"><span class="scene-num">S6.</span> 旧江户川河岸 — 3月11日 清晨</div>
+    <div class="action">
+        清晨的薄雾中，一具被毁容、指纹烧毁的男性尸体在河岸边被发现。衣物是富樫慎二的。警方很快确认了身份。
+    </div>
+    <div class="action">
+        草薙刑警蹲在尸体旁，眉头紧锁。
+    </div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">死亡时间推定3月9日晚至10日凌晨。脸部被破坏，指纹也烧掉了——但衣服和随身物品都指向富樫慎二。</div>
+</div>
+
+<!-- 场景 7 -->
+<div class="scene" id="scene-7">
+    <div class="slug"><span class="scene-num">S7.</span> 弁天亭便当店 — 日</div>
+    <div class="action">
+        两名警察走进便当店。靖子正在摆放食品，看到警察时她的手略微停顿了一下，然后继续动作，仿佛什么都没发生。
+    </div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">花冈靖子女士？关于您的前夫富樫慎二先生，我们需要问一些问题。</div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（按照石神的指示，语气平静）</span>
+    </div>
+    <div class="dialogue">我跟他已经很久没有联系了。请问出了什么事？</div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">他死了。请问3月9日晚上您在什么地方？</div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+    </div>
+    <div class="dialogue">那天晚上？我和女儿去看电影了，然后去唱了KTV。我有电影票根，KTV那边应该也有消费记录。</div>
+    <div class="action">
+        草薙刑警记录着。靖子的回答过于流畅——但每一条都可以查证。
+    </div>
+    <div class="action">
+        ——切至——
+    </div>
+    <div class="action">
+        警视厅。警方核对了靖子的不在场证明：影院监控拍到母女二人入场，店员确认见过她们；KTV有刷卡记录。时间上严丝合缝。
+    </div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+        <span class="paren">（放下卷宗）</span>
+    </div>
+    <div class="dialogue">不在场证明成立。3月9日晚她确实在和女儿看电影。受害者是在那之后死亡的——但她的不在场证明在死亡推定时间之前就已经开始。时间对不上。</div>
+    <div class="action">
+        石神设计的逻辑闭环开始生效。他制造了一个精妙的时间错位：警方认定的死亡时间（3月9日晚至10日凌晨）与富樫真正的死亡时间（3月8日晚）之间，隔着一整个日夜。而那具被发现的尸体——已经不再是富樫慎二了。
+    </div>
+</div>
+
+<!-- ========== 第三幕：天才的博弈 ========== -->
+<div class="act-title">
+    <div class="act-num">ACT III</div>
+    <h2>天 才 的 博 弈</h2>
+    <div class="act-divider"></div>
+</div>
+
+<!-- 场景 8 -->
+<div class="scene" id="scene-8">
+    <div class="slug"><span class="scene-num">S8.</span> 帝都大学 物理学研究室 — 日</div>
+    <div class="action">
+        汤川学的办公室与石神的截然不同——这里堆满实验仪器、咖啡杯和白板上密密麻麻的公式。草薙刑警坐在对面，一脸疲惫。
+    </div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">汤川，这个案子所有证据都指向富樫的前妻，但不在场证明又无懈可击。我总觉得哪里不对。</div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+        <span class="paren">（翻阅卷宗，手指轻敲桌面）</span>
+    </div>
+    <div class="dialogue">不在场证明太完美了。完美的东西往往不可信。嫌疑人是谁？</div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">花冈靖子。便当店员工。住在……</div>
+    <div class="action">
+        草薙报出地址。汤川的手指停住了。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">那个地址……石神就住在隔壁。</div>
+    <div class="action">
+        草薙愣住。汤川站起身，走到窗边，望着窗外灰蒙蒙的天空。
+    </div>
+    <div class="character-block">
+        <span class="character">草薙刑警</span>
+    </div>
+    <div class="dialogue">你和石神是大学的……</div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">同级生。他是真正的天才。比我聪明得多。</div>
+    <div class="action">
+        汤川转身，眼神变得锐利。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">如果这个案子跟石神有关，你要有心理准备。他设计的逻辑，不是普通警察能够破解的。</div>
+</div>
+
+<!-- 场景 9 -->
+<div class="scene" id="scene-9">
+    <div class="slug"><span class="scene-num">S9.</span> 石神公寓楼下 — 傍晚</div>
+    <div class="action">
+        汤川站在石神的公寓楼下。石神恰好从学校回来，两人在黄昏中相遇。石神看到汤川的瞬间，脚步略微停顿了一下，然后继续向前。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">好久不见。我是路过，顺便来看看老同学。</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">十五年了吧。你的消息我偶尔在学术期刊上看到。</div>
+    <div class="action">
+        两人在附近的长凳上坐下。暮色渐沉，远处传来电车驶过的声音。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+        <span class="paren">（看着前方）</span>
+    </div>
+    <div class="dialogue">石神，你看起来总是很孤独。从大学时代就是这样。数学是你的整个世界，但那个世界似乎并不温暖。</div>
+    <div class="action">
+        石神没有回答。他的手放在膝盖上，拇指无意识地摩挲着另一只手的指节。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">每个人都是一座孤岛。但即便是孤岛，也会有船只经过。石神，你有吗？</div>
+    <div class="action">
+        石神的目光闪烁了一下。他望向隔壁公寓的窗户——靖子的房间亮着灯。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">汤川，你研究物理，相信万物都可以用公式解释。但有些东西，不在公式范畴之内。</div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">比如呢？</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="paren">（长久的沉默后）</div>
+    <div class="dialogue">比如一个人活着的意义。</div>
+    <div class="action">
+        汤川看着他。这句话中藏着某种汤川尚未完全理解的沉重。但他知道，石神不是那种会为了哲学话题而感慨的人。他说这句话，一定有一个具体的原因。
+    </div>
+</div>
+
+<!-- 场景 10 -->
+<div class="scene" id="scene-10">
+    <div class="slug"><span class="scene-num">S10.</span> 帝都大学 物理学研究室 — 日（数日后）</div>
+    <div class="action">
+        汤川对着白板用马克笔画出时间线：3月9日——富樫死亡推定时间、靖子母女看电影、KTV记录——3月10日——尸体被发现。
+    </div>
+    <div class="action">
+        然后他在白板上写下另一个日期：3月8日。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+        <span class="paren">（自语）</span>
+    </div>
+    <div class="dialogue">
+        如果警方认定的死亡日期是错的呢？如果尸体根本不是富樫慎二呢？
+    </div>
+    <div class="action">
+        他回想起与石神在长凳上的对话。石神说「一个人活着的意义」——那不是一个抽象的哲学感叹。那是一个具体的陈述。
+    </div>
+    <div class="action">
+        汤川翻开卷宗中关于受害者身份的确认文件：脸部被毁、指纹被烧。所有身份认定基于衣物和个人物品——而这些都是可以转移的。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">石神，你为了制造一个不在场证明，为了保护一个人——你杀了另一个人。</div>
+    <div class="action">
+        他闭上眼睛。在物理学中，最简洁的解释通常就是真相。石神设计的最简洁方案是：用一具无法辨认的新鲜尸体，替换掉富樫的尸体，将死亡时间推迟一天。这样，靖子的不在场证明就与「富樫的死亡时间」完美对应。
+    </div>
+    <div class="action">
+        但代价是——一个流浪汉的生命。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">这不是数学。这是一道没有解的题。</div>
+</div>
+
+<!-- ========== 终幕：献身 ========== -->
+<div class="act-title">
+    <div class="act-num">FINALE</div>
+    <h2>献 身</h2>
+    <div class="act-divider"></div>
+</div>
+
+<!-- 场景 11 -->
+<div class="scene" id="scene-11">
+    <div class="slug"><span class="scene-num">S11.</span> 警视厅 — 日</div>
+    <div class="action">
+        石神哲哉推开警视厅的大门。他穿着整洁的衬衫，步伐平稳。他走到接待台前，用一种陈述定理般的平静语调开口。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">我是来自首的。富樫慎二是我杀的。花冈靖子与本案无关。</div>
+    <div class="action">
+        镜头推向他的脸。他的表情没有任何破绽——就像他已经把这道题解了一千遍。
+    </div>
+</div>
+
+<!-- 场景 12 -->
+<div class="scene" id="scene-12">
+    <div class="slug"><span class="scene-num">S12.</span> 拘留所 / 探访室 — 日</div>
+    <div class="action">
+        石神坐在玻璃隔板后面。对面是汤川学。两人之间隔着透明的屏障，像一道不可逾越的公式。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">你自首的供词里，每一个细节都严丝合缝。可是石神，严丝合缝本身就是破绽。真实的事件不会那么完美。</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">你说得对。但你无法证明。</div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">那个流浪汉——他叫什么名字？他有名字吗？</div>
+    <div class="action">
+        石神沉默了。这是整个对话中他唯一没有回答的问题。
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学</span>
+    </div>
+    <div class="dialogue">你为了制造不在场证明，杀了两个人。一个是富樫，还有一个是那个无名的人。石神，你算错了。这道题的答案，从一开始就不是逻辑问题。</div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+        <span class="paren">（平静地）</span>
+    </div>
+    <div class="dialogue">汤川，你错了。我的计算没有出错。从花冈靖子平安无事的那一刻起，这道题就已经得出了正解。至于代价——</div>
+    <div class="action">
+        他微微抬起头，嘴角浮现出一丝几乎看不见的弧度。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉</span>
+    </div>
+    <div class="dialogue">代价不在我的公式里。</div>
+    <div class="action">
+        汤川无言以对。他知道，石神从一开始就计算好了一切——包括自己的结局。
+    </div>
+</div>
+
+<!-- 场景 13 -->
+<div class="scene" id="scene-13">
+    <div class="slug"><span class="scene-num">S13.</span> 花冈靖子公寓 — 日</div>
+    <div class="action">
+        靖子收到一封信。信封上没有寄件人，只有工整的手写字：「花冈靖子 收」。
+    </div>
+    <div class="action">
+        她展开信纸。石神的字迹和他本人一样——精确、克制、每一笔都经过深思熟虑。
+    </div>
+    <div class="character-block">
+        <span class="character">石神哲哉（V.O.）</span>
+    </div>
+    <div class="dialogue">
+        花冈小姐：<br><br>
+        当你读到这封信的时候，一切都应该已经结束了。<br>
+        请不要感到愧疚。这不是你的错。<br>
+        你只需要做一件事——和美里一起，幸福地生活下去。<br>
+        就像你们一直以来那样。<br>
+        对我来说，每天早上去便当店看到你的笑容，就是这个世界上最完美的解答。<br>
+        谢谢你。<br><br>
+        石神哲哉
+    </div>
+    <div class="action">
+        靖子的手开始发抖。信纸从指尖滑落。她终于明白了——不是模糊的猜测，而是一种如雷击般的彻悟。那个每天默默买便当的男人，为她付出的，远远超过她的想象。
+    </div>
+</div>
+
+<!-- 场景 14（终） -->
+<div class="scene" id="scene-14">
+    <div class="slug"><span class="scene-num">S14.</span> 拘留所 — 日</div>
+    <div class="action">
+        靖子站在拘留所的走廊上。她的对面，隔着玻璃，是石神。
+    </div>
+    <div class="action">
+        汤川站在靖子身后。他已经把一切告诉了她——关于那具被替换的尸体，关于那个无名的流浪汉，关于石神为了给她制造不在场证明所做的一切。
+    </div>
+    <div class="action">
+        靖子看着玻璃那边的石神。他的表情依旧平静，甚至带着一丝释然。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+        <span class="paren">（声音破碎）</span>
+    </div>
+    <div class="dialogue">石神先生……为什么……为什么你要做到这种地步……</div>
+    <div class="action">
+        石神没有回答。他只是看着靖子，目光和每天早上去便当店时一样——沉默、专注、虔诚。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+    </div>
+    <div class="dialogue">对不起……对不起……</div>
+    <div class="action">
+        靖子的膝盖弯曲，缓缓跪在地上。她的额头触碰到冰冷的地面，泪水从指缝间滑落。
+    </div>
+    <div class="action">
+        石神闭上眼睛。他的嘴唇微微翕动，但没有发出声音。
+    </div>
+    <div class="action">
+        靖子站起身。她的双腿在发抖，但她的声音不再颤抖。
+    </div>
+    <div class="character-block">
+        <span class="character">花冈靖子</span>
+    </div>
+    <div class="dialogue">我也……我也要去自首。我不能再让你一个人承担这一切。</div>
+    <div class="action">
+        石神猛地睁开眼睛。他第一次露出了破绽——不是逻辑的破绽，而是情感的破绽。他的嘴角抽搐了一下，眼角有什么在闪烁。
+    </div>
+    <div class="action">
+        他张了张嘴，但最终什么都没有说。
+    </div>
+    <div class="action">
+        靖子转身，一步一步走出走廊。她的背影消失在光线中。
+    </div>
+    <div class="action">
+        石神独自坐在玻璃后面。他的双手放在膝盖上，指节因用力而发白。然后，他慢慢地、慢慢地，将脸埋进了手掌中。
+    </div>
+    <div class="action">
+        画外音——
+    </div>
+    <div class="character-block">
+        <span class="character">汤川学（V.O.）</span>
+    </div>
+    <div class="dialogue">
+        石神哲哉设计了一个完美的逻辑。<br>
+        这个逻辑保护了他想保护的人，惩罚了该受惩罚的人，以最小的代价换得了最大的利益。<br>
+        它唯一的瑕疵是——<br>
+        在一道无懈可击的逻辑题里，他把自己也算进去了。
+    </div>
+    <div class="action">
+        画面渐暗。只剩下拘留所走廊里长长的回声，像一道永远解不开的方程。
+    </div>
+</div>
+
+<!-- ====== 全剧终 ====== -->
+<div class="the-end">
+    <div class="end-text">— 全 剧 终 —</div>
+    <div class="end-sub">FIN</div>
+</div>
+
+<div class="edit-hint">
+    <span>●</span> 本页面支持直接编辑 · 内容自动保存至浏览器本地存储
+</div>
+
+</div><!-- /script-body -->
+
+<script>
+(function() {
+    const container = document.getElementById('script-content');
+    const badge = document.getElementById('save-badge');
+    const STORAGE_KEY = 'suspect_x_script_data';
+
+    // 加载本地存储
+    function load() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved && container) {
+            container.innerHTML = saved;
+        }
+    }
+
+    // 保存
+    function save() {
+        if (!container) return;
+        const html = container.innerHTML;
+        // 避免保存空内容
+        if (html.trim().length < 100) return;
+        localStorage.setItem(STORAGE_KEY, html);
+        badge.textContent = '已保存';
+        badge.classList.add('saved');
+        setTimeout(() => {
+            badge.textContent = '自动保存';
+            badge.classList.remove('saved');
+        }, 1500);
+    }
+
+    // 事件绑定
+    if (container) {
+        container.addEventListener('input', function() {
+            clearTimeout(container._saveTimer);
+            container._saveTimer = setTimeout(save, 800);
+        });
+
+        container.addEventListener('blur', save);
+    }
+
+    // 初始化
+    load();
+})();
+</script>
+
+</body>
+</html>
