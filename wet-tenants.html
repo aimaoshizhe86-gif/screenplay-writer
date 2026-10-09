@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>负子 · 潮湿的房客</title>
+<style>
+  :root {
+    --ink: oklch(0.065 0.018 170);
+    --moss: oklch(0.115 0.03 160);
+    --moss-deep: oklch(0.085 0.022 165);
+    --bone: oklch(0.91 0.012 95);
+    --bone-dim: oklch(0.7 0.02 105);
+    --blood: oklch(0.44 0.13 28);
+    --blood-bright: oklch(0.55 0.16 24);
+    --fog: oklch(0.5 0.03 150);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -10%, oklch(0.16 0.045 155 / 0.55), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 85% 30%, oklch(0.2 0.05 145 / 0.35), transparent 70%),
+      radial-gradient(ellipse 55% 50% at 10% 75%, oklch(0.22 0.06 160 / 0.4), transparent 65%),
+      var(--ink);
+    color: var(--bone);
+    font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "STSong", Georgia, serif;
+    line-height: 1.95;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow-x: hidden;
+  }
+
+  /* 水渍噪点层 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 20% 15%, oklch(0.5 0.04 150 / 0.10) 0 1.5px, transparent 2px),
+      radial-gradient(circle at 80% 45%, oklch(0.5 0.04 150 / 0.08) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 45% 85%, oklch(0.6 0.04 150 / 0.09) 0 2px, transparent 3px);
+    background-size: 220px 180px, 170px 200px, 260px 150px;
+    mix-blend-mode: screen;
+  }
+
+  /* 缓慢浮动的卵纹 */
+  .egg-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.16;
+  }
+  .egg-field span {
+    position: absolute;
+    display: block;
+    width: clamp(10px, 2.2vw, 22px);
+    aspect-ratio: 1;
+    border-radius: 58% 42% 55% 45% / 55% 48% 52% 45%;
+    background: radial-gradient(circle at 32% 30%, oklch(0.8 0.03 120 / 0.5), oklch(0.55 0.04 140 / 0.12) 60%, transparent);
+    box-shadow: inset -2px -2px 6px oklch(0.3 0.05 150 / 0.4);
+    animation: drift 26s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    from { transform: translate3d(0, 0, 0) rotate(0deg); }
+    to   { transform: translate3d(14px, -22px, 0) rotate(38deg); }
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(64px, 12vw, 140px) clamp(20px, 6vw, 48px) clamp(96px, 14vw, 180px);
+  }
+
+  /* 题头 */
+  .kicker {
+    font-size: 0.8rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--fog);
+    margin-bottom: clamp(18px, 4vw, 30px);
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 9vw, 5rem);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: 0.06em;
+    color: var(--bone);
+    text-shadow: 0 0 60px oklch(0.55 0.1 25 / 0.25);
+  }
+
+  .rule {
+    width: 76px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blood-bright), transparent);
+    margin: clamp(20px, 4vw, 32px) 0;
+    border-radius: 2px;
+  }
+
+  .dek {
+    font-size: clamp(1.02rem, 2.4vw, 1.18rem);
+    color: var(--bone-dim);
+    font-style: italic;
+    line-height: 1.7;
+    max-width: 30em;
+    margin-bottom: clamp(48px, 9vw, 84px);
+  }
+
+  /* 正文 */
+  article {
+    font-size: clamp(1.02rem, 2.6vw, 1.15rem);
+    color: var(--bone);
+  }
+
+  article p {
+    margin-bottom: 1.75em;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  article p.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  article p:first-child::first-letter {
+    font-size: 3.6em;
+    font-weight: 900;
+    float: left;
+    line-height: 0.82;
+    margin: 0.06em 0.12em 0 0;
+    color: var(--blood-bright);
+  }
+
+  article .tense {
+    color: var(--bone-dim);
+    font-style: italic;
+  }
+
+  /* 断章分隔 */
+  .break {
+    text-align: center;
+    color: var(--blood);
+    letter-spacing: 0.6em;
+    font-size: 1.3rem;
+    margin: 2.8em 0;
+    user-select: none;
+  }
+
+  /* 尾注 */
+  .fin {
+    margin-top: clamp(56px, 9vw, 96px);
+    padding-top: 28px;
+    border-top: 1px solid oklch(0.5 0.03 150 / 0.3);
+    color: var(--fog);
+    font-size: 0.86rem;
+    letter-spacing: 0.24em;
+    text-align: right;
+  }
+
+  .fin strong {
+    color: var(--bone-dim);
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .egg-field span { animation: none; }
+    article p {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    html { -webkit-text-size-adjust: 100%; }
+    article p:first-child::first-letter { font-size: 2.8em; }
+    .egg-field { opacity: 0.08; }
+    main { padding-top: 72px; padding-bottom: 96px; }
+    .fin { text-align: left; letter-spacing: 0.16em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="egg-field" aria-hidden="true">
+  <span style="top:8%;left:12%"></span>
+  <span style="top:22%;left:84%;animation-delay:-8s"></span>
+  <span style="top:38%;left:6%;animation-delay:-14s"></span>
+  <span style="top:55%;left:90%;animation-delay:-5s"></span>
+  <span style="top:70%;left:14%;animation-delay:-20s"></span>
+  <span style="top:84%;left:78%;animation-delay:-11s"></span>
+</div>
+
+<main>
+  <p class="kicker">Pipa Pipa · 房东手记</p>
+  <h1>负子</h1>
+  <div class="rule"></div>
+  <p class="dek">这栋楼空了三年。直到那对夫妻在一个雨夜敲响我的门——他们浑身湿透，像从水里爬出来的一样。后来我才知道，他们来看的，从来不是房子。</p>
+
+  <article id="story">
+    <p>这栋楼空了三年，墙皮剥落，水管锈透，连蟑螂都搬走了。广告贴出去半个月，来电的只有骗子，直到那个雨夜，一对夫妻敲响了我的门。</p>
+
+    <p>他们站在门廊里，没打伞，却浑身湿透——不是淋的那种湿，是从皮肤里一点点渗出来的，好像他们的身体本身就是块吸饱水的海绵。男人瘦，女人更瘦，白得像在水里泡了几天。雨水顺着他们的发梢往下滴，在地上积成一小片亮汪汪的水洼，他们自己却像感觉不到冷，就那么安静地站着——安静得像两片泡皱的枯叶贴在墙根，和剥落的墙皮融在一起。她抬头看我，眼睛小得不像成人的眼睛，瞳孔是两颗纯黑的珠子，嵌在眼白里，很久很久，一次也没有眨。她的眼睑像是不会动。</p>
+
+    <p>"看房。"男人说。他的声音很低，低得像从水底传上来的，喉咙里偶尔滑出一声细小的"咔哒"，像在弹动一块骨头。</p>
+
+    <p>我把他们领进屋子。他们看得很细——不是看格局，不是看采光，而是看水。厨房龙头拧开又关上，浴室花洒捏了半天，最后两人都停在浴缸前。女人蹲下去，伸手摸了摸浴缸内壁，指腹划过瓷面，发出一声细微的、湿润的声响。</p>
+
+    <p>"我们要这间。"她说。声音比男人的还轻，尾音黏稠，像含着一口没咽干净的东西。</p>
+
+    <p>我本来想收押金。她摇了摇头："没有现金。用别的抵。"</p>
+
+    <p>我以为她在开玩笑，直到她从后腰抽出一个小布袋，解开——里面是一把形状古怪的骨制钥匙扣，还有十几颗珠子。不是珍珠，是半透明的、带纹路的圆粒，在灯下泛着浑浊的光，每一颗都有指甲盖那么大。像……一颗颗蜷起来的什么东西。</p>
+
+    <p>我脑子还没转过弯，她已经把布袋塞进我手里，转身跟男人进了屋。门在我面前合上，门锁咔哒一声。那晚我失眠了。浴室方向传来持续的水声，哗啦、哗啦，有时重，有时轻——像两只巨大的、湿漉漉的东西在水里抱在一起翻滚，一上，一下，一上，一下，一整夜，没有停。</p>
+
+    <div class="break">❖ ❖ ❖</div>
+
+    <p>第二天，我去敲他们的门。没人应，但门没有锁。我推门进去——</p>
+
+    <p>客厅灯亮着，满屋的水汽。墙纸鼓起大片水泡，木地板翘起边，踩上去咯吱作响。茶几上摆着两个碗，碗底沉着半碗浊水，水面上浮着几片蜕下来的皮——薄得像蝉翼，形状却完整，像一层人形的壳。</p>
+
+    <p>我喊了两声，没人应。浴室门半掩，我鬼使神差地推开。</p>
+
+    <p>浴缸里的水还是满的，水面结着一层灰白色的膜。透过那层膜，我看见水底沉着什么东西——密密匝匝，看不清形状，只有无数蜷缩的、人形的黑影叠在一起，像一缸泡涨的枯叶。它们还在动，很慢，像在呼吸。</p>
+
+    <p>我听见背后有声音。转过身，那对夫妻就站在门口，湿淋淋的，一左一右，堵住了出路。女人咧开嘴笑了——她的嘴里没有牙齿，只有一排细密的、整齐的、婴儿般的小牙；没有舌头，口腔深处只是一片湿漉漉的空。</p>
+
+    <p class="tense">"别碰我们的水。"她说。</p>
+
+    <div class="break">❖ ❖ ❖</div>
+
+    <p>接下来的日子，我不知道自己是怎么过来的。他们把整栋楼的每个房间都变成了育婴池：水桶、脸盆、浴缸、水池，连洗衣机里都注满了水，水里沉着数不清的、蜷缩的影子。他们很少出门，也不怎么走动——每隔一阵，他们中的一个就会走进最近的一盆水，把脸埋进去，很久才抬起来，像在换气。夜里我躺在床上，听见整栋楼都在响——不是水声，是更细的、密密麻麻的"啵、啵、啵"，像无数个气泡在破裂，又像无数张嘴在吮吸。</p>
+
+    <p>第七天夜里，我实在忍不住，撬开了他们卧室的门。</p>
+
+    <p>窗帘拉着，床头亮着一盏小灯。女人背对着门坐在床沿，上半身赤裸，皮肤白得发青。男人蹲在她身后，低着头，像在做一件极细致的工作——我看见他的手指一粒一粒地捻着什么，往她背上按，按一下，停一停，像在把什么东西封进她皮肤上的小窝里。</p>
+
+    <p>"我说过，"女人头也不回，"别进这间屋。"——我还没走到门口，她就知道。像她的皮肤能感觉到空气里最细微的振动，像水面上任何一点涟漪都瞒不过她。</p>
+
+    <p>我想跑，脚却钉在地上。因为她的背在动。</p>
+
+    <p>起初我以为那是水光在皮肤上滑动，直到我看见——她后背的每一个毛孔都在张开，比正常毛孔大得多，深得可怕，像无数只微小的、湿润的眼睛。她背上的皮肤厚实而柔软，像一块吸饱水的海绵，皮肤下面有什么东西在动，一点一点地鼓起，像无数个小囊在皮肉里成形。那些小囊排得密密匝匝，像一整片蜂巢在她背上长出来。她的背变得凹凸不平，仿佛一整片丘陵在呼吸。</p>
+
+    <p>接着，第一只手伸出来了。</p>
+
+    <p>最靠近肩胛的那一颗毛孔最先被撑开。一只湿漉漉的、人形的小手从里面探出来，五指分明，只有我小指头那么大。它抓住毛孔边缘，用力一撑——一个小东西整个挤了出来：蜷缩的身体，紧闭的眼，没有脐带，没有胎毛，是一个完整的、巴掌大的婴儿。没有卵，没有蝌蚪，没有中间的任何东西，它们就这么直接在她皮肤下面长成了人的样子。它通体半透明，皮肤薄得能看见下面淡青色的血管，却有一张眉目清楚的脸。它的尾椎上还拖着一小截半透明的、鳍一样的东西，像蝌蚪的尾巴没褪干净。它趴在母亲背上，那截尾巴自己卷起来，缩进皮肤里，消失了。它慢慢睁开眼睛，直直地看向我。</p>
+
+    <p>然后是第二个，第三个。啵，啵，啵。小手一只接一只地从毛孔里伸出来，像一窝刚睁眼的幼兽从洞穴里探出脑袋。它们攀着她的肩，抓着她的肋侧，有些甚至顺着脊柱爬成一线——六七十个婴儿从她背上六七十个毛孔里钻出来，密密麻麻铺满她整个后背，像一丛活着的、湿漉漉的珊瑚。</p>
+
+    <p>男人终于抬起头。他脸上没有表情，只轻轻说了一句："还差最后一批。你来得正好。"</p>
+
+    <p>他身后的女人侧过头。她肩胛处的皮肤已经起了一层细密的皱，像一件穿旧了的衣服，随时准备从她身上褪下来。</p>
+
+    <p>我看见她背上那六七十双小手一齐转向我，一百多根细小的指头，慢慢张开，做出抓握的姿势。</p>
+
+    <div class="break">❖ ❖ ❖</div>
+
+    <p>我跑了。搬出那栋楼，换了电话，搬到城市另一头，连押金和行李都没回去拿。</p>
+
+    <p>三个月后的一个雨夜，我坐在新公寓里，忽然觉得后背很痒。我伸手去挠，摸到皮肤上一处硬硬的、微微凸起的东西。我一粒一粒地摸过去——肩胛骨附近，脊柱两侧，密密麻麻，硬而圆，嵌在皮肉里，微微发烫。</p>
+
+    <p>我冲到浴室，脱掉上衣，背对着镜子，拧过头去看。</p>
+
+    <p>我的后背上，每一个毛孔都在缓缓张开。</p>
+
+    <p>我想起他们看房那天的样子——安静得像枯叶，眼睛里全是水。负子蟾一辈子都不离开水。我现在才明白，他们从来不是来看房子的。</p>
+
+    <p class="tense">而我听见，浴缸方向传来了水声。哗啦，哗啦，像有什么东西，正在水里翻搅。</p>
+  </article>
+
+  <p class="fin"><strong>—— 完 ——</strong><br>负子蟾 · Pipa pipa · 献给所有出租空房的房东</p>
+</main>
+
+<script>
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const paras = document.querySelectorAll("#story p");
+
+  if (prefersReduced || !("IntersectionObserver" in window)) {
+    paras.forEach(p => p.classList.add("visible"));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    paras.forEach(p => io.observe(p));
+  }
+</script>
+</body>
+</html>
