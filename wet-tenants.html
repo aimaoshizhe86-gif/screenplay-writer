@@ -9,9 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: oklch(0.12 0.014 260);
-    --ash: oklch(0.18 0.01 250);
-    --concrete: oklch(0.28 0.008 245);
+    --ink: oklch(0.085 0.04 155);
+    --ash: oklch(0.16 0.012 240);
+    --concrete: oklch(0.26 0.015 245);
+    --pond: oklch(0.30 0.06 150);
     --blood: oklch(0.38 0.22 25);
     --blood-bright: oklch(0.5 0.22 25);
     --neon-yellow: oklch(0.92 0.19 106);
@@ -30,9 +31,10 @@
 
   body {
     background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
-      radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
-      var(--ink);
+      radial-gradient(ellipse 100% 55% at 50% -5%, oklch(0.24 0.015 245 / 0.5), transparent 65%),
+      radial-gradient(ellipse 70% 50% at 12% 82%, oklch(0.35 0.06 150 / 0.3), transparent 70%),
+      radial-gradient(ellipse 60% 45% at 88% 68%, oklch(0.28 0.05 140 / 0.35), transparent 65%),
+      linear-gradient(180deg, oklch(0.15 0.012 240) 0%, oklch(0.12 0.03 160) 48%, var(--ink) 100%);
     color: var(--bone);
     font-family: 'Noto Serif SC', serif;
     line-height: 1.95;
@@ -71,6 +73,41 @@
     box-shadow: inset -2px -2px 6px oklch(0.3 0.015 250 / 0.45);
     animation: drift 26s ease-in-out infinite alternate;
   }
+
+  /* 水下意象装饰：荷叶 · 水藻 · 负子蟾 */
+  .aqua-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .aqua-scene svg { position: absolute; }
+
+  .aqua-scene .lotus-leaf {
+    width: clamp(120px, 26vw, 260px);
+    opacity: 0.3;
+    filter: drop-shadow(0 0 26px oklch(0.4 0.08 145 / 0.35));
+    animation: drift 30s ease-in-out infinite alternate;
+  }
+  .aqua-scene .lotus-leaf.l1 { bottom: 6%; right: -4%; transform: rotate(-8deg); }
+  .aqua-scene .lotus-leaf.l2 { top: 14%; left: -6%; width: clamp(90px, 18vw, 190px); opacity: 0.2; animation-delay: -12s; transform: rotate(20deg); }
+
+  .aqua-scene .algae {
+    width: clamp(90px, 16vw, 160px);
+    opacity: 0.32;
+    filter: drop-shadow(0 0 18px oklch(0.4 0.08 145 / 0.3));
+  }
+  .aqua-scene .algae.a1 { bottom: -2%; left: 7%; }
+  .aqua-scene .algae.a2 { bottom: -2%; right: 12%; width: clamp(70px, 12vw, 120px); opacity: 0.26; }
+
+  .aqua-scene .pipa {
+    width: clamp(110px, 20vw, 210px);
+    opacity: 0.2;
+    filter: drop-shadow(0 0 20px oklch(0.45 0.06 140 / 0.4));
+    animation: drift 34s ease-in-out infinite alternate;
+  }
+  .aqua-scene .pipa.p1 { top: 9%; right: 10%; transform: rotate(14deg); animation-delay: -6s; }
 
   @keyframes drift {
     from { transform: translate3d(0, 0, 0) rotate(0deg); }
@@ -183,6 +220,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .egg-field span { animation: none; }
+    .aqua-scene svg { animation: none; }
     article p {
       opacity: 1;
       transform: none;
@@ -194,6 +232,7 @@
     html { -webkit-text-size-adjust: 100%; }
     article p:first-child::first-letter { font-size: 2.8em; }
     .egg-field { opacity: 0.08; }
+    .aqua-scene { opacity: 0.55; }
     main { padding-top: 72px; padding-bottom: 96px; }
     .fin { text-align: left; letter-spacing: 0.16em; }
   }
@@ -208,6 +247,54 @@
   <span style="top:55%;left:90%;animation-delay:-5s"></span>
   <span style="top:70%;left:14%;animation-delay:-20s"></span>
   <span style="top:84%;left:78%;animation-delay:-11s"></span>
+</div>
+
+<div class="aqua-scene" aria-hidden="true">
+  <!-- 负子蟾剪影：扁平枯叶身、背部蜂窝育房、星状前指 -->
+  <svg class="pipa p1" viewBox="0 0 220 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 62 C10 40 30 20 62 12 C110 0 164 8 194 26 C214 38 218 60 208 78 C194 102 154 114 110 116 C58 118 20 102 10 80 C6 72 6 66 8 62 Z" fill="oklch(0.32 0.06 145 / 0.9)"/>
+    <path d="M196 30 C204 22 210 22 206 30 M200 26 C208 18 213 18 208 26 M198 22 C206 14 211 15 207 22" stroke="oklch(0.42 0.07 140 / 0.95)" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="70" cy="42" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="92" cy="36" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="114" cy="38" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="136" cy="46" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="80" cy="60" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="103" cy="56" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="126" cy="62" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="146" cy="72" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="94" cy="78" r="3.5" fill="oklch(0.13 0.05 150 / 0.9)"/>
+    <circle cx="38" cy="34" r="4" fill="oklch(0.9 0.02 100 / 0.95)"/>
+    <circle cx="38" cy="34" r="2.2" fill="oklch(0.05 0.01 260 / 0.95)"/>
+  </svg>
+
+  <!-- 荷叶一：右下 -->
+  <svg class="lotus-leaf l1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 24 C140 12 186 40 194 88 C200 130 172 180 128 190 C86 198 40 176 26 132 C14 92 40 44 100 24 Z" fill="oklch(0.3 0.08 150 / 0.85)"/>
+    <path d="M100 24 L88 108 L100 190" stroke="oklch(0.14 0.05 150 / 0.8)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M100 108 L40 70 M100 108 L60 160 M100 108 L150 60 M100 108 L150 150" stroke="oklch(0.42 0.07 145 / 0.6)" stroke-width="2" fill="none"/>
+  </svg>
+
+  <!-- 荷叶二：左上 -->
+  <svg class="lotus-leaf l2" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 24 C140 12 186 40 194 88 C200 130 172 180 128 190 C86 198 40 176 26 132 C14 92 40 44 100 24 Z" fill="oklch(0.28 0.07 150 / 0.8)"/>
+    <path d="M100 24 L112 108 L100 190" stroke="oklch(0.14 0.05 150 / 0.7)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M100 108 L45 80 M100 108 L58 158 M100 108 L152 70 M100 108 L146 148" stroke="oklch(0.4 0.07 145 / 0.5)" stroke-width="2" fill="none"/>
+  </svg>
+
+  <!-- 水藻一：左下 -->
+  <svg class="algae a1" viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg">
+    <path d="M60 240 C50 200 75 170 62 130 C50 95 72 60 60 20" stroke="oklch(0.35 0.08 145 / 0.9)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M62 130 C85 125 98 105 96 82" stroke="oklch(0.35 0.08 145 / 0.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 60 C38 55 26 40 28 22" stroke="oklch(0.3 0.07 140 / 0.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M40 200 C60 192 70 176 66 160" stroke="oklch(0.4 0.08 150 / 0.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- 水藻二：右下 -->
+  <svg class="algae a2" viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg">
+    <path d="M70 240 C80 205 55 175 68 135 C80 100 60 70 72 30" stroke="oklch(0.3 0.07 145 / 0.9)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M68 135 C45 128 32 108 34 85" stroke="oklch(0.3 0.07 145 / 0.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M48 205 C66 200 76 184 72 168" stroke="oklch(0.36 0.08 150 / 0.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </svg>
 </div>
 
 <main>
