@@ -72,11 +72,13 @@
 
     min-height: 100vh;
 
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.25 0.03 20 / 0.35), transparent),
+    background: radial-gradient(ellipse 100% 55% at 50% -5%, oklch(0.30 0.015 250 / 0.55), transparent 65%),
 
-                radial-gradient(ellipse 60% 40% at 85% 30%, oklch(0.38 0.22 25 / 0.12), transparent),
+                radial-gradient(ellipse 70% 50% at 12% 82%, oklch(0.32 0.02 250 / 0.20), transparent 70%),
 
-                var(--ink);
+                radial-gradient(ellipse 60% 45% at 88% 68%, oklch(0.38 0.22 25 / 0.10), transparent 65%),
+
+                linear-gradient(180deg, oklch(0.21 0.015 255) 0%, oklch(0.17 0.017 257) 48%, var(--ink) 100%);
 
     opacity: 0; transition: opacity 0.6s ease-out;
 
@@ -86,11 +88,25 @@
 
   body::before {
 
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.045;
 
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
+    mix-blend-mode: overlay;
+
   }
+
+  /* === 灰烬粒子印花 === */
+
+  .ember-field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+  .ember { position: absolute; bottom: -2vh; display: block; border-radius: 50%; background: radial-gradient(circle at 35% 30%, oklch(0.85 0.02 90 / 0.55), oklch(0.5 0.02 90 / 0.12) 60%, transparent); box-shadow: 0 0 8px oklch(0.7 0.03 60 / 0.25); opacity: 0; animation: emberRise linear infinite; }
+
+  @keyframes emberRise { 0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; } 12% { opacity: 0.5; } 88% { opacity: 0.35; } 100% { transform: translateY(-108vh) translateX(var(--drift, 18px)) scale(1); opacity: 0; } }
+
+  /* 灰烬尘纹：底部淡淡的碳灰雾 */
+
+  .ember-ground { position: fixed; left: 0; right: 0; bottom: 0; height: 34vh; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 90% 70% at 50% 110%, oklch(0.32 0.015 250 / 0.30), transparent 70%); }
 
 
 
@@ -803,7 +819,8 @@
 
 <body>
 
-
+<div class="ember-ground"></div>
+<div class="ember-field" id="emberField"></div>
 
 <nav id="navbar">
 
@@ -3387,6 +3404,26 @@ document.addEventListener('click', function(e) {
     if (!dd.contains(e.target)) dd.classList.remove('open');
   });
 });
+
+(function initEmberField() {
+  var field = document.getElementById('emberField');
+  if (!field) return;
+  var count = window.innerWidth < 768 ? 22 : 38;
+  var fragments = ['\u7067','\u70b9','\u5f27','\u7eb9','\u00d7','\u2022'];
+  for (var i = 0; i < count; i++) {
+    var s = document.createElement('span');
+    s.className = 'ember';
+    var size = 3 + Math.random() * 9;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.setProperty('--drift', ((Math.random() * 60) - 30).toFixed(0) + 'px');
+    var dur = 12 + Math.random() * 22;
+    s.style.animationDuration = dur.toFixed(1) + 's';
+    s.style.animationDelay = (Math.random() * 18).toFixed(1) + 's';
+    field.appendChild(s);
+  }
+})();
 
 </script>
 
