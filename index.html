@@ -853,6 +853,17 @@
 
       <button class="btn-ghost reveal reveal-delay-3" onclick="scrollToSection('editor')">看个样例</button>
 
+      <div class="dropdown reveal reveal-delay-3" id="heroStoryDropdown">
+        <button class="btn-ghost" onclick="toggleStoryMenu(event, 'heroStoryDropdown')">📖 看个故事</button>
+        <div class="dropdown-menu">
+          <a href="matsuko-script.html">被嫌弃的松子的一生<span class="story-tag">完整剧本</span></a>
+          <a href="burning-script.html">燃烧<span class="story-tag">完整剧本</span></a>
+          <a href="suspect-x-script.html">嫌疑人X的献身<span class="story-tag">剧本</span></a>
+          <a href="suspense-script.html">悬而未决<span class="story-tag">完整剧本</span></a>
+          <a href="wet-tenants.html">负子 · 潮湿的房客<span class="story-tag">短篇</span></a>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -3361,17 +3372,20 @@ $('twistModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal('twistModal');
 });
 
-function toggleStoryMenu(e) {
+function toggleStoryMenu(e, id) {
   if (e) { e.stopPropagation(); e.preventDefault(); }
-  var dd = $('storyDropdown');
+  var dd = $(id || 'storyDropdown');
+  var all = document.querySelectorAll('.dropdown');
+  all.forEach(function(d) {
+    if (d !== dd) d.classList.remove('open');
+  });
   dd.classList.toggle('open');
 }
 
 document.addEventListener('click', function(e) {
-  var dd = $('storyDropdown');
-  if (dd.classList.contains('open') && !dd.contains(e.target)) {
-    dd.classList.remove('open');
-  }
+  document.querySelectorAll('.dropdown.open').forEach(function(dd) {
+    if (!dd.contains(e.target)) dd.classList.remove('open');
+  });
 });
 
 </script>
