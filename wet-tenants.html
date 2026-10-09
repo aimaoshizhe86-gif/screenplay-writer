@@ -109,6 +109,38 @@
   }
   .aqua-scene .pipa.p1 { top: 9%; right: 10%; transform: rotate(14deg); animation-delay: -6s; }
 
+  .aqua-scene .horror-frog {
+    width: clamp(140px, 27vw, 270px);
+    opacity: 0.26;
+    bottom: 3%;
+    left: -3%;
+    filter: drop-shadow(0 0 26px oklch(0.3 0.07 145 / 0.45));
+  }
+  .aqua-scene .egg-clutch {
+    width: clamp(92px, 17vw, 170px);
+    opacity: 0.24;
+    top: 30%;
+    right: 1%;
+    transform: rotate(-10deg);
+    filter: drop-shadow(0 0 18px oklch(0.42 0.07 145 / 0.4));
+    animation: drift 32s ease-in-out infinite alternate;
+  }
+  .aqua-scene .drift-egg {
+    width: clamp(36px, 7vw, 62px);
+    opacity: 0.5;
+    top: 27%;
+    left: 24%;
+    filter: drop-shadow(0 0 14px oklch(0.6 0.05 130 / 0.5));
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+  .aqua-scene .tendril-algae {
+    width: clamp(84px, 15vw, 140px);
+    opacity: 0.3;
+    bottom: -1%;
+    right: 30%;
+    filter: drop-shadow(0 0 16px oklch(0.35 0.07 145 / 0.35));
+  }
+
   @keyframes drift {
     from { transform: translate3d(0, 0, 0) rotate(0deg); }
     to   { transform: translate3d(14px, -22px, 0) rotate(38deg); }
@@ -294,6 +326,74 @@
     <path d="M70 240 C80 205 55 175 68 135 C80 100 60 70 72 30" stroke="oklch(0.3 0.07 145 / 0.9)" stroke-width="4" fill="none" stroke-linecap="round"/>
     <path d="M68 135 C45 128 32 108 34 85" stroke="oklch(0.3 0.07 145 / 0.7)" stroke-width="3" fill="none" stroke-linecap="round"/>
     <path d="M48 205 C66 200 76 184 72 168" stroke="oklch(0.36 0.08 150 / 0.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- 恐怖负子蟾：球形身、表面密布眼状突起、触须（图3意象） -->
+  <svg class="horror-frog" viewBox="0 0 260 190" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <g id="h-eye">
+        <circle r="6" fill="oklch(0.1 0.05 155 / 0.95)"/>
+        <circle cy="-1.6" r="2.1" fill="oklch(0.78 0.03 100 / 0.9)"/>
+      </g>
+    </defs>
+    <path d="M0 150 Q130 128 260 150 L260 190 L0 190 Z" fill="oklch(0.18 0.05 155 / 0.55)"/>
+    <ellipse cx="130" cy="118" rx="96" ry="64" fill="oklch(0.24 0.06 155 / 0.95)"/>
+    <ellipse cx="120" cy="104" rx="60" ry="34" fill="oklch(0.3 0.07 150 / 0.6)"/>
+    <use href="#h-eye" x="78" y="86"/>
+    <use href="#h-eye" x="102" y="74"/>
+    <use href="#h-eye" x="128" y="70"/>
+    <use href="#h-eye" x="154" y="74"/>
+    <use href="#h-eye" x="178" y="86"/>
+    <use href="#h-eye" x="66" y="110"/>
+    <use href="#h-eye" x="90" y="100"/>
+    <use href="#h-eye" x="116" y="94"/>
+    <use href="#h-eye" x="142" y="94"/>
+    <use href="#h-eye" x="168" y="102"/>
+    <use href="#h-eye" x="192" y="114"/>
+    <use href="#h-eye" x="80" y="132"/>
+    <use href="#h-eye" x="106" y="124"/>
+    <use href="#h-eye" x="132" y="120"/>
+    <use href="#h-eye" x="158" y="122"/>
+    <use href="#h-eye" x="184" y="132"/>
+    <path d="M52 116 C30 108 20 90 26 70 M40 112 C24 104 16 88 22 68" stroke="oklch(0.3 0.07 145 / 0.8)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M214 126 C236 122 246 106 242 84 M224 122 C240 112 246 96 242 78" stroke="oklch(0.3 0.07 145 / 0.8)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="88" cy="68" rx="11" ry="13" fill="oklch(0.85 0.03 110 / 0.9)"/>
+    <ellipse cx="88" cy="70" rx="5" ry="6.5" fill="oklch(0.06 0.02 260 / 0.95)"/>
+  </svg>
+
+  <!-- 荷叶托卵块：荷叶托盘装满半透明卵（图1意象） -->
+  <svg class="egg-clutch" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 88 C28 44 172 44 180 88 C164 112 36 112 20 88 Z" fill="oklch(0.32 0.08 150 / 0.92)"/>
+    <path d="M100 88 L100 56 M100 88 L62 70 M100 88 L138 70 M100 88 L52 92 M100 88 L148 92" stroke="oklch(0.16 0.05 150 / 0.8)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="76" cy="80" rx="13" ry="17" fill="oklch(0.85 0.03 120 / 0.4)"/>
+    <ellipse cx="76" cy="76" rx="6" ry="8" fill="oklch(0.9 0.02 110 / 0.5)"/>
+    <ellipse cx="104" cy="74" rx="13" ry="17" fill="oklch(0.85 0.03 120 / 0.45)"/>
+    <ellipse cx="104" cy="70" rx="6" ry="8" fill="oklch(0.9 0.02 110 / 0.55)"/>
+    <ellipse cx="130" cy="80" rx="12" ry="16" fill="oklch(0.85 0.03 120 / 0.4)"/>
+    <ellipse cx="130" cy="76" rx="5.5" ry="7.5" fill="oklch(0.9 0.02 110 / 0.5)"/>
+    <ellipse cx="90" cy="62" rx="11" ry="15" fill="oklch(0.85 0.03 120 / 0.4)"/>
+    <ellipse cx="90" cy="58" rx="5" ry="7" fill="oklch(0.9 0.02 110 / 0.5)"/>
+    <ellipse cx="118" cy="62" rx="11" ry="15" fill="oklch(0.85 0.03 120 / 0.42)"/>
+    <ellipse cx="118" cy="58" rx="5" ry="7" fill="oklch(0.9 0.02 110 / 0.52)"/>
+  </svg>
+
+  <!-- 漂浮半透明蛋：水面漂蛋，内里蜷影（图2/图3意象） -->
+  <svg class="drift-egg" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="30" cy="40" rx="22" ry="30" fill="oklch(0.85 0.03 120 / 0.16)" stroke="oklch(0.85 0.03 120 / 0.38)" stroke-width="1.6"/>
+    <ellipse cx="24" cy="31" rx="8" ry="12" fill="oklch(0.9 0.02 110 / 0.26)"/>
+    <path d="M30 46 C25 40 35 37 32 30" stroke="oklch(0.2 0.05 150 / 0.7)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M34 50 C31 47 30 44 31 41" stroke="oklch(0.2 0.05 150 / 0.5)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- 触须水藻：带吸盘的触手状水藻（图2意象） -->
+  <svg class="tendril-algae" viewBox="0 0 140 260" xmlns="http://www.w3.org/2000/svg">
+    <path d="M70 260 C52 220 86 180 66 148 C52 122 76 92 62 60 C54 38 58 22 70 8" stroke="oklch(0.28 0.07 145 / 0.95)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="58" cy="196" rx="6" ry="9" fill="oklch(0.4 0.07 140 / 0.8)"/>
+    <ellipse cx="76" cy="162" rx="6" ry="9" fill="oklch(0.4 0.07 140 / 0.8)"/>
+    <ellipse cx="64" cy="126" rx="5.5" ry="8" fill="oklch(0.4 0.07 140 / 0.8)"/>
+    <ellipse cx="70" cy="96" rx="5" ry="7.5" fill="oklch(0.4 0.07 140 / 0.8)"/>
+    <path d="M70 8 C66 -4 72 -10 84 -12" stroke="oklch(0.28 0.07 145 / 0.8)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M70 8 C60 -2 54 -8 56 -16" stroke="oklch(0.28 0.07 145 / 0.7)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
   </svg>
 </div>
 
