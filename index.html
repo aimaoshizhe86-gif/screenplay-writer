@@ -288,6 +288,18 @@
 
   .tool-btn.accent { border-color: var(--blood); color: var(--blood); }
 
+  .dropdown { position: relative; display: inline-block; }
+
+  .dropdown-menu { position: absolute; top: calc(100% + 6px); left: 0; min-width: 220px; background: oklch(0.16 0.01 250); border: 1px solid oklch(1 0 0 / 0.14); box-shadow: 0 12px 32px oklch(0 0 0 / 0.55); z-index: 999; padding: 6px 0; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity 0.2s, transform 0.2s, visibility 0.2s; }
+
+  .dropdown.open .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .dropdown-menu a { display: block; padding: 0.6em 1.2em; font-family: 'ZCOOL XiaoWei', serif; font-size: 0.82rem; color: var(--bone); text-decoration: none; letter-spacing: 0.08em; border-left: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+
+  .dropdown-menu a:hover { background: oklch(0.22 0.01 250); color: var(--neon-yellow); border-left-color: var(--neon-yellow); }
+
+  .dropdown-menu a .story-tag { float: right; font-size: 0.68rem; color: oklch(0.55 0.01 100); margin-left: 1.2em; letter-spacing: 0.06em; }
+
   .tool-btn.accent:hover { background: var(--blood); color: var(--bone); }
 
   .word-count { font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem; color: oklch(0.5 0.01 100); letter-spacing: 0.1em; }
@@ -907,10 +919,16 @@
 
       <button class="tool-btn" onclick="insertTemplate('subway')">地铁模板</button>
 
-      <button class="tool-btn accent" onclick="window.location.href='matsuko-script.html'">松子的一生</button>
-
-      <button class="tool-btn accent" onclick="window.location.href='burning-script.html'">燃烧 · 全本</button>
-      <button class="tool-btn accent" onclick="window.location.href='wet-tenants.html'">负子 · 潮湿的房客</button>
+      <div class="dropdown" id="storyDropdown">
+        <button class="tool-btn accent" onclick="toggleStoryMenu(event)">📖 看个故事</button>
+        <div class="dropdown-menu">
+          <a href="matsuko-script.html">被嫌弃的松子的一生<span class="story-tag">完整剧本</span></a>
+          <a href="burning-script.html">燃烧<span class="story-tag">完整剧本</span></a>
+          <a href="suspect-x-script.html">嫌疑人X的献身<span class="story-tag">剧本</span></a>
+          <a href="suspense-script.html">悬而未决<span class="story-tag">完整剧本</span></a>
+          <a href="wet-tenants.html">负子 · 潮湿的房客<span class="story-tag">短篇</span></a>
+        </div>
+      </div>
       <button class="tool-btn accent" onclick="openTwistGenerator()">🔪 反转AI</button>
 
       <button class="tool-btn" onclick="insertTemplate('parasite')">寄生虫</button>
@@ -3341,6 +3359,19 @@ function copyTwistResult() {
 
 $('twistModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal('twistModal');
+});
+
+function toggleStoryMenu(e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  var dd = $('storyDropdown');
+  dd.classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  var dd = $('storyDropdown');
+  if (dd.classList.contains('open') && !dd.contains(e.target)) {
+    dd.classList.remove('open');
+  }
 });
 
 </script>
